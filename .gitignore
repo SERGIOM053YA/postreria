@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# Variables de entorno y secretos (¡NUNCA subir claves de Supabase privadas!)
+.env
+.env.local
+
+# Archivos de sistema y editores
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store
