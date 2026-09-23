@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hilda's Postres & Snacks</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="carrito.css">
+</head>
+
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <header class="header" id="header">
+        <div class="logo-container">
+            <img src="./logo.png" alt="Hilda's Postres & Snacks" class="logo">
+        </div>
+        <nav class="navbar" id="navbar">
+            <a href="#hero" class="active">INICIO</a>
+            <a href="./postres.html">POSTRES</a>
+            <a href="./bebidas.html">BEBIDAS</a>
+            <a href="./snacks.html">SNACKS</a>
+            <a href="./crepas.html">CREPAS</a>
+        </nav>
+        <div class="header-icons">
+            <div class="cart-icon" id="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge">2</span>
+            </div>
+            <a href="#" class="whatsapp-header-icon" id="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
+            <span class="header-divider"></span>
+            <a href="./Login/login.html" class="login-header-btn" id="login-btn">
+                <i class="far fa-user"></i>
+                <span>Iniciar sesión</span>
+            </a>
+        </div>
+        <!-- Wavy bottom -->
+        <div class="header-wave">
+            <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
+                <path fill="#ffffff"
+                    d="M0,0 L0,30 Q60,50 120,30 Q180,10 240,30 Q300,50 360,30 Q420,10 480,30 Q540,50 600,30 Q660,10 720,30 Q780,50 840,30 Q900,10 960,30 Q1020,50 1080,30 Q1140,10 1200,30 Q1260,50 1320,30 Q1380,10 1440,30 L1440,0 Z" />
+            </svg>
+        </div>
+    </header>
+
+    <main>
+        <!-- ========== HERO SECTION ========== -->
+        <section class="hero" id="hero">
+            <!-- Decorative 3D Spheres -->
+            <div class="sphere sphere-1"></div>
+            <div class="sphere sphere-2"></div>
+            <div class="sphere sphere-3"></div>
+            <div class="sphere sphere-4"></div>
+            <div class="sphere sphere-5"></div>
+            <div class="sphere sphere-6"></div>
+
+            <div class="hero-inner">
+                <div class="hero-left">
+                    <h1 class="hero-title">Endulza<br>tu día</h1>
+                    <p class="hero-tagline">CON ALGO HECHO CON AMOR <i class="fas fa-heart"></i></p>
+                    <p class="hero-description">Postres, snacks y bebidas que<br>te encantarán.</p>
+                    <a href="#" class="btn-menu" id="btn-menu">VER MENÚ</a>
+                </div>
+
+                <div class="hero-center">
+                    <img src="./logo.png" alt="Hilda's Postres & Snacks" class="hero-big-logo">
+                </div>
+
+                <div class="hero-right">
+                    <div class="hero-cake-wrapper">
+                        <img src="C:\Users\ENB10\.gemini\antigravity-ide\brain\8cb2659a-39f1-4061-a8e4-2c626b55e6d4\hero_cake_1788281832136.jpg"
+                            alt="Pastel de Fresa" class="hero-cake-img">
+                        <div class="floating-tag" id="floating-tag">
+                            FRESCO, DELICIOSO<br>Y HECHO PARA TI <i class="fas fa-heart"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero wave bottom -->
+            <div class="hero-wave">
+                <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+                    <path fill="#fff0f3" d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z" />
+                </svg>
+            </div>
+        </section>
+
+        <!-- ========== PRODUCTS + SIDEBAR ========== -->
+        <section class="content-section" id="products">
+            <div class="content-inner">
+                <div class="products-area">
+                    <h2 class="section-heading">
+                        <span class="heading-line"></span>
+                        NUESTROS POSTRES
+                        <span class="heading-line"></span>
+                    </h2>
+
+                    <div class="products-grid">
+                        <!-- Card 1 -->
+                        <div class="product-card" id="product-fresas">
+                            <div class="bestseller-badge">Más vendido</div>
+                            <div class="product-img-wrapper">
+                                <img src="C:\Users\ENB10\.gemini\antigravity-ide\brain\8cb2659a-39f1-4061-a8e4-2c626b55e6d4\fresas_crema_1788281842198.jpg"
+                                    alt="Fresas con crema" class="product-img">
+                            </div>
+                            <div class="product-info">
+                                <h3>Fresas con crema</h3>
+                                <p>Fresas frescas con crema dulce y un toque especial.</p>
+                                <div class="product-footer">
+                                    <span class="product-price">$45.00</span>
+                                    <button class="btn-add-cart"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="product-card" id="product-hotcakes">
+                            <div class="product-img-wrapper">
+                                <img src="C:\Users\ENB10\.gemini\antigravity-ide\brain\8cb2659a-39f1-4061-a8e4-2c626b55e6d4\mini_hotcakes_1788281866952.jpg"
+                                    alt="Mini hot cakes" class="product-img">
+                            </div>
+                            <div class="product-info">
+                                <h3>Mini hot cakes</h3>
+                                <p>Hot cakes esponjosos con frutas y un toque de miel.</p>
+                                <div class="product-footer">
+                                    <span class="product-price">$55.00</span>
+                                    <button class="btn-add-cart"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <a href="./crepas.html" style="text-decoration: none; color: inherit;">
+                        <div class="product-card" id="product-crepas">
+                            <div class="product-img-wrapper">
+                                <img src="C:\Users\ENB10\.gemini\antigravity-ide\brain\8cb2659a-39f1-4061-a8e4-2c626b55e6d4\crepas_1788281879920.jpg"
+                                    alt="Crepas" class="product-img">
+                            </div>
+                            <div class="product-info">
+                                <h3>Crepas</h3>
+                                <p>Deliciosas crepas con tu ingrediente favorito.</p>
+                                <div class="product-footer">
+                                    <span class="product-price">$50.00</span>
+                                    <button class="btn-add-cart" onclick="window.location.href='./crepas.html'"><i class="fas fa-arrow-right"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+
+                        <!-- Card 4 -->
+                        <div class="product-card" id="product-frappe">
+                            <div class="product-img-wrapper">
+                                <img src="C:\Users\ENB10\.gemini\antigravity-ide\brain\8cb2659a-39f1-4061-a8e4-2c626b55e6d4\frappe_fresa_1788281925206.jpg"
+                                    alt="Frappe de fresa" class="product-img">
+                            </div>
+                            <div class="product-info">
+                                <h3>Frappe de fresa</h3>
+                                <p>Bebida fría con el sabor dulce que te encanta.</p>
+                                <div class="product-footer">
+                                    <span class="product-price">$50.00</span>
+                                    <button class="btn-add-cart"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="see-all-wrapper">
+                        <a href="./postres.html" class="btn-see-all" id="btn-see-all">VER TODOS LOS POSTRES <img src="./logo.png"
+                                alt="" class="btn-logo-icon"></a>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="sidebar" id="sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">¿POR QUÉ ELEGIRNOS?</h3>
+                        <ul class="why-list">
+                            <li>
+                                <span class="why-icon"><i class="fas fa-seedling"></i></span>
+                                <div>
+                                    <strong>Ingredientes frescos</strong>
+                                    <p>Usamos ingredientes de la mejor calidad.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="why-icon heart"><i class="fas fa-heart"></i></span>
+                                <div>
+                                    <strong>Hecho con amor</strong>
+                                    <p>Cada postre es preparado especialmente para ti.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="why-icon variety"><i class="fas fa-smile-beam"></i></span>
+                                <div>
+                                    <strong>Variedad para todos</strong>
+                                    <p>Opciones para cada antojo y ocasión.</p>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="sidebar-divider"></div>
+
+                        <h3 class="sidebar-title">HAZ TU PEDIDO</h3>
+                        <ul class="order-list">
+                            <li>
+                                <span class="order-icon whatsapp"><i class="fab fa-whatsapp"></i></span>
+                                <span>(123) 456 7890</span>
+                            </li>
+                            <li>
+                                <span class="order-icon instagram"><i class="fab fa-instagram"></i></span>
+                                <span>@hildas.postres</span>
+                            </li>
+                            <li>
+                                <span class="order-icon delivery"><i class="fas fa-motorcycle"></i></span>
+                                <div>
+                                    <span>Servicio a domicilio</span><br>
+                                    <small>Consulta tu zona</small>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </aside>
+            </div>
+        </section>
+
+
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer" id="footer">
+        <div class="footer-features">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-award"></i></div>
+                <div>
+                    <strong>CALIDAD GARANTIZADA</strong>
+                    <p>Ingredientes seleccionados</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-clock"></i></div>
+                <div>
+                    <strong>HECHO AL MOMENTO</strong>
+                    <p>Frescura en cada bocado</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-box-open"></i></div>
+                <div>
+                    <strong>EMPAQUES SEGUROS</strong>
+                    <p>Llegamos en perfectas condiciones</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-smile"></i></div>
+                <div>
+                    <strong>CLIENTES FELICES</strong>
+                    <p>Tu satisfacción es nuestra prioridad</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="cart.js"></script>
+</body>
+
+</html>
