@@ -247,6 +247,12 @@ document.addEventListener('DOMContentLoaded', () => {
         recalculateCart();
     };
 
+    // Agrega hotcakes ya personalizados desde su propio formulario.
+    window.addHotcakeToCart = (product) => {
+        addProductToCart(product, product.instructions || '');
+        openCart();
+    };
+
     // Interceptar clics en botones de agregar al carrito (.btn-add-cart)
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.btn-add-cart');
