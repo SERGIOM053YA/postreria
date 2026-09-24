@@ -396,6 +396,11 @@
     box-sizing: border-box;
 }
 
+#custom-modal-sauce {
+    min-height: 48px;
+    resize: none;
+}
+
 .custom-modal-textarea:focus {
     border-color: var(--primary-pink, #f05473);
     background-color: #ffffff;

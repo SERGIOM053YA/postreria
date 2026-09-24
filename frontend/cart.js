@@ -16,6 +16,19 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="custom-modal-subtitle">Personaliza tu pedido antes de agregarlo al carrito</p>
             
             <form id="custom-modal-form" onsubmit="return false;">
+                <div id="sauce-step" style="display:none;">
+                    <label class="custom-modal-label" for="custom-modal-sauce">Elige la salsa:</label>
+                    <select id="custom-modal-sauce" class="custom-modal-textarea">
+                        <option value="">Selecciona una salsa</option>
+                        <option value="Mango habanero">Mango habanero</option>
+                        <option value="BBQ">BBQ</option>
+                        <option value="Tamarindo habanero">Tamarindo habanero</option>
+                        <option value="Cajún">Cajún</option>
+                        <option value="Búfalo">Búfalo</option>
+                    </select>
+                    <button type="button" class="btn-custom-add-cart" id="btn-sauce-continue">Continuar a instrucciones</button>
+                </div>
+                <div id="instructions-step">
                 <label class="custom-modal-label" for="custom-modal-instructions">
                     <span style="font-size: 1.15rem;">💬</span> Instrucciones especiales (opcional):
                 </label>
@@ -27,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button type="button" class="btn-custom-add-cart" id="btn-custom-add-cart">
                     <i class="fas fa-shopping-cart"></i> Agregar al carrito
                 </button>
+                </div>
             </form>
         </div>
     </div>
@@ -135,6 +149,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const customModalInstructions = document.getElementById('custom-modal-instructions');
     const customModalClose = document.getElementById('custom-modal-close');
     const btnCustomAddCart = document.getElementById('btn-custom-add-cart');
+    const sauceStep = document.getElementById('sauce-step');
+    const sauceSelect = document.getElementById('custom-modal-sauce');
+    const sauceContinue = document.getElementById('btn-sauce-continue');
+    const instructionsStep = document.getElementById('instructions-step');
 
     let pendingProduct = null;
 
@@ -168,6 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
         pendingProduct = product;
         customModalTitle.textContent = product.name || 'Producto Especial';
         customModalInstructions.value = '';
+        sauceSelect.value = '';
+        sauceStep.style.display = product.requiresSauce ? 'block' : 'none';
+        instructionsStep.style.display = product.requiresSauce ? 'none' : 'block';
         customModalOverlay.style.display = 'flex';
         setTimeout(() => {
             customModalOverlay.classList.add('show');
@@ -272,8 +293,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const img = card.querySelector('.product-img')?.src || '';
         const desc = card.querySelector('.product-info p')?.textContent.trim() || '';
 
-        openCustomModal({ name, price, img, desc });
+        const requiresSauce = ['product-alitas', 'product-alitas-con-papas', 'product-boneless', 'product-boneless-con-papas'].includes(card.id);
+        openCustomModal({ name, price, img, desc, requiresSauce });
     });
+
+    if (sauceContinue) {
+        sauceContinue.addEventListener('click', () => {
+            if (!pendingProduct || !sauceSelect.value) {
+                sauceSelect.focus();
+                return;
+            }
+            pendingProduct.desc = `Salsa: ${sauceSelect.value}`;
+            sauceStep.style.display = 'none';
+            instructionsStep.style.display = 'block';
+            customModalInstructions.focus();
+        });
+    }
 
     // Confirmar en el modal de instrucciones
     if (btnCustomAddCart) {
