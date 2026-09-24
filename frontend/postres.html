@@ -707,12 +707,13 @@
                 const extrasFruta = Array.from(document.querySelectorAll('input[name="extra_fruta"]:checked'), input => input.value);
                 const comentario = document.getElementById('personal-instructions').value.trim();
                 const precio = currentHotcakeConfig.price + (extrasTopping.length + extrasFruta.length) * 5;
+                const piezas = currentHotcakeConfig.type === 'simple12' ? '12 piezas' : '25 piezas';
 
                 currentHotcakeConfig = {
                     ...currentHotcakeConfig,
                     price: `$${precio.toFixed(2)}`,
                     img: document.querySelector('#product-mini-hotcakes .product-img')?.src || '',
-                    desc: `Fruta: ${frutas.join(', ')} · Topping: ${toppings.join(', ')}${extrasFruta.length ? ` · Fruta extra: ${extrasFruta.join(', ')}` : ''}${extrasTopping.length ? ` · Topping extra: ${extrasTopping.join(', ')}` : ''}`,
+                    desc: `${piezas} · Fruta: ${frutas.join(', ')} · Topping: ${toppings.join(', ')}${extrasFruta.length ? ` · Fruta extra: ${extrasFruta.join(', ')}` : ''}${extrasTopping.length ? ` · Topping extra: ${extrasTopping.join(', ')}` : ''}`,
                     instructions: comentario
                 };
                 closeHotcakesModal();
