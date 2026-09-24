@@ -13,6 +13,196 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="carrito.css">
+
+    <style>
+        .btn-open-modal {
+            background: var(--primary-pink);
+            color: #fff;
+            border: 0;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-open-modal:hover {
+            background: var(--dark-pink);
+            transform: scale(1.08);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 550px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #888;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-title-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .modal-subtitle-text {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .crepa-step {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            background: #ff6b81;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .step-body {
+            flex-grow: 1;
+        }
+
+        .step-body h4 {
+            margin: 0 0 10px 0;
+            font-size: 1.05rem;
+            color: #444;
+        }
+
+        .crepa-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .crepa-pill-label input {
+            display: none;
+        }
+
+        .crepa-pill-text {
+            padding: 6px 14px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-block;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            border: 1px solid transparent;
+        }
+
+        .crepa-pill-label input:checked + .crepa-pill-text {
+            background: #ff6b81;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(255, 107, 129, 0.4);
+        }
+
+        .crepa-extras-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .crepa-extra-card {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .crepa-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .instructions-textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: none;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .instructions-textarea:focus {
+            border-color: #ff6b81;
+            box-shadow: 0 0 5px rgba(255, 107, 129, 0.3);
+        }
+
+        .btn-submit-order {
+            width: 100%;
+            padding: 12px;
+            background: #ff6b81;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-submit-order:hover {
+            background: #ee5253;
+        }
+    </style>
 </head>
 
 <body>
@@ -96,7 +286,58 @@
                     </h2>
                     <div class="products-grid">
 
-                        <!-- Card 1: FLAN NAPOLITANO -->
+                        <!-- Card 1: MINI HOTCAKES 12PZ (PIDE OPCIONES) -->
+                        <div class="product-card" id="product-mini-hotcakes">
+                            <div class="product-img-wrapper">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7lJBm6zcKqqicKH2Iymcs72IaBbePLvmheehLa1NnOu_lrJU9LUPRr4I&s=10" alt="Mini Hotcakes" class="product-img">
+                            </div>
+                            <div class="product-info">
+                                <h3>Mini Hotcakes 12 Pz </h3>
+                                <p> Incluye 1 fruta 1 topping a elegir.</p>
+                                <div class="product-footer">
+                                    <span class="product-price">$40.00</span>
+                                    <button type="button" class="btn-open-modal" onclick="openHotcakesModal('simple12', 'Mini Hotcakes 12 Pz', 40)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: MINI HOTCAKES 25 Pz (PIDE OPCIONES) -->
+                        <div class="product-card" id="product-mini-hotcakes-25">
+                            <div class="product-img-wrapper">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7lJBm6zcKqqicKH2Iymcs72IaBbePLvmheehLa1NnOu_lrJU9LUPRr4I&s=10" alt="Mini Hotcakes 25 Pz" class="product-img">
+                            </div>
+                            <div class="product-info">
+                                <h3>Mini Hotcakes 25 Pz </h3>
+                                <p>Incluye 1 fruta y 1 topping a elegir.</p>
+                                <div class="product-footer">
+                                    <span class="product-price">$65.00</span>
+                                    <button type="button" class="btn-open-modal" onclick="openHotcakesModal('simple25', 'Mini Hotcakes 25 Pz', 65)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: MINI HOTCAKES 25 Pz Especiales (PERMITE 2 FRUTAS Y 2 TOPPINGS) -->
+                        <div class="product-card" id="product-mini-hotcakes-25-especiales">
+                            <div class="product-img-wrapper">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7lJBm6zcKqqicKH2Iymcs72IaBbePLvmheehLa1NnOu_lrJU9LUPRr4I&s=10" alt="Mini Hotcakes 25 Pz Especiales" class="product-img">
+                            </div>
+                            <div class="product-info">
+                                <h3>Mini Hotcakes 25 Pz Especiales</h3>
+                                <p>Incluye 2 frutas y 2 topping a elegir.</p>
+                                <div class="product-footer">
+                                    <span class="product-price">$80.00</span>
+                                    <button type="button" class="btn-open-modal" onclick="openHotcakesModal('especial', 'Mini Hotcakes 25 Pz Especiales', 80)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: FLAN NAPOLITANO -->
                         <div class="product-card" id="product-flan-napolitano">
                             <div class="product-img-wrapper">
                                 <img src="./images/flan_napolitano.jpg" alt="Flan Napolitano" class="product-img">
@@ -111,7 +352,7 @@
                             </div>
                         </div>
 
-                        <!-- Card 2: PASTEL IMPOSIBLE -->
+                        <!-- Card 5: PASTEL IMPOSIBLE -->
                         <div class="product-card" id="product-pastel-imposible">
                             <div class="product-img-wrapper">
                                 <img src="./images/pastel_imposible.jpg" alt="Pastel Imposible" class="product-img">
@@ -126,7 +367,7 @@
                             </div>
                         </div>
 
-                        <!-- Card 3: FRESAS CON CREMA -->
+                        <!-- Card 6: FRESAS CON CREMA -->
                         <div class="product-card" id="product-fresas-crema">
                             <div class="product-img-wrapper">
                                 <img src="./images/fresas_crema.jpg" alt="Fresas con Crema" class="product-img">
@@ -141,7 +382,7 @@
                             </div>
                         </div>
 
-                        <!-- Card 4: ENSALADA DE MANZANA -->
+                        <!-- Card 7: ENSALADA DE MANZANA -->
                         <div class="product-card" id="product-ensalada-manzana">
                             <div class="product-img-wrapper">
                                 <img src="./images/ensalada_manzana.jpg" alt="Ensalada de Manzana" class="product-img">
@@ -156,7 +397,7 @@
                             </div>
                         </div>
 
-                        <!-- Card 5: GELATINA CON CREMA -->
+                        <!-- Card 8: GELATINA CON CREMA -->
                         <div class="product-card" id="product-gelatina-crema">
                             <div class="product-img-wrapper">
                                 <img src="./images/gelatina_crema.jpg" alt="Gelatina con Crema" class="product-img">
@@ -171,7 +412,7 @@
                             </div>
                         </div>
 
-                        <!-- Card 6: UVAS CON CREMA -->
+                        <!-- Card 9: UVAS CON CREMA -->
                         <div class="product-card" id="product-uvas-crema">
                             <div class="product-img-wrapper">
                                 <img src="./images/uvas_crema.jpg" alt="Uvas con Crema" class="product-img">
@@ -186,7 +427,7 @@
                             </div>
                         </div>
                         
-                        <!-- Card 7: ARROZ CON LECHE -->
+                        <!-- Card 10: ARROZ CON LECHE -->
                         <div class="product-card" id="product-arroz-leche">
                             <div class="product-img-wrapper">
                                 <img src="./images/arroz_leche.jpg" alt="Arroz con Leche" class="product-img">
@@ -206,23 +447,121 @@
             </div>
         </section>
 
-        <!-- Inline Script for Cart Interaction -->
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                // Add to Cart Buttons
-                const cartBtns = document.querySelectorAll('.btn-add-cart');
-                const cartBadge = document.querySelector('.cart-badge');
-                let cartCount = parseInt(cartBadge ? cartBadge.textContent : '2') || 2;
+        <!-- MODAL DE PERSONALIZACIÓN DE HOTCAKES -->
+        <div id="hotcakes-modal" class="modal-overlay" style="display:none;">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeHotcakesModal()">&times;</span>
+                <h3 id="modal-title" class="modal-title-text">MINI HOTCAKES</h3>
+                <p class="modal-subtitle-text" id="modal-subtitle">Personaliza tu pedido</p>
+                
+                <form id="hotcakes-form" onsubmit="handleFormSubmit(event)">
+                    <!-- PASO 1: SELECCIÓN DE FRUTA Y TOPPING -->
+                    <div id="step-selection">
+                        <div class="crepa-step">
+                            <div class="step-number">1</div>
+                            <div class="step-body">
+                                <h4 id="fruta-title-step">🍑 Selecciona tu Fruta:</h4>
+                                <div class="crepa-pills" id="frutas-container"></div>
+                            </div>
+                        </div>
 
+                        <div class="crepa-step">
+                            <div class="step-number">2</div>
+                            <div class="step-body">
+                                <h4 id="topping-title-step">🧁 Selecciona tu Topping:</h4>
+                                <div class="crepa-pills" id="toppings-container"></div>
+                            </div>
+                        </div>
+
+                        <div class="crepa-step">
+                            <div class="step-number">3</div>
+                            <div class="step-body">
+                                <h4>⭐ ¿Deseas agregar Topping Extra? (+$5 c/u):</h4>
+                                <div class="crepa-extras-row">
+                                    <div class="crepa-extra-card">
+                                        <label class="crepa-checkbox-label">
+                                            <input type="checkbox" name="extra_topping" value="Nuez" class="extra-check">
+                                            <span>Extra Nuez (+$5)</span>
+                                        </label>
+                                        <label class="crepa-checkbox-label">
+                                            <input type="checkbox" name="extra_topping" value="Luneta" class="extra-check">
+                                            <span>Extra Luneta (+$5)</span>
+                                        </label>
+                                    </div>
+                                    <div class="crepa-extra-card">
+                                        <label class="crepa-checkbox-label">
+                                            <input type="checkbox" name="extra_topping" value="Chispas Chocolate" class="extra-check">
+                                            <span>Extra Chispas Chocolate (+$5)</span>
+                                        </label>
+                                        <label class="crepa-checkbox-label">
+                                            <input type="checkbox" name="extra_topping" value="Kinder" class="extra-check">
+                                            <span>Extra Kinder (+$5)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="crepa-step">
+                            <div class="step-number">4</div>
+                            <div class="step-body">
+                                <h4>🍑 ¿Deseas agregar Fruta Extra? (+$5 c/u):</h4>
+                                <div class="crepa-extras-row">
+                                    <div class="crepa-extra-card">
+                                        <label class="crepa-checkbox-label">
+                                            <input type="checkbox" name="extra_fruta" value="Durazno" class="extra-check">
+                                            <span>Extra Durazno (+$5)</span>
+                                        </label>
+                                        <label class="crepa-checkbox-label">
+                                            <input type="checkbox" name="extra_fruta" value="Fresa" class="extra-check">
+                                            <span>Extra Fresa (+$5)</span>
+                                        </label>
+                                    </div>
+                                    <div class="crepa-extra-card">
+                                        <label class="crepa-checkbox-label">
+                                            <input type="checkbox" name="extra_fruta" value="Plátano" class="extra-check">
+                                            <span>Extra Plátano (+$5)</span>
+                                        </label>
+                                        <label class="crepa-checkbox-label">
+                                            <input type="checkbox" name="extra_fruta" value="Uva" class="extra-check">
+                                            <span>Extra Uva (+$5)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-submit-order" onclick="goToInstructionsStep()">Continuar</button>
+                    </div>
+
+                    <!-- PASO 2: INSTRUCCIONES PERSONALES -->
+                    <div id="step-instructions" style="display:none;">
+                        <div class="crepa-step">
+                            <div class="step-number"><i class="fas fa-pencil-alt" style="font-size:0.8rem;"></i></div>
+                            <div class="step-body">
+                                <h4>Instrucciones o notas adicionales:</h4>
+                                <textarea id="personal-instructions" name="instrucciones" class="instructions-textarea" placeholder="Ej. Sin azúcar extra, empaque por separado, bien doraditos..."></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-submit-order">Agregar al Carrito</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Inline Script for Cart Interaction & Modal Logic -->
+        <script>
+            let currentHotcakeConfig = { type: '', title: '', price: 0 };
+            const frutasBase = ["Durazno", "Fresa", "Plátano", "Uva"];
+            const toppingsBase = ["Nuez", "Luneta", "Huevo Kinder", "Chispas Chocolate", "Kranky"];
+
+            document.addEventListener('DOMContentLoaded', () => {
+                // Add to Cart Buttons for simple products
+                const cartBtns = document.querySelectorAll('.btn-add-cart');
                 cartBtns.forEach(btn => {
                     btn.addEventListener('click', () => {
-                        cartCount++;
-                        if (cartBadge) {
-                            cartBadge.textContent = cartCount;
-                            cartBadge.style.transform = 'scale(1.3)';
-                            setTimeout(() => cartBadge.style.transform = 'scale(1)', 200);
-                        }
-
+                        incrementCartCount();
                         const originalText = btn.innerHTML;
                         btn.innerHTML = '<i class="fas fa-check"></i>';
                         btn.style.backgroundColor = '#4caf50';
@@ -233,6 +572,153 @@
                     });
                 });
             });
+
+            function incrementCartCount() {
+                const cartBadge = document.querySelector('.cart-badge');
+                let cartCount = parseInt(cartBadge ? cartBadge.textContent : '2') || 2;
+                cartCount++;
+                if (cartBadge) {
+                    cartBadge.textContent = cartCount;
+                    cartBadge.style.transform = 'scale(1.3)';
+                    setTimeout(() => cartBadge.style.transform = 'scale(1)', 200);
+                }
+            }
+
+            function openHotcakesModal(type, title, price) {
+                currentHotcakeConfig = { type, title, price };
+                document.getElementById('modal-title').textContent = title;
+                document.getElementById('modal-subtitle').textContent = `$${price}.00 MXN - Selecciona tus opciones`;
+
+                const frutasContainer = document.getElementById('frutas-container');
+                const toppingsContainer = document.getElementById('toppings-container');
+                const frutaTitle = document.getElementById('fruta-title-step');
+                const toppingTitle = document.getElementById('topping-title-step');
+
+                document.getElementById('hotcakes-form').reset();
+                document.getElementById('step-selection').style.display = 'block';
+                document.getElementById('step-instructions').style.display = 'none';
+
+                frutasContainer.innerHTML = '';
+                toppingsContainer.innerHTML = '';
+
+                if (type === 'especial') {
+                    frutaTitle.textContent = "🍑 Selecciona tu Fruta (Elige 2):";
+                    toppingTitle.textContent = "🧁 Selecciona tu Topping (Elige 2):";
+
+                    frutasBase.forEach(fruta => {
+                        frutasContainer.innerHTML += `
+                            <label class="crepa-pill-label">
+                                <input type="checkbox" name="fruta_especial" value="${fruta}" class="check-limit-fruta">
+                                <span class="crepa-pill-text">${fruta}</span>
+                            </label>`;
+                    });
+
+                    toppingsBase.forEach(topping => {
+                        toppingsContainer.innerHTML += `
+                            <label class="crepa-pill-label">
+                                <input type="checkbox" name="topping_especial" value="${topping}" class="check-limit-topping">
+                                <span class="crepa-pill-text">${topping}</span>
+                            </label>`;
+                    });
+
+                    applySelectionLimit('check-limit-fruta', 2);
+                    applySelectionLimit('check-limit-topping', 2);
+
+                } else {
+                    frutaTitle.textContent = "🍑 Selecciona tu Fruta:";
+                    toppingTitle.textContent = "🧁 Selecciona tu Topping:";
+
+                    frutasBase.forEach(fruta => {
+                        frutasContainer.innerHTML += `
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="fruta" value="${fruta}">
+                                <span class="crepa-pill-text">${fruta}</span>
+                            </label>`;
+                    });
+
+                    toppingsBase.forEach(topping => {
+                        toppingsContainer.innerHTML += `
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="topping" value="${topping}">
+                                <span class="crepa-pill-text">${topping}</span>
+                            </label>`;
+                    });
+                }
+
+                document.getElementById('hotcakes-modal').style.display = 'flex';
+            }
+
+            function applySelectionLimit(className, maxLimit) {
+                setTimeout(() => {
+                    const inputs = document.querySelectorAll(`.${className}`);
+                    inputs.forEach(input => {
+                        input.addEventListener('change', () => {
+                            const selected = document.querySelectorAll(`.${className}:checked`);
+                            if (selected.length > maxLimit) {
+                                input.checked = false;
+                                alert(`Solo puedes elegir un máximo de ${maxLimit} opciones.`);
+                            }
+                        });
+                    });
+                }, 50);
+            }
+
+            function goToInstructionsStep() {
+                if (currentHotcakeConfig.type === 'especial') {
+                    const frutasSel = document.querySelectorAll('input[name="fruta_especial"]:checked');
+                    const toppingsSel = document.querySelectorAll('input[name="topping_especial"]:checked');
+
+                    if (frutasSel.length === 0) {
+                        alert('Por favor, selecciona al menos una fruta.');
+                        return;
+                    }
+                    if (toppingsSel.length === 0) {
+                        alert('Por favor, selecciona al menos un topping.');
+                        return;
+                    }
+                } else {
+                    const frutaSel = document.querySelector('input[name="fruta"]:checked');
+                    const toppingSel = document.querySelector('input[name="topping"]:checked');
+
+                    if (!frutaSel) {
+                        alert('Por favor, selecciona una fruta.');
+                        return;
+                    }
+                    if (!toppingSel) {
+                        alert('Por favor, selecciona un topping.');
+                        return;
+                    }
+                }
+
+                document.getElementById('step-selection').style.display = 'none';
+                document.getElementById('step-instructions').style.display = 'block';
+            }
+
+            function closeHotcakesModal() {
+                document.getElementById('hotcakes-modal').style.display = 'none';
+            }
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+                const special = currentHotcakeConfig.type === 'especial';
+                const frutas = Array.from(document.querySelectorAll(special ? 'input[name="fruta_especial"]:checked' : 'input[name="fruta"]:checked'), input => input.value);
+                const toppings = Array.from(document.querySelectorAll(special ? 'input[name="topping_especial"]:checked' : 'input[name="topping"]:checked'), input => input.value);
+                const extrasTopping = Array.from(document.querySelectorAll('input[name="extra_topping"]:checked'), input => input.value);
+                const extrasFruta = Array.from(document.querySelectorAll('input[name="extra_fruta"]:checked'), input => input.value);
+                const comentario = document.getElementById('personal-instructions').value.trim();
+                const precio = currentHotcakeConfig.price + (extrasTopping.length + extrasFruta.length) * 5;
+                const piezas = currentHotcakeConfig.type === 'simple12' ? '12 piezas' : '25 piezas';
+
+                currentHotcakeConfig = {
+                    ...currentHotcakeConfig,
+                    price: `$${precio.toFixed(2)}`,
+                    img: document.querySelector('#product-mini-hotcakes .product-img')?.src || '',
+                    desc: `${piezas} · Fruta: ${frutas.join(', ')} · Topping: ${toppings.join(', ')}${extrasFruta.length ? ` · Fruta extra: ${extrasFruta.join(', ')}` : ''}${extrasTopping.length ? ` · Topping extra: ${extrasTopping.join(', ')}` : ''}`,
+                    instructions: comentario
+                };
+                closeHotcakesModal();
+                if (typeof addHotcakeToCart === 'function') addHotcakeToCart(currentHotcakeConfig);
+            }
         </script>
     </main>
 

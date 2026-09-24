@@ -425,6 +425,17 @@ body {
 .btn-add-cart:hover {
     background: var(--dark-pink);
 }
+.product-unavailable-button,
+.btn-add-cart.product-unavailable-button {
+    width: auto;
+    min-width: 72px;
+    padding: 0 0.7rem;
+    border-radius: 18px;
+    background: #8d8588;
+    color: #fff;
+    cursor: not-allowed;
+    font-size: 0.78rem;
+}
 
 .see-all-wrapper {
     text-align: center;
