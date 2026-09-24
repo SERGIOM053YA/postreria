@@ -15,6 +15,129 @@
     <link rel="stylesheet" href="carrito.css">
 
     <style>
+        /* ===== HOTCAKES FEATURED SECTION ===== */
+        .hotcakes-featured-section {
+            background: linear-gradient(135deg, #fff0f3 0%, #ffd6e0 100%);
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin: 0 2rem 3rem;
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(255,107,129,0.12);
+            position: relative;
+            overflow: hidden;
+        }
+        .hotcakes-featured-section::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 200px; height: 200px;
+            background: rgba(255,107,129,0.07);
+            border-radius: 50%;
+        }
+        .hotcakes-featured-img {
+            width: 260px;
+            min-width: 220px;
+            height: 220px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(255,107,129,0.2);
+            background: #fff;
+        }
+        .hotcakes-featured-info {
+            flex: 1;
+        }
+        .hotcakes-badge {
+            display: inline-block;
+            background: #ff6b81;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+        .hotcakes-featured-title {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: #2d2d2d;
+            margin: 0 0 8px;
+        }
+        .hotcakes-featured-title span {
+            color: #ff6b81;
+        }
+        .hotcakes-featured-desc {
+            color: #666;
+            font-size: 0.98rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        .hotcakes-size-selector {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .hotcakes-size-btn {
+            flex: 1;
+            min-width: 130px;
+            background: #fff;
+            border: 2px solid #ffc0cb;
+            border-radius: 16px;
+            padding: 14px 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.25s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+        .hotcakes-size-btn:hover {
+            border-color: #ff6b81;
+            background: #fff5f7;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255,107,129,0.15);
+        }
+        .hotcakes-size-btn .size-pzas {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #ff6b81;
+            display: block;
+        }
+        .hotcakes-size-btn .size-label {
+            font-size: 0.8rem;
+            color: #888;
+            display: block;
+            margin: 2px 0;
+        }
+        .hotcakes-size-btn .size-price {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #333;
+            display: block;
+            margin-top: 6px;
+        }
+        .hotcakes-size-btn.especial .size-pzas { color: #e84393; }
+        .hotcakes-size-btn.especial { border-color: #f9a8d4; }
+        .hotcakes-size-btn.especial:hover { border-color: #e84393; background: #fff0f8; }
+        .hotcakes-size-btn .size-badge-extra {
+            display: inline-block;
+            background: #ffd6e0;
+            color: #c2185b;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+        @media (max-width: 700px) {
+            .hotcakes-featured-section { flex-direction: column; padding: 1.5rem; margin: 0 1rem 2rem; }
+            .hotcakes-featured-img { width: 100%; min-width: unset; height: 200px; }
+            .hotcakes-featured-title { font-size: 1.5rem; }
+        }
+
+        /* ===== MODAL STYLES ===== */
         .btn-open-modal {
             background: var(--primary-pink);
             color: #fff;
@@ -279,63 +402,48 @@
             <!-- Product Grid -->
             <div class="content-inner" style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
                 <div class="products-area" style="width: 100%;">
+
+                    <!-- ===== MINI HOTCAKES FEATURED SECTION ===== -->
+                    <section class="hotcakes-featured-section" id="section-mini-hotcakes">
+                        <img
+                            id="hotcakes-hero-img"
+                            src="./images/mini_hotcakes.jpg"
+                            alt="Mini Hotcakes"
+                            class="hotcakes-featured-img">
+                        <div class="hotcakes-featured-info">
+                            <span class="hotcakes-badge">🥞 Especialidad de la casa</span>
+                            <h2 class="hotcakes-featured-title">Mini <span>Hotcakes</span></h2>
+                            <p class="hotcakes-featured-desc">
+                                Esponjosos y doraditos, bañados en salsa de chocolate o cajeta.<br>
+                                Elige tu tamaño, fruta favorita y topping. ¡Hechos al momento!
+                            </p>
+                            <div class="hotcakes-size-selector">
+                                <button class="hotcakes-size-btn" onclick="openHotcakesModal('simple12','Mini Hotcakes 12 Pz', 40)" id="btn-hotcake-12">
+                                    <span class="size-pzas">12 pz</span>
+                                    <span class="size-label">1 fruta · 1 topping</span>
+                                    <span class="size-price">$40.00</span>
+                                </button>
+                                <button class="hotcakes-size-btn" onclick="openHotcakesModal('simple25','Mini Hotcakes 25 Pz', 65)" id="btn-hotcake-25">
+                                    <span class="size-pzas">25 pz</span>
+                                    <span class="size-label">1 fruta · 1 topping</span>
+                                    <span class="size-price">$65.00</span>
+                                </button>
+                                <button class="hotcakes-size-btn especial" onclick="openHotcakesModal('especial','Mini Hotcakes 25 Pz Especiales', 80)" id="btn-hotcake-25e">
+                                    <span class="size-pzas">25 pz</span>
+                                    <span class="size-label">2 frutas · 2 toppings</span>
+                                    <span class="size-price">$80.00</span>
+                                    <span class="size-badge-extra">✨ ESPECIAL</span>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
                     <h2 class="section-heading">
                         <span class="heading-line"></span>
                         NUESTROS POSTRES
                         <span class="heading-line"></span>
                     </h2>
                     <div class="products-grid">
-
-                        <!-- Card 1: MINI HOTCAKES 12PZ (PIDE OPCIONES) -->
-                        <div class="product-card" id="product-mini-hotcakes">
-                            <div class="product-img-wrapper">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7lJBm6zcKqqicKH2Iymcs72IaBbePLvmheehLa1NnOu_lrJU9LUPRr4I&s=10" alt="Mini Hotcakes" class="product-img">
-                            </div>
-                            <div class="product-info">
-                                <h3>Mini Hotcakes 12 Pz </h3>
-                                <p> Incluye 1 fruta 1 topping a elegir.</p>
-                                <div class="product-footer">
-                                    <span class="product-price">$40.00</span>
-                                    <button type="button" class="btn-open-modal" onclick="openHotcakesModal('simple12', 'Mini Hotcakes 12 Pz', 40)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 2: MINI HOTCAKES 25 Pz (PIDE OPCIONES) -->
-                        <div class="product-card" id="product-mini-hotcakes-25">
-                            <div class="product-img-wrapper">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7lJBm6zcKqqicKH2Iymcs72IaBbePLvmheehLa1NnOu_lrJU9LUPRr4I&s=10" alt="Mini Hotcakes 25 Pz" class="product-img">
-                            </div>
-                            <div class="product-info">
-                                <h3>Mini Hotcakes 25 Pz </h3>
-                                <p>Incluye 1 fruta y 1 topping a elegir.</p>
-                                <div class="product-footer">
-                                    <span class="product-price">$65.00</span>
-                                    <button type="button" class="btn-open-modal" onclick="openHotcakesModal('simple25', 'Mini Hotcakes 25 Pz', 65)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 3: MINI HOTCAKES 25 Pz Especiales (PERMITE 2 FRUTAS Y 2 TOPPINGS) -->
-                        <div class="product-card" id="product-mini-hotcakes-25-especiales">
-                            <div class="product-img-wrapper">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7lJBm6zcKqqicKH2Iymcs72IaBbePLvmheehLa1NnOu_lrJU9LUPRr4I&s=10" alt="Mini Hotcakes 25 Pz Especiales" class="product-img">
-                            </div>
-                            <div class="product-info">
-                                <h3>Mini Hotcakes 25 Pz Especiales</h3>
-                                <p>Incluye 2 frutas y 2 topping a elegir.</p>
-                                <div class="product-footer">
-                                    <span class="product-price">$80.00</span>
-                                    <button type="button" class="btn-open-modal" onclick="openHotcakesModal('especial', 'Mini Hotcakes 25 Pz Especiales', 80)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- Card 4: FLAN NAPOLITANO -->
                         <div class="product-card" id="product-flan-napolitano">
@@ -451,8 +559,16 @@
         <div id="hotcakes-modal" class="modal-overlay" style="display:none;">
             <div class="modal-content">
                 <span class="modal-close" onclick="closeHotcakesModal()">&times;</span>
-                <h3 id="modal-title" class="modal-title-text">MINI HOTCAKES</h3>
-                <p class="modal-subtitle-text" id="modal-subtitle">Personaliza tu pedido</p>
+                <!-- Header con imagen miniatura -->
+                <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px;">
+                    <div style="width:56px;height:56px;border-radius:12px;overflow:hidden;background:#fff5f7;flex-shrink:0;">
+                        <img src="./images/mini_hotcakes.jpg" alt="" style="width:100%;height:100%;object-fit:cover;">
+                    </div>
+                    <div>
+                        <h3 id="modal-title" class="modal-title-text" style="margin:0;">MINI HOTCAKES</h3>
+                        <p class="modal-subtitle-text" id="modal-subtitle" style="margin:0;">Personaliza tu pedido</p>
+                    </div>
+                </div>
                 
                 <form id="hotcakes-form" onsubmit="handleFormSubmit(event)">
                     <!-- PASO 1: SELECCIÓN DE FRUTA Y TOPPING -->

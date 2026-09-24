@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" width="400" height="320">
+  <!-- White background -->
+  <rect width="400" height="320" fill="#ffffff"/>
+
+  <!-- Plate shadow -->
+  <ellipse cx="200" cy="295" rx="140" ry="16" fill="#f0e0e6" opacity="0.7"/>
+
+  <!-- Plate -->
+  <ellipse cx="200" cy="285" rx="130" ry="14" fill="#fff0f3"/>
+
+  <!-- HOTCAKE 1 (bottom) -->
+  <ellipse cx="200" cy="220" rx="110" ry="22" fill="#c8853a"/>
+  <ellipse cx="200" cy="210" rx="108" ry="20" fill="#e8a44a"/>
+  <ellipse cx="200" cy="205" rx="106" ry="16" fill="#f4b865"/>
+
+  <!-- HOTCAKE 2 (middle) -->
+  <ellipse cx="200" cy="185" rx="98" ry="20" fill="#c8853a"/>
+  <ellipse cx="200" cy="175" rx="96" ry="19" fill="#e8a44a"/>
+  <ellipse cx="200" cy="170" rx="94" ry="15" fill="#f4b865"/>
+
+  <!-- HOTCAKE 3 (top) -->
+  <ellipse cx="200" cy="153" rx="86" ry="18" fill="#c8853a"/>
+  <ellipse cx="200" cy="143" rx="84" ry="17" fill="#e8a44a"/>
+  <ellipse cx="200" cy="138" rx="82" ry="13" fill="#f4b865"/>
+
+  <!-- Chocolate sauce drips -->
+  <path d="M140 140 Q132 160 138 180" stroke="#6b2c00" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <path d="M170 135 Q158 158 162 175" stroke="#7a3500" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <path d="M230 136 Q242 155 238 172" stroke="#6b2c00" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <path d="M260 140 Q268 162 264 180" stroke="#7a3500" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- Sauce pool on top -->
+  <ellipse cx="205" cy="128" rx="60" ry="9" fill="#5c2200" opacity="0.75"/>
+  <ellipse cx="205" cy="125" rx="55" ry="7" fill="#7a3500" opacity="0.85"/>
+
+  <!-- Strawberry slices -->
+  <ellipse cx="155" cy="128" rx="16" ry="13" fill="#e8203a" opacity="0.9"/>
+  <path d="M150 120 L155 113 L160 120" fill="#2d8c3a" opacity="0.85"/>
+  <line x1="155" y1="113" x2="155" y2="120" stroke="#2d8c3a" stroke-width="1.5"/>
+
+  <ellipse cx="250" cy="132" rx="15" ry="12" fill="#e8203a" opacity="0.9"/>
+  <path d="M245 124 L250 117 L255 124" fill="#2d8c3a" opacity="0.85"/>
+  <line x1="250" y1="117" x2="250" y2="124" stroke="#2d8c3a" stroke-width="1.5"/>
+
+  <!-- Colorful candy bits (lunetas) -->
+  <circle cx="178" cy="133" r="7" fill="#ff4ec7"/>
+  <circle cx="178" cy="133" r="5" fill="#ff80d5"/>
+  <circle cx="195" cy="126" r="7" fill="#ffd700"/>
+  <circle cx="195" cy="126" r="5" fill="#ffe84a"/>
+  <circle cx="215" cy="130" r="7" fill="#1ec8ff"/>
+  <circle cx="215" cy="130" r="5" fill="#80deff"/>
+  <circle cx="232" cy="124" r="6" fill="#ff6b4e"/>
+  <circle cx="232" cy="124" r="4" fill="#ff9a8a"/>
+
+  <!-- Whipped cream on top -->
+  <ellipse cx="200" cy="108" rx="30" ry="14" fill="white"/>
+  <path d="M175 108 Q185 90 200 85 Q215 90 225 108" fill="white"/>
+  <path d="M182 100 Q186 82 200 76 Q214 82 218 100" fill="#fafafa"/>
+  <!-- Cream tip -->
+  <ellipse cx="200" cy="76" rx="10" ry="8" fill="white"/>
+  <ellipse cx="200" cy="70" rx="6" ry="6" fill="white"/>
+  <ellipse cx="200" cy="66" rx="3" ry="4" fill="white"/>
+
+  <!-- Sugar sprinkles on cream -->
+  <rect x="190" y="82" width="6" height="2" rx="1" fill="#ff4ec7" transform="rotate(-20 190 82)"/>
+  <rect x="206" y="88" width="5" height="2" rx="1" fill="#1ec8ff" transform="rotate(15 206 88)"/>
+  <rect x="194" y="93" width="6" height="2" rx="1" fill="#ffd700" transform="rotate(-5 194 93)"/>
+  <rect x="208" y="80" width="5" height="2" rx="1" fill="#ff6b4e" transform="rotate(30 208 80)"/>
+
+  <!-- Label -->
+  <text x="200" y="315" text-anchor="middle" font-family="'Outfit', Arial, sans-serif" font-size="14" fill="#ff6b81" font-weight="700" letter-spacing="1">Mini Hotcakes</text>
+</svg>
