@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const CUSTOM_PRODUCTS_KEY = 'hilda_custom_products';
-    const SALES_KEY = 'hilda_sales';
     const CATALOG_KEY = 'hilda_catalog_status';
     const CART_STORAGE_KEY = 'hilda_shopping_cart';
     const loadStored = (key, fallback = []) => {
@@ -446,23 +445,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Registra la venta al confirmar desde Finalizar compra.
     const checkoutButton = document.querySelector('.btn-checkout');
     if (checkoutButton) checkoutButton.addEventListener('click', () => {
-        const items = Array.from(cartItemsContainer.querySelectorAll('.cart-item')).map(item => {
-            const price = parseFloat((item.querySelector('.cart-item-price')?.textContent || '').replace(/[^0-9.]/g, '')) || 0;
-            const quantity = parseInt(item.querySelector('.cart-item-quantity input')?.value || '1', 10) || 1;
-            return { name: item.querySelector('.cart-item-title')?.textContent.trim() || 'Producto', quantity, price };
-        });
-        const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        if (!items.length || total <= 0) {
+        const hasItems = cartItemsContainer.querySelector('.cart-item');
+        if (!hasItems) {
             alert('Agrega productos al carrito antes de finalizar la compra.');
             return;
         }
-        const sales = loadStored(SALES_KEY);
-        sales.push({ id: (crypto.randomUUID?.() || `${Date.now()}-${Math.random()}`), date: new Date().toISOString(), total, items });
-        localStorage.setItem(SALES_KEY, JSON.stringify(sales));
-        cartItemsContainer.innerHTML = '<p class="cart-empty-message">Tu carrito está vacío.</p>';
-        recalculateCart();
-        closeCart();
-        alert('Compra registrada.');
+        persistCart();
+        location.href = 'Envio/Envio.html';
     });
 
     // Cerrar modales con tecla Escape
