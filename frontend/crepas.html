@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hilda's Postres & Snacks - Crepas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="carrito.css">
+
+    <style>
+        /* ===== MODAL CREPA ===== */
+        .crepa-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .crepa-modal-overlay.show { opacity: 1; }
+
+        .crepa-modal {
+            background: #fff;
+            border-radius: 20px;
+            width: 92%;
+            max-width: 560px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            transform: translateY(30px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        }
+        .crepa-modal.show { transform: translateY(0); }
+
+        .crepa-modal::-webkit-scrollbar { width: 6px; }
+        .crepa-modal::-webkit-scrollbar-thumb { background: #ffb8c8; border-radius: 3px; }
+
+        /* Modal header */
+        .crepa-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .crepa-modal-header h2 {
+            color: var(--primary-pink);
+            font-size: 1.35rem;
+            font-weight: 800;
+        }
+        .crepa-modal-close {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .crepa-modal-close:hover { color: var(--primary-pink); }
+
+        /* Steps */
+        .crepa-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.9rem;
+            margin-bottom: 1.4rem;
+            padding-bottom: 1.4rem;
+            border-bottom: 1px solid #f5e8ea;
+        }
+        .crepa-step:last-of-type { border-bottom: none; }
+
+        .step-number {
+            width: 26px;
+            height: 26px;
+            min-width: 26px;
+            background: var(--primary-pink);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .step-body { flex: 1; }
+        .step-body h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.7rem;
+        }
+
+        /* Pills (radio) */
+        .crepa-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+        .crepa-pill-label { cursor: pointer; }
+        .crepa-pill-label input { display: none; }
+        .crepa-pill-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 1rem;
+            border: 1.5px solid #ffb8c8;
+            border-radius: 20px;
+            color: var(--text-dark);
+            font-size: 0.88rem;
+            font-family: 'Outfit', sans-serif;
+            background: #fff;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .crepa-pill-label input:checked + .crepa-pill-text {
+            background: var(--primary-pink);
+            border-color: var(--primary-pink);
+            color: #fff;
+            font-weight: 700;
+        }
+        .crepa-pill-label input:checked + .crepa-pill-text::after {
+            content: '✓';
+            font-size: 0.85rem;
+        }
+
+        /* Checkboxes grid & cards for extras (matching reference modal) */
+        .crepa-extras-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+        .crepa-extra-card {
+            background: #fff0f3;
+            border-radius: 14px;
+            padding: 0.8rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+        .crepa-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            cursor: pointer;
+            font-size: 0.88rem;
+            color: var(--text-dark);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+        }
+        .crepa-checkbox-label input {
+            accent-color: var(--primary-pink);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* Submit button */
+        .btn-crepa-submit {
+            width: 100%;
+            background: var(--primary-pink);
+            color: #fff;
+            border: none;
+            padding: 1rem;
+            border-radius: 30px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.6rem;
+            margin-top: 1.2rem;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 6px 18px rgba(240, 84, 115, 0.4);
+        }
+        .btn-crepa-submit:hover {
+            background: var(--dark-pink);
+            transform: translateY(-2px);
+        }
+
+        /* Interactive card styling */
+        .crepa-card-interactive {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        .crepa-card-interactive:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 36px rgba(240, 84, 115, 0.22);
+        }
+        .crepa-card-interactive:hover .btn-crepa-open {
+            background: var(--dark-pink);
+            transform: scale(1.1);
+        }
+
+        /* Custom btn-add-cart for crepas (shopping cart icon) */
+        .btn-crepa-open {
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s, transform 0.2s;
+            font-size: 0.95rem;
+        }
+        .btn-crepa-open:hover {
+            background: var(--dark-pink);
+            transform: scale(1.1);
+        }
+
+        /* Proporción de tipografía en el hero banner para evitar encimamiento de la letra 'p' */
+        .crepas-hero-banner {
+            padding: 4.5rem 5rem 5.5rem 5rem !important;
+        }
+        .crepas-banner-left {
+            max-width: 620px;
+        }
+        .crepas-title {
+            font-family: 'Pacifico', cursive !important;
+            font-size: 4.8rem !important;
+            color: var(--text-brown) !important;
+            line-height: 1.25 !important;
+            margin-bottom: 1.3rem !important;
+            padding-bottom: 0.2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .crepas-subtitle {
+            font-family: 'Outfit', sans-serif !important;
+            font-weight: 800 !important;
+            font-size: 1.15rem !important;
+            letter-spacing: 2px !important;
+            color: var(--text-brown) !important;
+            margin-bottom: 0.9rem !important;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .crepas-desc {
+            font-size: 1.25rem !important;
+            color: #66707a !important;
+            line-height: 1.5 !important;
+            font-weight: 400 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <header class="header" id="header">
+        <div class="logo-container">
+            <a href="./inicio.html">
+                <img src="./logo.png" alt="Hilda's Postres & Snacks" class="logo">
+            </a>
+        </div>
+        <nav class="navbar" id="navbar">
+            <a href="./inicio.html">INICIO</a>
+            <a href="./postres.html">POSTRES</a>
+            <a href="./bebidas.html">BEBIDAS</a>
+            <a href="./snacks.html">SNACKS</a>
+            <a href="./crepas.html" class="active">CREPAS</a>
+        </nav>
+        <div class="header-icons">
+            <div class="cart-icon" id="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge">2</span>
+            </div>
+            <a href="#" class="whatsapp-header-icon" id="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
+            <span class="header-divider"></span>
+            <a href="./Login/login.html" class="login-header-btn" id="login-btn">
+                <i class="far fa-user"></i>
+                <span>Iniciar sesión</span>
+            </a>
+        </div>
+        <!-- Wavy bottom -->
+        <div class="header-wave">
+            <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
+                <path fill="#ffffff"
+                    d="M0,0 L0,30 Q60,50 120,30 Q180,10 240,30 Q300,50 360,30 Q420,10 480,30 Q540,50 600,30 Q660,10 720,30 Q780,50 840,30 Q900,10 960,30 Q1020,50 1080,30 Q1140,10 1200,30 Q1260,50 1320,30 Q1380,10 1440,30 L1440,0 Z" />
+            </svg>
+        </div>
+    </header>
+
+    <main>
+        <!-- ========== CREPAS HERO BANNER ========== -->
+        <section class="snacks-section" id="crepas-section">
+            <div class="snacks-hero-banner crepas-hero-banner">
+                <div class="sphere sphere-snack-1"></div>
+                <div class="sphere sphere-snack-2"></div>
+                <div class="sphere sphere-snack-3"></div>
+
+                <div class="snacks-banner-inner">
+                    <div class="snacks-banner-left crepas-banner-left">
+                        <h1 class="snacks-title crepas-title">Crepas <span class="heart-doodle">♡</span></h1>
+                        <h2 class="snacks-subtitle crepas-subtitle">ARMA TU CREPA A TU GUSTO <i class="fas fa-star"></i></h2>
+                        <p class="snacks-desc crepas-desc">Dulces, saladas o combinadas.<br>¡El límite es tu imaginación!</p>
+                    </div>
+                    <div class="snacks-banner-right">
+                        <div class="badge-doodle-container">
+                            <p class="script-badge-text">100%<br>a tu<br>manera <i class="fas fa-heart"></i></p>
+                            <div class="badge-dashed-underline"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="snacks-banner-wave">
+                    <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
+                        <path fill="#fff0f3"
+                            d="M0,25 C360,55 720,5 1080,40 C1260,55 1380,25 1440,35 L1440,50 L0,50 Z" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- ========== PRODUCTO CENTRADO ========== -->
+            <div class="content-inner" style="max-width: 1200px; margin: 0 auto; padding: 2rem 5rem 4rem 5rem; display: block;">
+                <div class="products-area" style="width: 100%;">
+                    <h2 class="section-heading">
+                        <span class="heading-line"></span>
+                        ARMA TU CREPA
+                        <span class="heading-line"></span>
+                    </h2>
+
+                    <div style="display: flex; justify-content: center;">
+                        <div class="product-card crepa-card-interactive" id="product-crepa-personalizada" style="max-width: 290px; width: 100%;" title="Selecciona para armar tu crepa">
+                            <div class="bestseller-badge" style="background: var(--primary-pink); color: white;">
+                                <i class="fas fa-magic"></i> ¡Personalízala!
+                            </div>
+                            <div class="product-img-wrapper">
+                                <img src="C:\Users\ENB10\.gemini\antigravity-ide\brain\8cb2659a-39f1-4061-a8e4-2c626b55e6d4\crepas_1788281879920.jpg"
+                                    alt="Arma tu Crepa" class="product-img"
+                                    onerror="this.src='https://images.unsplash.com/photo-1519676867240-f03562e64548?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'">
+                            </div>
+                            <div class="product-info">
+                                <h3>Arma tu Crepa</h3>
+                                <p>¡Personalízala a tu gusto! Elige base, fruta, topping y extras.</p>
+                                <div class="product-footer">
+                                    <span class="product-price">Desde $60.00</span>
+                                    <button class="btn-crepa-open" data-name="Arma tu Crepa" data-price="60" title="Armar tu Crepa">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer" id="footer">
+        <div class="footer-features">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-award"></i></div>
+                <div>
+                    <strong>CALIDAD GARANTIZADA</strong>
+                    <p>Ingredientes seleccionados</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-clock"></i></div>
+                <div>
+                    <strong>HECHO AL MOMENTO</strong>
+                    <p>Frescura en cada bocado</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-box-open"></i></div>
+                <div>
+                    <strong>EMPAQUES SEGUROS</strong>
+                    <p>Llegamos en perfectas condiciones</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-smile"></i></div>
+                <div>
+                    <strong>CLIENTES FELICES</strong>
+                    <p>Tu satisfacción es nuestra prioridad</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========== MODAL PERSONALIZA TU CREPA ========== -->
+    <div class="crepa-modal-overlay" id="crepa-modal-overlay">
+        <div class="crepa-modal" id="crepa-modal">
+
+            <div class="crepa-modal-header">
+                <h2>🍓 Personaliza tu Crepa (<span id="modal-price-label">$60</span>)</h2>
+                <button class="crepa-modal-close" id="btn-close-crepa-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form id="crepa-form">
+
+                <!-- Paso 1: Base -->
+                <div class="crepa-step">
+                    <div class="step-number">1</div>
+                    <div class="step-body">
+                        <h4>🥞 1. Selecciona tu Base:</h4>
+                        <div class="crepa-pills">
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="base" value="Lechera">
+                                <span class="crepa-pill-text">Lechera</span>
+                            </label>
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="base" value="Mermelada">
+                                <span class="crepa-pill-text">Mermelada</span>
+                            </label>
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="base" value="Cajeta">
+                                <span class="crepa-pill-text">Cajeta</span>
+                            </label>
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="base" value="Nutella" checked>
+                                <span class="crepa-pill-text">Nutella</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paso 2: Fruta -->
+                <div class="crepa-step">
+                    <div class="step-number">2</div>
+                    <div class="step-body">
+                        <h4>🍑 2. Selecciona tu Fruta:</h4>
+                        <div class="crepa-pills">
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="fruta" value="Durazno">
+                                <span class="crepa-pill-text">Durazno</span>
+                            </label>
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="fruta" value="Fresa" checked>
+                                <span class="crepa-pill-text">Fresa</span>
+                            </label>
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="fruta" value="Plátano">
+                                <span class="crepa-pill-text">Plátano</span>
+                            </label>
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="fruta" value="Uva">
+                                <span class="crepa-pill-text">Uva</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paso 3: Topping -->
+                <div class="crepa-step">
+                    <div class="step-number">3</div>
+                    <div class="step-body">
+                        <h4>🧁 3. Selecciona tu Topping:</h4>
+                        <div class="crepa-pills">
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="topping" value="Nuez" checked>
+                                <span class="crepa-pill-text">Nuez</span>
+                            </label>
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="topping" value="Luneta">
+                                <span class="crepa-pill-text">Luneta</span>
+                            </label>
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="topping" value="Chispas Chocolate">
+                                <span class="crepa-pill-text">Chispas Chocolate</span>
+                            </label>
+                            <label class="crepa-pill-label">
+                                <input type="radio" name="topping" value="Kinder">
+                                <span class="crepa-pill-text">Kinder</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paso 4: Topping Extra -->
+                <div class="crepa-step">
+                    <div class="step-number">4</div>
+                    <div class="step-body">
+                        <h4>⭐ 4. ¿Deseas agregar Topping Extra? (+$5 c/u):</h4>
+                        <div class="crepa-extras-row">
+                            <div class="crepa-extra-card">
+                                <label class="crepa-checkbox-label">
+                                    <input type="checkbox" name="extra_topping" value="Nuez" class="extra-check">
+                                    <span>Extra Nuez (+$5)</span>
+                                </label>
+                                <label class="crepa-checkbox-label">
+                                    <input type="checkbox" name="extra_topping" value="Luneta" class="extra-check">
+                                    <span>Extra Luneta (+$5)</span>
+                                </label>
+                            </div>
+                            <div class="crepa-extra-card">
+                                <label class="crepa-checkbox-label">
+                                    <input type="checkbox" name="extra_topping" value="Chispas Chocolate" class="extra-check">
+                                    <span>Extra Chispas Chocolate (+$5)</span>
+                                </label>
+                                <label class="crepa-checkbox-label">
+                                    <input type="checkbox" name="extra_topping" value="Kinder" class="extra-check">
+                                    <span>Extra Kinder (+$5)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paso 5: Fruta Extra -->
+                <div class="crepa-step">
+                    <div class="step-number">5</div>
+                    <div class="step-body">
+                        <h4>🍑 5. ¿Deseas agregar Fruta? (+$5 c/u):</h4>
+                        <div class="crepa-extras-row">
+                            <div class="crepa-extra-card">
+                                <label class="crepa-checkbox-label">
+                                    <input type="checkbox" name="extra_fruta" value="Durazno" class="extra-check">
+                                    <span>Extra Durazno (+$5)</span>
+                                </label>
+                                <label class="crepa-checkbox-label">
+                                    <input type="checkbox" name="extra_fruta" value="Fresa" class="extra-check">
+                                    <span>Extra Fresa (+$5)</span>
+                                </label>
+                            </div>
+                            <div class="crepa-extra-card">
+                                <label class="crepa-checkbox-label">
+                                    <input type="checkbox" name="extra_fruta" value="Plátano" class="extra-check">
+                                    <span>Extra Plátano (+$5)</span>
+                                </label>
+                                <label class="crepa-checkbox-label">
+                                    <input type="checkbox" name="extra_fruta" value="Uva" class="extra-check">
+                                    <span>Extra Uva (+$5)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paso 6: Instrucciones Especiales (Opcional) -->
+                <div class="crepa-step" style="border-bottom: none; margin-bottom: 0.5rem; padding-bottom: 0;">
+                    <div class="step-number" style="background: #a0aec0;"><i class="fas fa-comment-dots" style="font-size: 0.75rem;"></i></div>
+                    <div class="step-body">
+                        <h4>💬 Instrucciones especiales (opcional):</h4>
+                        <textarea 
+                            id="crepa-instructions" 
+                            class="custom-modal-textarea" 
+                            placeholder="Ej: Con poco chocolate, fruta separada, bien doradita..."></textarea>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-crepa-submit" id="btn-crepa-submit">
+                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    <script src="cart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.getElementById('crepa-modal-overlay');
+            const modal   = document.getElementById('crepa-modal');
+            const btnClose = document.getElementById('btn-close-crepa-modal');
+            const btnSubmit = document.getElementById('btn-crepa-submit');
+            const priceLabel = document.getElementById('modal-price-label');
+            const extraChecks = document.querySelectorAll('.extra-check');
+            const crepaCard = document.getElementById('product-crepa-personalizada');
+            const crepaInstructions = document.getElementById('crepa-instructions');
+
+            let basePrice = 60;
+
+            const openModal = (name, price) => {
+                basePrice = parseInt(price) || 60;
+                priceLabel.textContent = '$' + basePrice;
+                // Reset extras & instructions
+                extraChecks.forEach(c => c.checked = false);
+                if (crepaInstructions) crepaInstructions.value = '';
+                overlay.style.display = 'flex';
+                setTimeout(() => {
+                    overlay.classList.add('show');
+                    modal.classList.add('show');
+                }, 10);
+            };
+
+            const closeModal = () => {
+                overlay.classList.remove('show');
+                modal.classList.remove('show');
+                setTimeout(() => { overlay.style.display = 'none'; }, 300);
+            };
+
+            // Al seleccionar la tarjeta de armar crepa se abre el formulario
+            if (crepaCard) {
+                crepaCard.addEventListener('click', () => {
+                    openModal('Arma tu Crepa', 60);
+                });
+            }
+
+            // También en el botón de la tarjeta
+            document.querySelectorAll('.btn-crepa-open').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Evita doble disparo
+                    openModal(btn.dataset.name || 'Arma tu Crepa', btn.dataset.price || 60);
+                });
+            });
+
+            // Update price when extras are checked
+            extraChecks.forEach(check => {
+                check.addEventListener('change', () => {
+                    const extras = document.querySelectorAll('.extra-check:checked').length;
+                    priceLabel.textContent = '$' + (basePrice + extras * 5);
+                });
+            });
+
+            if (btnClose) btnClose.addEventListener('click', closeModal);
+            overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+            if (btnSubmit) {
+                btnSubmit.addEventListener('click', () => {
+                    const base = document.querySelector('input[name="base"]:checked')?.value || 'Nutella';
+                    const fruta = document.querySelector('input[name="fruta"]:checked')?.value || 'Fresa';
+                    const topping = document.querySelector('input[name="topping"]:checked')?.value || 'Nuez';
+                    
+                    const extras = [];
+                    document.querySelectorAll('.extra-check:checked').forEach(c => extras.push(c.value));
+                    
+                    let desc = `${base}, ${fruta}, ${topping}`;
+                    if (extras.length > 0) desc += ` + Extras: ${extras.join(', ')}`;
+
+                    const currentPrice = priceLabel.textContent;
+                    const instructions = crepaInstructions ? crepaInstructions.value.trim() : '';
+
+                    closeModal();
+
+                    if (typeof window.addProductToCart === 'function') {
+                        window.addProductToCart({
+                            name: 'Crepa Personalizada',
+                            price: currentPrice,
+                            desc: desc,
+                            img: 'C:\\Users\\ENB10\\.gemini\\antigravity-ide\\brain\\8cb2659a-39f1-4061-a8e4-2c626b55e6d4\\crepas_1788281879920.jpg'
+                        }, instructions);
+
+                        setTimeout(() => {
+                            if (typeof window.openCart === 'function') window.openCart();
+                        }, 250);
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>

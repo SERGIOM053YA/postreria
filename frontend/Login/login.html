@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Hilda's Postres & Snacks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+    <!-- ========== HEADER (réplica exacta de inicio.html) ========== -->
+    <header class="header" id="header">
+        <!-- Logo sobresaliente a la izquierda -->
+        <div class="logo-container">
+            <img src="../logo.png" alt="Hilda's Postres & Snacks" class="logo">
+        </div>
+
+        <!-- Navbar centrado -->
+        <nav class="navbar" id="navbar">
+            <a href="../inicio.html#hero">INICIO</a>
+            <a href="../inicio.html#products">POSTRES</a>
+            <a href="../inicio.html#bebidas">BEBIDAS</a>
+            <a href="../inicio.html#snacks-section" class="active">SNACKS</a>
+            <a href="../crepas.html">CREPAS</a>
+        </nav>
+
+        <!-- Íconos a la derecha -->
+        <div class="header-icons">
+            <div class="cart-icon" id="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge">2</span>
+            </div>
+            <a href="#" class="whatsapp-header-icon" id="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
+            <span class="header-divider"></span>
+            <a href="#" class="login-header-btn" id="login-btn">
+                <i class="far fa-user"></i>
+                <span>Iniciar sesión</span>
+            </a>
+        </div>
+
+        <!-- Onda blanca inferior (igual que inicio.html) -->
+        <div class="header-wave">
+            <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
+                <path fill="#ffffff"
+                    d="M0,0 L0,30 Q60,50 120,30 Q180,10 240,30 Q300,50 360,30 Q420,10 480,30 Q540,50 600,30 Q660,10 720,30 Q780,50 840,30 Q900,10 960,30 Q1020,50 1080,30 Q1140,10 1200,30 Q1260,50 1320,30 Q1380,10 1440,30 L1440,0 Z" />
+            </svg>
+        </div>
+    </header>
+
+    <!-- ========== HERO / SECCIÓN PRINCIPAL (fondo rosa igual que inicio.html) ========== -->
+    <main class="hero-section">
+
+        <!-- Esferas decorativas igual que inicio.html -->
+        <div class="sphere sphere-1"></div>
+        <div class="sphere sphere-2"></div>
+        <div class="sphere sphere-3"></div>
+        <div class="sphere sphere-4"></div>
+        <div class="sphere sphere-5"></div>
+        <div class="sphere sphere-6"></div>
+
+        <!-- Doodles SVG decorativos -->
+        <div class="bg-doodle strawberry-doodle">
+            <svg width="130" height="150" viewBox="0 0 100 120" fill="none">
+                <path d="M50 20C30 20 15 40 15 70C15 95 35 115 50 115C65 115 85 95 85 70C85 40 70 20 50 20Z" fill="#d63859" fill-opacity="0.18"/>
+                <path d="M50 20C45 10 35 5 25 10C35 20 45 20 50 20Z" fill="#2ec4b6" fill-opacity="0.22"/>
+                <path d="M50 20C55 10 65 5 75 10C65 20 55 20 50 20Z" fill="#2ec4b6" fill-opacity="0.22"/>
+                <circle cx="35" cy="55" r="2.5" fill="#fff" fill-opacity="0.6"/>
+                <circle cx="55" cy="48" r="2.5" fill="#fff" fill-opacity="0.6"/>
+                <circle cx="63" cy="68" r="2.5" fill="#fff" fill-opacity="0.6"/>
+                <circle cx="40" cy="78" r="2.5" fill="#fff" fill-opacity="0.6"/>
+                <circle cx="50" cy="97" r="2.5" fill="#fff" fill-opacity="0.6"/>
+            </svg>
+        </div>
+
+        <div class="bg-doodle heart-doodle">
+            <svg width="65" height="65" viewBox="0 0 24 24" fill="#d63859" fill-opacity="0.22">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </div>
+
+        <div class="hero-inner">
+            <!-- COLUMNA IZQUIERDA: BIENVENIDA Y POSTRE -->
+            <div class="hero-left">
+                <div class="welcome-heading">
+                    <span class="sparkle-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="#f05473"><path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/></svg>
+                    </span>
+                    <h1 class="welcome-title">¡Bienvenido!</h1>
+                    <span class="sparkle-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#f05473"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </span>
+                </div>
+                <p class="welcome-subtitle">Dulces momentos, siempre<br>contigo.</p>
+                <div class="small-heart">♥</div>
+
+                <div class="dessert-showcase">
+                    <img src="../images/strawberry_dessert_cup.jpg" alt="Fresas con crema" class="dessert-img"
+                        onerror="this.src='file:///C:/Users/ENB10/.gemini/antigravity-ide/brain/d679154b-4e28-4b77-88a7-e7994cbf7ab7/strawberry_dessert_cup_1789416362201.jpg'">
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: TARJETA DE LOGIN -->
+            <div class="hero-right">
+                <div class="login-card">
+                    <div class="card-header-logo">
+                        <span class="doodle-spark">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="#f05473"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>
+                        </span>
+                        <div class="card-logo-badge">
+                            <img src="../logo.png" alt="Hilda's Logo">
+                        </div>
+                        <span class="doodle-spark">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="#f05473"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>
+                        </span>
+                    </div>
+
+                    <h2 class="card-title">¡Inicia sesión!</h2>
+                    <p class="card-subtitle">Ingresa tus datos para continuar</p>
+
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="email">Correo Electrónico</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope input-icon"></i>
+                                <input type="email" id="email" placeholder="tu@correo.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Contraseña</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="password" placeholder="••••••••" required>
+                                <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                            </div>
+                            <div class="password-requirements">
+                                <p class="req-title">La contraseña debe contener:</p>
+                                <div class="requirement-item" id="req-length">
+                                    <i class="fas fa-circle"></i> <span>De 8 a 20 caracteres</span>
+                                </div>
+                                <div class="requirement-item" id="req-uppercase">
+                                    <i class="fas fa-circle"></i> <span>Al menos una mayúscula (A-Z)</span>
+                                </div>
+                                <div class="requirement-item" id="req-lowercase">
+                                    <i class="fas fa-circle"></i> <span>Al menos una minúscula (a-z)</span>
+                                </div>
+                                <div class="requirement-item" id="req-number">
+                                    <i class="fas fa-circle"></i> <span>Al menos un número (0-9)</span>
+                                </div>
+                                <div class="requirement-item" id="req-special">
+                                    <i class="fas fa-circle"></i> <span>Carácter especial (!@#$%^&*...)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-login">
+                            <span>INICIAR SESIÓN</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+
+                    <div class="login-footer-links">
+                        <p>¿Olvidaste tu contraseña? <a href="../recuperarc/recuperarc.html">Recupérala aquí</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onda blanca inferior del hero (igual que inicio.html) -->
+        <div class="hero-wave">
+            <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+                <path fill="#fff0f3" d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z" />
+            </svg>
+        </div>
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <p>&copy; Hilda's Postres & Snacks - Hecho con <i class="fas fa-heart"></i></p>
+    </footer>
+
+    <script src="login.js"></script>
+</body>
+</html>
