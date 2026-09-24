@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="carrito.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Este div representa el fondo oscuro detrás del carrito -->
+    <div class="cart-overlay">
+        <!-- Contenedor principal del carrito -->
+        <aside class="cart-sidebar">
+            
+            <!-- Cabecera del carrito -->
+            <div class="cart-header">
+                <div class="cart-title-area">
+                    <i class="fas fa-shopping-cart cart-icon"></i>
+                    <h2>Tu carrito</h2>
+                    <span class="cart-badge">2</span>
+                </div>
+                <button class="cart-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Lista de productos -->
+            <div class="cart-items">
+                <!-- Producto 1 -->
+                <div class="cart-item">
+                    <img src="./images/postre1.jpg" alt="Pastel de fresas" class="cart-item-img" onerror="this.src='https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'">
+                    <div class="cart-item-info">
+                        <h3 class="cart-item-title">Pastel de fresas</h3>
+                        <p class="cart-item-desc">Pan esponjoso, crema batida y fresas naturales.</p>
+                        <span class="cart-item-price">$120.00</span>
+                        <div class="cart-item-quantity">
+                            <button type="button"><i class="fas fa-minus"></i></button>
+                            <input type="number" value="1" min="1">
+                            <button type="button"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <button class="cart-item-delete">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
+                </div>
+
+                <!-- Producto 2 -->
+                <div class="cart-item">
+                    <img src="./images/postre2.jpg" alt="Fresas con crema" class="cart-item-img" onerror="this.src='https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'">
+                    <div class="cart-item-info">
+                        <h3 class="cart-item-title">Fresas con crema</h3>
+                        <p class="cart-item-desc">Fresas frescas con crema artesanal.</p>
+                        <span class="cart-item-price">$65.00</span>
+                        <div class="cart-item-quantity">
+                            <button type="button"><i class="fas fa-minus"></i></button>
+                            <input type="number" value="1" min="1">
+                            <button type="button"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <button class="cart-item-delete">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Resumen de compra -->
+            <div class="cart-summary">
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>$185.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Envío</span>
+                    <span>$0.00</span>
+                </div>
+                <p class="summary-note">(En compras mayores a $300)</p>
+                
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span class="total-price">$185.00</span>
+                </div>
+
+                <div class="cart-buttons">
+                    <button class="btn-checkout">
+                        <i class="fas fa-lock"></i> Finalizar compra
+                    </button>
+                    <button class="btn-continue">
+                        <i class="fas fa-arrow-left"></i> Seguir comprando
+                    </button>
+                </div>
+            </div>
+
+        </aside>
+    </div>
+</body>
+</html>
