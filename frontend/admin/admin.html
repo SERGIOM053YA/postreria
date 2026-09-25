@@ -105,7 +105,7 @@
             <h2>Dar de alta un producto</h2>
             <form id="product-form" class="admin-form">
                 <div class="admin-field"><label for="product-category">Categoría</label>
-                    <select id="product-category" required><option value="postres">Postres</option><option value="bebidas">Bebidas</option><option value="snacks">Snacks</option></select>
+                    <select id="product-category" required><option value="postres">Postres</option><option value="bebidas">Bebidas</option><option value="snacks">Snacks</option><option value="crepas">Crepas</option></select>
                 </div>
                 <div class="admin-field"><label for="product-name">Nombre del producto</label><input id="product-name" maxlength="80" required></div>
                 <div class="admin-field full"><label for="product-description">Descripción del producto</label><textarea id="product-description" maxlength="300" required></textarea></div>
@@ -163,17 +163,33 @@
                 ['product-uvas-crema','Uvas con crema','postres',35,'uvas_crema.jpg'],
                 ['product-arroz-leche','Arroz con leche','postres',30,'arroz_leche.jpg'],
                 ['product-frappe-oreo','Frappé de Oreo','bebidas',65,'frappe_oreo.jpg'],
+                ['product-frappe-rompope','Frappé de Rompope','bebidas',60,'frappe_rompope.jpg'],
                 ['product-frappe-chocolate','Frappé de Chocolate','bebidas',60,'frappe_chocolate.jpg'],
                 ['product-frappe-cajeta','Frappé de Cajeta','bebidas',60,'frappe_cajeta.jpg'],
                 ['product-frappe-fresa','Frappé de Fresa','bebidas',60,'frappe_fresa.jpg'],
                 ['product-frappe-vainilla','Frappé de Vainilla','bebidas',60,'frappe_vainilla.jpg'],
+                ['product-frappe-cafe','Frappé de Café','bebidas',60,'frappe_cafe.jpg'],
+                ['product-frappe-mazapan','Frappé de Mazapán','bebidas',60,'frappe_mazapan.jpg'],
+                ['product-eskimo-fresa','Eskimo de Fresa','bebidas',50,'frappe_fresa.jpg'],
+                ['product-eskimo-chocolate','Eskimo de Chocolate','bebidas',50,'frappe_chocolate.jpg'],
+                ['product-eskimo-pistache','Eskimo de Pistache','bebidas',50,'frappe_vainilla.jpg'],
+                ['product-eskimo-rompope','Eskimo de Rompope','bebidas',50,'frappe_rompope.jpg'],
+                ['product-eskimo-cafe','Eskimo de Café','bebidas',50,'frappe_cafe.jpg'],
+                ['product-eskimo-chicle','Eskimo de Chicle','bebidas',50,'frappe_fresa.jpg'],
+                ['product-eskimo-vainilla','Eskimo de Vainilla','bebidas',50,'frappe_vainilla.jpg'],
+                ['product-eskimo-moka','Eskimo de Moka','bebidas',50,'frappe_cafe.jpg'],
+                ['product-eskimo-oreo','Eskimo de Oreo','bebidas',55,'frappe_oreo.jpg'],
                 ['product-alitas','Alitas','snacks',70,'alitas.jpg'],
                 ['product-alitas-con-papas','Alitas con Papas','snacks',85,'alitas-con-papas.jpg'],
                 ['product-boneless','Boneless','snacks',65,'boneless.jpg'],
                 ['product-boneless-con-papas','Boneless con Papas','snacks',80,'boneless-con-papas.jpg'],
                 ['product-papas','Papas a la Francesa','snacks',40,'papas.jpg'],
                 ['product-elotes','Elotes','snacks',30,'elotes.jpg'],
-                ['product-esquites','Esquites','snacks',30,'esquites.jpg']
+                ['product-esquites','Esquites','snacks',30,'esquites.jpg'],
+                ['product-maruchan-esquites','Maruchan con Esquites','snacks',50,'esquites.jpg'],
+                ['product-doroesquites','Doroesquites','snacks',50,'esquites.jpg'],
+                ['product-tostiesquites','Tostiesquites','snacks',50,'esquites.jpg'],
+                ['product-crepa-personalizada','Crepa personalizada','crepas',60,'crepa.jpg']
             ].map(([id,name,category,price,image]) => ({ id, name, category, categoryLabel:category[0].toUpperCase()+category.slice(1), price, image:`../images/${image}`, builtin:true }));
             const read = (key, fallback = []) => { try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch { return fallback; } };
             const write = (key, data) => localStorage.setItem(key, JSON.stringify(data));

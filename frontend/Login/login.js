@@ -59,8 +59,11 @@ loginForm.addEventListener('submit', (e) => {
     const hasNumber = /[0-9]/.test(val);
     const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val);
 
-    if (isLengthValid && hasUpper && hasLower && hasNumber && hasSpecial) {
-        alert('¡Inicio de sesión exitoso!');
+    const emailInput = document.getElementById('email');
+    const isEmailValid = emailInput.value.trim() !== '' && emailInput.validity.valid;
+
+    if (isEmailValid && isLengthValid && hasUpper && hasLower && hasNumber && hasSpecial) {
+        window.location.href = '../inicio.html';
     } else {
         alert('Por favor asegúrate de que la contraseña cumpla con todos los requisitos.');
     }
