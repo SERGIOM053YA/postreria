@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hilda's Postres & Snacks</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="menu.css">
+    
+    <!-- Tipografías Coquette / Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <header class="header" id="header">
+        <div class="logo-container">
+            <img src="../logo.png" alt="Hilda's Postres & Snacks" class="logo">
+        </div>
+        <nav class="navbar" id="navbar">
+            <a href="#hero">INICIO</a>
+            <a href="#destacados">LO MÁS TOP</a>
+            <a href="#menu-secciones">MENÚ</a>
+            <a href="#pedidos-section">MIS PEDIDOS</a>
+            <a href="#contacto">CONTACTO</a>
+        </nav>
+        <div class="header-icons">
+            <div class="cart-icon" id="cart-icon" onclick="openCart()">
+                <i class="fas fa-shopping-basket"></i>
+                <span class="cart-badge">0</span>
+            </div>
+            <a href="./Login/login.html" class="login-header-btn">
+                <i class="far fa-user"></i>
+                <span>Ingresar</span>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <!-- ========== HERO SECTION ========== -->
+        <section class="hero hero-cloud-bg" id="hero">
+            <div class="cloud cloud-1"></div>
+            <div class="cloud cloud-2"></div>
+            <div class="cloud cloud-3"></div>
+            
+            <div class="hero-inner">
+                <div class="hero-left">
+                    <span class="hero-badge-cute">✨ Recién horneado con amor ✨</span>
+                    <h1 class="hero-title">Endulza <br><span class="title-highlight">tu día</span></h1>
+                    <p class="hero-tagline">CON ALGO HECHO PARA TI <i class="fas fa-heart"></i></p>
+                    <p class="hero-description">Postres cremositos, snacks crujientes y bebidas deliciosas.</p>
+                    <a href="#menu-secciones" class="btn-primary-cute"><i class="fas fa-utensils"></i> VER MENÚ COMPLETO</a>
+                </div>
+
+                <div class="hero-center">
+                    <div class="logo-wrapper-glow">
+                        <img src="../logo.png" alt="Hilda's Logo" class="hero-big-logo">
+                    </div>
+                </div>
+
+                <div class="hero-right">
+                    <div class="hero-cake-wrapper">
+                        <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=500" alt="Postre Destacado" class="hero-cake-img">
+                        <div class="floating-tag-cute">
+                            <span>¡Súper Delicioso!</span> <i class="fas fa-sparkles"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cloud-wave-bottom">
+                <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+                    <path fill="#fff5f7" d="M0,32L48,42.7C96,53,192,75,288,80C384,85,480,75,576,64C672,53,768,43,864,48C960,53,1056,75,1152,80C1248,85,1344,75,1392,70L1440,65L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"></path>
+                </svg>
+            </div>
+        </section>
+
+        <!-- ========== DESTACADOS ========== -->
+        <section class="featured-section" id="destacados">
+            <div class="container">
+                <div class="section-title-wrapper">
+                    <span class="subtitle-sparkle">💖 Los favoritos de todos</span>
+                    <h2 class="main-heading">LO MÁS DELICIOSO & NOVEDADES</h2>
+                </div>
+
+                <div class="featured-grid-large">
+                    <div class="featured-card-large bestseller">
+                        <div class="badge-ribbon bestseller-ribbon">
+                            <i class="fas fa-crown"></i> ¡EL MÁS VENDIDO!
+                        </div>
+                        <div class="featured-img-box">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyYVPPUHwaABdCE2Douz2qryd9q7wt2hbvaxyMvzeEwGqC4pUhRZ3R9Lz0&s=10" alt="Fresas con Crema">
+                        </div>
+                        <div class="featured-content">
+                            <h3>Fresas con Crema Especial</h3>
+                            <p>Fresas seleccionadas con nuestra crema especial de la casa, súper cremosa y dulce.</p>
+                            <div class="card-footer-large">
+                                <div class="price-tag">$35.00 <small>MXN</small></div>
+                                <button class="btn-add-cute" onclick="openNoteModal(12, 'Fresas con Crema Especial', 35)"><i class="fas fa-plus-circle"></i> Agregar al carrito</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="featured-card-large seasonal">
+                        <div class="badge-ribbon seasonal-ribbon">
+                            <i class="fas fa-magic"></i> FAVORITO
+                        </div>
+                        <div class="featured-img-box">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6dIo6xRQRzL1tj__wE2JPgIIDi7tEzPBpKYPpif2o2OqgBHBeG1lJhKc&s=10" alt="Crepas Armables">
+                        </div>
+                        <div class="featured-content">
+                            <h3>Crepa Dulce Personalizada</h3>
+                            <p>Arma tu crepa a tu gusto con la mejor combinación de fruta, base y topping favorito.</p>
+                            <div class="card-footer-large">
+                                <div class="price-tag">$60.00 <small>MXN</small></div>
+                                <button class="btn-add-cute btn-customize" onclick="openCrepaModal()"><i class="fas fa-magic"></i> Armar Crepa</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== SECCIONES DEL MENÚ ========== -->
+        <section class="menu-sections" id="menu-secciones">
+            <div class="container">
+                <div class="section-title-wrapper">
+                    <span class="subtitle-sparkle">🌸 Explora por categoría</span>
+                    <h2 class="main-heading">NUESTRO MENÚ COMPLETO</h2>
+                </div>
+
+                <!-- 1. POSTRES -->
+                <div class="category-block" id="sec-postres">
+                    <div class="category-header">
+                        <span class="cat-icon"><i class="fas fa-ice-cream"></i></span>
+                        <h3>Postres</h3>
+                    </div>
+                    <div class="products-grid" id="grid-postres">
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://http2.mlstatic.com/D_NQ_NP_879373-MLM106591014125_022026-O.webp" alt="Flan Napolitano">
+                            </div>
+                            <div class="product-info">
+                                <h4>Flan Napolitano</h4>
+                                <p>Rebanada suave y con caramelo casero.</p>
+                                <div class="card-footer">
+                                    <span class="price">$30.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal(8,'Flan Napolitano', 30)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEFwmjJ8PUlV5EpZxlDNeUA-W8MnJg7wXTO2y9L60pCXVFpHAeLG-tskAK&s=10" alt="Pastel Imposible">
+                            </div>
+                            <div class="product-info">
+                                <h4>Pastel Imposible</h4>
+                                <p>Rebanada combinación flan y chocoflan.</p>
+                                <div class="card-footer">
+                                    <span class="price">$35.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal(7, 'Pastel Imposible', 35)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyE1lWuGsdKbJkynjffBUH82x1MbiUiKGIDZCsgQtP7A&s=10" alt="Arroz con Leche">
+                            </div>
+                            <div class="product-info">
+                                <h4>Arroz con Leche</h4>
+                                <p>Cremoso con toque de canela.</p>
+                                <div class="card-footer">
+                                    <span class="price">$30.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal(9 ,'Arroz con Leche', 30)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://cdn7.kiwilimon.com/brightcove/10425/640x640/10425.jpg.webp" alt="Ensalada de Manzana">
+                            </div>
+                            <div class="product-info">
+                                <h4>Ensalada de Manzana</h4>
+                                <p>Con crema dulce, nuez y pasas.</p>
+                                <div class="card-footer">
+                                    <span class="price">$30.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal(10,'Ensalada de Manzana', 30)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8tHA786Z5rOR2JQ2RL8tgh4QwxC1jkVE-HXs7i_WGRPbMek3a2I85Pahq&s=10" alt="Gelatina con Crema">
+                            </div>
+                            <div class="product-info">
+                                <h4>Gelatina con Crema</h4>
+                                <p>Cubitos de gelatina bañados en crema.</p>
+                                <div class="card-footer">
+                                    <span class="price">$30.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal(11, 'Gelatina con Crema', 30)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTk0qMnp8j17N1ygQL726WuGpsbFgDhdkY4Iq9RjKuosjLZeQu912Fjv3p7&s=10" alt="Fresas con Crema">
+                            </div>
+                            <div class="product-info">
+                                <h4>Fresas con Crema</h4>
+                                <p>Fresas frescas con crema dulce.</p>
+                                <div class="card-footer">
+                                    <span class="price">$35.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal('Fresas con Crema', 35)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_f6h4zHjZXmAJOxY4ymzPWXcn6PFs-Xryo1N8M3huBvdlTHLgrCSY0aM&s=10" alt="Uvas con Crema">
+                            </div>
+                            <div class="product-info">
+                                <h4>Uvas con Crema</h4>
+                                <p>Uvas seleccionadas bañadas en crema especial.</p>
+                                <div class="card-footer">
+                                    <span class="price">$35.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal(13, 'Uvas con Crema', 35)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. CREPAS DULCES CON PERSONALIZADOR -->
+                <div class="category-block" id="sec-crepas">
+                    <div class="category-header">
+                        <span class="cat-icon"><i class="fas fa-stroopwafel"></i></span>
+                        <h3>Crepas Dulces</h3>
+                    </div>
+                    <div class="custom-builder-banner">
+                        <div class="builder-text">
+                            <h4>✨ ¡Arma tu Crepa Perfecta!</h4>
+                            <p>Elige tu base favorita, fruta fresca, topping crujiente y extras a tu gusto.</p>
+                        </div>
+
+                        <div class="featured-img-box img-centered">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6dIo6xRQRzL1tj__wE2JPgIIDi7tEzPBpKYPpif2o2OqgBHBeG1lJhKc&s=10" alt="Crepas Armables">
+                        </div>
+
+                        <button class="btn-add-cute" onclick="openCrepaModal()"><i class="fas fa-sliders-h"></i> Personalizar Crepa ($60)</button>
+                    </div>
+                </div>
+
+                <!-- 3. SNACKS -->
+                <div class="category-block" id="sec-snacks">
+                    <div class="category-header">
+                        <span class="cat-icon"><i class="fas fa-cookie-bite"></i></span>
+                        <h3>Snacks</h3>
+                    </div>
+                    <div class="products-grid" id="grid-snacks">
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://puertofresco.com/cdn/shop/products/patatas-onduladas.jpg?v=1593107920" alt="Papas a la francesa">
+                            </div>
+                            <div class="product-info">
+                                <h4>Papas a la Francesa</h4>
+                                <p>Crujientes y calientitas.</p>
+                                <div class="card-footer">
+                                    <span class="price">$40.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal(14,'Papas a la Francesa', 40)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJqWQ28cAJa9HkYm8gQi5LMuj8N-vR6gn25p7sYuukOUiuFxvZSK_lPrM&s=10" alt="Elotes">
+                            </div>
+                            <div class="product-info">
+                                <h4>Elotes</h4>
+                                <p>Con mayonesa, queso y chile.</p>
+                                <div class="card-footer">
+                                    <span class="price">$30.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal(15,'Elotes', 30)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQmUN_5HsltwcauMBnO62lOfBK5LfBcmR-X_s9qvkaN7QvppxrkPNYIj5a&s=10" alt="Esquites">
+                            </div>
+                            <div class="product-info">
+                                <h4>Esquites</h4>
+                                <p>Vasito de grano de elote bien preparado.</p>
+                                <div class="card-footer">
+                                    <span class="price">$30.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal( 16, 'Esquites', 30)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQpdiAKBWKBq44j9lN7-GoO4HMogXI1I1RPhoaH0VgTfeoQHEHyo0O2EZC&s=10" alt="Maruchan con esquites">
+                            </div>
+                            <div class="product-info">
+                                <h4>Maruchan con Esquites</h4>
+                                <p>La combinación perfecta.</p>
+                                <div class="card-footer">
+                                    <span class="price">$50.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal(17, 'Maruchan con Esquites', 50)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGqPPu9FrJ0WT2Be1EzJwUgaDCss-R_DKB4La0PDIAXyFRluf7vNtRuWo&s=10" alt="Doroesquites">
+                            </div>
+                            <div class="product-info">
+                                <h4>Doroesquites</h4>
+                                <p>Doritos preparados con esquites suaves.</p>
+                                <div class="card-footer">
+                                    <span class="price">$50.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal(18, 'Doroesquites', 50)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://cdn7.kiwilimon.com/recetaimagen/39972/640x640/52755.jpg.webp" alt="Tostiesquites">
+                            </div>
+                            <div class="product-info">
+                                <h4>Tostiesquites</h4>
+                                <p>Tostitos con esquite, queso y crema.</p>
+                                <div class="card-footer">
+                                    <span class="price">$50.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal(19,'Tostiesquites', 50)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. ALITAS Y BONELESS -->
+                <div class="category-block" id="sec-alitas-boneless">
+                    <div class="category-header">
+                        <span class="cat-icon"><i class="fas fa-drumstick-bite"></i></span>
+                        <h3>Alitas y Boneless</h3>
+                    </div>
+                    <div class="products-grid" id="grid-alitas">
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://www.cocinadelirante.com/sites/default/files/images/2024/04/receta-casera-de-alitas-picantes.jpg" alt="Alitas">
+                            </div>
+                            <div class="product-info">
+                                <h4>Alitas (6 piezas)</h4>
+                                <p>6 piezas individuales bañadas en tu salsa favorita.</p>
+                                <div class="card-footer">
+                                    <span class="price">$70.00</span>
+                                    <button class="btn-small-add" onclick="openSalsaModal(21, 'Alitas (6 pzas)', 70, false)"><i class="fas fa-pepper-hot"></i> Elegir Salsa</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX1aOm2gmuykqk5DEelYuOPr5SA1vSRP_5QE9m_JZ0ZTCkpjoncU6UoaE&s=10" alt="Alitas con Papas">
+                            </div>
+                            <div class="product-info">
+                                <h4>Alitas con Papas</h4>
+                                <p>6 alitas con 100g de papas fritas.</p>
+                                <div class="card-footer">
+                                    <span class="price">$85.00</span>
+                                    <button class="btn-small-add" onclick="openSalsaModal(22,'Alitas con Papas (6 pzas + 100g papas)', 85, true)"><i class="fas fa-pepper-hot"></i> Elegir Salsa</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTETMsQpaigngX8eXJ3UgpEHY_jcwE1uFDpxORnCNgVtFIV6i-mKJ52xqes&s=10" alt="Boneless">
+                            </div>
+                            <div class="product-info">
+                                <h4>Boneless (6 piezas)</h4>
+                                <p>6 trozos de pechuga crujientes.</p>
+                                <div class="card-footer">
+                                    <span class="price">$65.00</span>
+                                    <button class="btn-small-add" onclick="openSalsaModal(23,'Boneless (6 pzas)', 65, false)"><i class="fas fa-pepper-hot"></i> Elegir Salsa</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://tb-static.uber.com/prod/image-proc/processed_images/1a8a5165a86001aff4c302eed1887dd6/70aa2a4db7f990373ca9c376323e3dea.jpeg" alt="Boneless con Papas">
+                            </div>
+                            <div class="product-info">
+                                <h4>Boneless con Papas</h4>
+                                <p>6 boneless con 100g de papas calientitas.</p>
+                                <div class="card-footer">
+                                    <span class="price">$80.00</span>
+                                    <button class="btn-small-add" onclick="openSalsaModal(24,'Boneless con Papas (6 pzas + 100g papas)', 80, true)"><i class="fas fa-pepper-hot"></i> Elegir Salsa</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 5. MINI HOTCAKES -->
+                <div class="category-block" id="sec-hotcakes">
+                    <div class="category-header">
+                        <span class="cat-icon"><i class="fas fa-pancakes"></i></span>
+                        <h3>Mini Hotcakes</h3>
+                    </div>
+                    <div class="products-grid" id="grid-hotcakes">
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiT9rpQ1yGcjClRnyEGobaCjmKCNhfwg6jeNN9ai_Ae2pty721W1YjByS&s=10" alt="Mini Hotcakes Sencillos 12 pzas">
+                            </div>
+                            <div class="product-info">
+                                <h4>12 pzas Sencillos</h4>
+                                <p>Incluye 1 fruta y 1 topping a elegir.</p>
+                                <div class="card-footer">
+                                    <span class="price">$40.00</span>
+                                    <button class="btn-small-add" onclick="openHotcakesModal('12 piezas sencillos', 40, 1, 1)"><i class="fas fa-plus"></i> Personalizar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrp1JGF1zvYC7-dts2VChIuBqMvTuG-aVMFA1OM8ZXCU921YJtam7mcwQx&s=10" alt="Mini Hotcakes Sencillos 25 pzas">
+                            </div>
+                            <div class="product-info">
+                                <h4>25 pzas Sencillas</h4>
+                                <p>Incluye 1 fruta y 1 topping a elegir.</p>
+                                <div class="card-footer">
+                                    <span class="price">$65.00</span>
+                                    <button class="btn-small-add" onclick="openHotcakesModal('25 piezas sencillas', 65, 1, 1)"><i class="fas fa-plus"></i> Personalizar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://i.pinimg.com/736x/41/c1/4d/41c14d60656f540a70246f9824883334.jpg" alt="Mini Hotcakes Especiales 25 pzas">
+                            </div>
+                            <div class="product-info">
+                                <h4>25 pzas Especiales</h4>
+                                <p>Incluye 2 frutas y 2 toppings a elegir.</p>
+                                <div class="card-footer">
+                                    <span class="price">$80.00</span>
+                                    <button class="btn-small-add" onclick="openHotcakesModal('25 piezas especiales', 80, 2, 2)"><i class="fas fa-plus"></i> Personalizar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 6. BEBIDAS -->
+                <div class="category-block" id="sec-bebidas">
+                    <div class="category-header">
+                        <span class="cat-icon"><i class="fas fa-glass-cheers"></i></span>
+                        <h3>Bebidas (Frappés y Eskimos)</h3>
+                    </div>
+                    <div class="products-grid" id="grid-bebidas">
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://grupoanimal.mx/api/image-proxy?url=https%3A%2F%2Fstorage.googleapis.com%2Fbucket-ga%2Fuploads%2F2026%2F04%2Ffrappe-receta-cafe-768x512.webp" alt="Frappé de Sabores">
+                            </div>
+                            <div class="product-info">
+                                <h4>Frappé de Sabor</h4>
+                                <p>Rompope, Fresa, Chocolate, Vainilla, Café o Mazapán.</p>
+                                <div class="card-footer">
+                                    <span class="price">$60.00</span>
+                                    <button class="btn-small-add" onclick="openDrinkFlavorModal('Frappé de Sabor', 60, ['Rompope', 'Fresa', 'Chocolate', 'Vainilla', 'Café', 'Mazapán'])"><i class="fas fa-glass-martini-alt"></i> Elegir Sabor</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://snapcalorie-webflow-website.s3.us-east-2.amazonaws.com/media/food_pics_v2/medium/oreo_frappe.jpg" alt="Frappé de Oreo">
+                            </div>
+                            <div class="product-info">
+                                <h4>Frappé de Oreo</h4>
+                                <p>Delicioso frapeado con trozos de galleta Oreo.</p>
+                                <div class="card-footer">
+                                    <span class="price">$60.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal('Frappé de Oreo', 60)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://franciscolanuza.neocities.org/Proyectos%20Eskimo/MiPagina/imageneskimo/Malteadas.jpg" alt="Eskimos de Sabores">
+                            </div>
+                            <div class="product-info">
+                                <h4>Eskimo de Sabor</h4>
+                                <p>Fresa, Chocolate, Pistache, Rompope, Café, Chicle, Vainilla o Moka.</p>
+                                <div class="card-footer">
+                                    <span class="price">$50.00</span>
+                                    <button class="btn-small-add" onclick="openDrinkFlavorModal('Eskimo de Sabor', 50, ['Fresa', 'Chocolate', 'Pistache', 'Rompope', 'Café', 'Chicle', 'Vainilla', 'Moka'])"><i class="fas fa-glass-martini-alt"></i> Elegir Sabor</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card-cute">
+                            <div class="img-container">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFryEZ18r1Ul06arTuAj_gVKtQ90rsSs817SOR08SoSAF3NuCa8reqSMFL&s=10" alt="Eskimo de Oreo">
+                            </div>
+                            <div class="product-info">
+                                <h4>Eskimo de Oreo</h4>
+                                <p>Espumoso y cremoso sabor Oreo.</p>
+                                <div class="card-footer">
+                                    <span class="price">$55.00</span>
+                                    <button class="btn-small-add" onclick="openNoteModal('Eskimo de Oreo', 55)"><i class="fas fa-heart"></i> +</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========== SECCIÓN PANEL DE PEDIDOS DE USUARIO ========== -->
+        <section class="orders-section" id="pedidos-section">
+            <div class="container">
+                <div class="section-title-wrapper">
+                    <span class="subtitle-sparkle">📋 Panel del Sistema</span>
+                    <h2 class="main-heading">PEDIDOS REALIZADOS EN LA PÁGINA</h2>
+                </div>
+
+                <div class="orders-container" id="orders-list">
+                    <p class="no-orders-msg">No hay pedidos registrados aún.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <!-- ========== VENTANAS MODALES INTERACTIVAS ========== -->
+    
+    <!-- Modal Nota -->
+    <div id="note-modal" class="modal-cute">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('note-modal')">&times;</span>
+            <h3 class="modal-title" id="note-modal-title">📝 Nota de Preparación</h3>
+            <p class="modal-subtitle">Personaliza tu pedido antes de agregarlo al carrito</p>
+            
+            <div class="option-group">
+                <label for="product-note-input">Instrucciones especiales (opcional):</label>
+                <textarea id="product-note-input" class="cute-textarea" placeholder="Ej: Con poco picante, sin crema, bien doraditas..."></textarea>
+            </div>
+
+            <button class="btn-add-cute btn-block" onclick="confirmAddWithNote()"><i class="fas fa-shopping-basket"></i> Agregar al Carrito</button>
+        </div>
+    </div>
+
+    <!-- Modal Bebidas con Sabores -->
+    <div id="drink-flavor-modal" class="modal-cute">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('drink-flavor-modal')">&times;</span>
+            <h3 class="modal-title" id="drink-modal-title">🥤 Elige el Sabor</h3>
+            
+            <div class="option-group">
+                <label>Sabor deseado:</label>
+                <select id="drink-flavor-select" class="cute-select"></select>
+            </div>
+
+            <div class="option-group">
+                <label for="drink-comment">Comentario sobre tu bebida (opcional):</label>
+                <textarea id="drink-comment" class="cute-textarea" placeholder="Ej: Con extra hielo, poco dulce..."></textarea>
+            </div>
+
+            <button class="btn-add-cute btn-block" onclick="addDrinkProduct()"><i class="fas fa-plus-circle"></i> Agregar al Carrito</button>
+        </div>
+    </div>
+
+    <!-- Modal Crepas -->
+    <div id="crepa-modal" class="modal-cute">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('crepa-modal')">&times;</span>
+            <h3 class="modal-title">🍓 Personaliza tu Crepa ($60)</h3>
+            
+            <div class="option-group">
+                <label>1. Selecciona tu Base:</label>
+                <div class="pills-container">
+                    <button class="pill-btn active" data-type="base">Lechera</button>
+                    <button class="pill-btn" data-type="base">Mermelada</button>
+                    <button class="pill-btn" data-type="base">Cajeta</button>
+                    <button class="pill-btn" data-type="base">Nutella</button>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <label>2. Selecciona tu Fruta:</label>
+                <div class="pills-container">
+                    <button class="pill-btn active" data-type="fruta">Durazno</button>
+                    <button class="pill-btn" data-type="fruta">Fresa</button>
+                    <button class="pill-btn" data-type="fruta">Plátano</button>
+                    <button class="pill-btn" data-type="fruta">Uva</button>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <label>3. Selecciona tu Topping:</label>
+                <div class="pills-container">
+                    <button class="pill-btn active" data-type="topping">Nuez</button>
+                    <button class="pill-btn" data-type="topping">Luneta</button>
+                    <button class="pill-btn" data-type="topping">Chispas Chocolate</button>
+                    <button class="pill-btn" data-type="topping">Kinder</button>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <label>4. ¿Deseas agregar Topping Extra? (+$5 c/u):</label>
+                <div class="extra-checkboxes">
+                    <label><input type="checkbox" value="5" class="extra-item" data-name="Extra Chispas"> Extra Nuez (+$5)</label>
+                    <label><input type="checkbox" value="5" class="extra-item" data-name="Extra Nuez"> Extra Luneta (+$5)</label>
+                    <label><input type="checkbox" value="5" class="extra-item" data-name="Extra Kinder"> Extra Chispas Chocolate (+$5)</label>
+                    <label><input type="checkbox" value="5" class="extra-item" data-name="Extra Fruta"> Extra Kinder (+$5)</label>
+                </div>
+            </div>
+            <div class="option-group">
+                <label>4. ¿Deseas agregar Fruta? (+$5 c/u):</label>
+                <div class="extra-checkboxes">
+                    <label><input type="checkbox" value="5" class="extra-item" data-name="Extra Chispas"> Extra Durazno (+$5)</label>
+                    <label><input type="checkbox" value="5" class="extra-item" data-name="Extra Nuez"> Extra Fresa(+$5)</label>
+                    <label><input type="checkbox" value="5" class="extra-item" data-name="Extra Kinder"> Extra Platano (+$5)</label>
+                    <label><input type="checkbox" value="5" class="extra-item" data-name="Extra Fruta"> Extra Uva (+$5)</label>
+                </div>
+            </div>
+
+            <button class="btn-add-cute btn-block" onclick="addCustomCrepa()"><i class="fas fa-shopping-basket"></i> Continuar</button>
+        </div>
+    </div>
+
+    <!-- Modal Salsas y Papas -->
+    <div id="salsa-modal" class="modal-cute">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('salsa-modal')">&times;</span>
+            <h3 class="modal-title" id="salsa-modal-title">🍗 Elige tu Salsa</h3>
+            
+            <div class="option-group">
+                <label>Salsas disponibles:</label>
+                <select id="salsa-select" class="cute-select">
+                    <option value="Mango Habanero">Mango Habanero</option>
+                    <option value="BBQ">BBQ</option>
+                    <option value="Tamarindo Habanero">Tamarindo Habanero</option>
+                    <option value="Cajún">Cajún</option>
+                    <option value="Búfalo">Búfalo</option>
+                </select>
+            </div>
+
+            <div class="option-group" id="papas-extra-container" style="display: none;">
+                <label>Porciones de papas (100g base incluida):</label>
+                <div class="papas-qty-control">
+                    <button class="qty-btn" onclick="changePapasQty(-1)">-</button>
+                    <span id="papas-qty-display">1 porción (100g)</span>
+                    <button class="qty-btn" onclick="changePapasQty(1)">+</button>
+                </div>
+                <small class="text-muted">* Cada porción extra agrega 100g por +$15.00 MXN</small>
+            </div>
+
+            <button class="btn-add-cute btn-block" onclick="addSalsaProduct()"><i class="fas fa-plus-circle"></i> Continuar</button>
+        </div>
+    </div>
+
+    <!-- Modal Hotcakes -->
+    <div id="hotcakes-modal" class="modal-cute">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('hotcakes-modal')">&times;</span>
+            <h3 class="modal-title" id="hotcakes-modal-title">🥞 Elige tus Ingredientes</h3>
+            
+            <p class="modal-subtitle" id="hotcakes-subtitle">Selecciona tus opciones</p>
+
+            <div class="option-group">
+                <label id="hk-fruta-label">Frutas:</label>
+                <div class="pills-container" id="hk-fruta-container">
+                    <button class="pill-btn hk-f-btn" data-val="Durazno" onclick="toggleHkSelection(this, 'fruta')">Durazno</button>
+                    <button class="pill-btn hk-f-btn" data-val="Fresa" onclick="toggleHkSelection(this, 'fruta')">Fresa</button>
+                    <button class="pill-btn hk-f-btn" data-val="Plátano" onclick="toggleHkSelection(this, 'fruta')">Plátano</button>
+                    <button class="pill-btn hk-f-btn" data-val="Uva" onclick="toggleHkSelection(this, 'fruta')">Uva</button>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <label id="hk-topping-label">Toppings:</label>
+                <div class="pills-container" id="hk-topping-container">
+                    <button class="pill-btn hk-t-btn" data-val="Nuez" onclick="toggleHkSelection(this, 'topping')">Nuez</button>
+                    <button class="pill-btn hk-t-btn" data-val="Luneta" onclick="toggleHkSelection(this, 'topping')">Luneta</button>
+                    <button class="pill-btn hk-t-btn" data-val="Huevo Kinder" onclick="toggleHkSelection(this, 'topping')">Huevo Kinder</button>
+                    <button class="pill-btn hk-t-btn" data-val="Chispas Chocolate" onclick="toggleHkSelection(this, 'topping')">Chispas Chocolate</button>
+                    <button class="pill-btn hk-t-btn" data-val="Kranky" onclick="toggleHkSelection(this, 'topping')">Kranky</button>
+                </div>
+            </div>
+
+            <button class="btn-add-cute btn-block" onclick="addHotcakesProduct()"><i class="fas fa-check"></i> Continuar</button>
+        </div>
+    </div>
+
+    <!-- Modal Opciones para Productos Dinámicos -->
+    <div id="dynamic-product-modal" class="modal-cute">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('dynamic-product-modal')">&times;</span>
+            <h3 class="modal-title" id="dyn-modal-title"> Personalizar</h3>
+            
+            <div class="option-group" id="dyn-frutas-group" style="display:none;">
+                <label>Frutas deseada:</label>
+                <select id="dyn-frutas-select" class="cute-select"></select>
+            </div>
+
+            <div class="option-group" id="dyn-toppings-group" style="display:none;">
+                <label>Topping deseado:</label>
+                <select id="dyn-toppings-select" class="cute-select"></select>
+            </div>
+
+            <div class="option-group">
+                <label>Comentario o Nota adicional:</label>
+                <textarea id="dyn-note-input" class="cute-textarea" placeholder="Instrucciones..."></textarea>
+            </div>
+
+            <button class="btn-add-cute btn-block" onclick="confirmAddDynamicProduct()"><i class="fas fa-plus-circle"></i> Agregar al Carrito</button>
+        </div>
+    </div>
+
+    <!-- ========== CARRITO LATERAL ========== -->
+    <div id="cart-drawer-overlay" class="cart-drawer-overlay" onclick="closeCart()"></div>
+    <aside id="cart-drawer" class="cart-drawer">
+        <div class="cart-drawer-header">
+            <h3><i class="fas fa-shopping-basket"></i> Tu Carrito</h3>
+            <span class="close-cart" onclick="closeCart()">&times;</span>
+        </div>
+        <div class="cart-drawer-body" id="cart-items-container"></div>
+        <div class="cart-drawer-footer">
+            <div class="cart-total-row">
+                <span>Total a Pagar:</span>
+                <span id="cart-total-price">$0.00 MXN</span>
+            </div>
+            <button class="btn-add-cute btn-block" onclick="checkout()"><i class="fas fa-check-circle"></i> Confirmar Venta</button>
+        </div>
+    </aside>
+<!-- ========== PANEL EXCLUSIVO ADMINISTRADORES ========== -->
+        <section class="admin-panel-section" id="admin-panel-global" style="display: none; padding: 3rem 0; background: #fff0f3; border-top: 3px dashed #ff8fa3;">
+            <div class="container">
+                <div class="section-title-wrapper">
+                    <span class="subtitle-sparkle">🔒 Zona Privada</span>
+                    <h2 class="main-heading" style="color: #9d4edd;">GESTOR DE CATÁLOGO (Solo Dueños)</h2>
+                </div>
+                
+                <div class="product-card-cute add-product-card" style="margin: 0 auto; max-width: 400px; background: #ffffff;">
+                    <h4>➕ Registrar en Base de Datos</h4>
+                    <div class="add-form">
+                        
+                        <!-- Botón Morado de Fotografía -->
+                        <label for="file-admin" class="custom-file-upload">
+                            <i class="fas fa-camera"></i> <span id="label-text-admin">Subir Fotografía</span>
+                        </label>
+                        <input type="file" id="file-admin" accept="image/*" style="display: none;" onchange="document.getElementById('label-text-admin').textContent = this.files[0] ? this.files[0].name : 'Subir Fotografía'">
+
+                        <!-- Selector de Categoría -->
+                        <select id="cat-admin" class="cute-select" style="margin-bottom: 8px;">
+                            <option value="1">Postres</option>
+                            <option value="2">Snacks</option>
+                            <option value="3">Crepas Dulces</option>
+                            <option value="4">Alitas y Boneless</option>
+                            <option value="5">Bebidas</option>
+                            <option value="6">Mini Hotcakes</option>
+                        </select>
+                        
+                        <input type="text" id="name-admin" placeholder="Nombre del producto" class="cute-input">
+                        <input type="text" id="desc-admin" placeholder="Descripción breve" class="cute-input">
+                        <input type="number" id="price-admin" placeholder="Precio ($)" class="cute-input">
+                        
+                        <button class="btn-add-cute btn-block" style="background: #ff6584;" onclick="createNewProductAdmin()"><i class="fas fa-save"></i> Guardar Producto</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer-cute" id="contacto">
+        <div class="container">
+            <div class="footer-features">
+                <div class="feature-card">
+                    <i class="fas fa-star"></i>
+                    <div>
+                        <strong>100% ARTESANAL</strong>
+                        <p>Ingredientes ultra frescos</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-heart"></i>
+                    <div>
+                        <strong>HECHO CON AMOR</strong>
+                        <p>Sabor único en cada mordida</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-motorcycle"></i>
+                    <div>
+                        <strong>ENVÍO RÁPIDO</strong>
+                        <p>Llega calientito y seguro</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© Hilda's Postres & Snacks • Hecho con <i class="fas fa-heart pink-heart"></i> para ti</p>
+            </div>
+        </div>
+    </footer>
+
+<!-- SDK Oficial de Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- JS -->
+    <script src="menu.js"></script>
+</body>
+</html>
+
+</html>

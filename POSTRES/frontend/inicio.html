@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hilda's Postres & Snacks</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <header class="header" id="header">
+        <div class="logo-container">
+            <img src="./logo.png" alt="Hilda's Postres & Snacks" class="logo">
+        </div>
+        <nav class="navbar" id="navbar">
+            <a href="#hero">INICIO</a>
+            <a href="#products">POSTRES</a>
+            <a href="#bebidas">BEBIDAS</a>
+            <a href="#snacks-section" class="active">SNACKS</a>
+        </nav>
+        <div class="header-icons">
+            <div class="cart-icon" id="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge">2</span>
+            </div>
+            <a href="#" class="whatsapp-header-icon" id="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
+            <span class="header-divider"></span>
+            <a href="./Login/login.html" class="login-header-btn" id="login-btn">
+                <i class="far fa-user"></i>
+                <span>Iniciar sesión</span>
+            </a>
+        </div>
+        <!-- Wavy bottom -->
+        <div class="header-wave">
+            <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
+                <path fill="#ffffff"
+                    d="M0,0 L0,30 Q60,50 120,30 Q180,10 240,30 Q300,50 360,30 Q420,10 480,30 Q540,50 600,30 Q660,10 720,30 Q780,50 840,30 Q900,10 960,30 Q1020,50 1080,30 Q1140,10 1200,30 Q1260,50 1320,30 Q1380,10 1440,30 L1440,0 Z" />
+            </svg>
+        </div>
+    </header>
+
+    <main>
+        <!-- ========== HERO SECTION ========== -->
+        <section class="hero" id="hero">
+            <!-- Decorative 3D Spheres -->
+            <div class="sphere sphere-1"></div>
+            <div class="sphere sphere-2"></div>
+            <div class="sphere sphere-3"></div>
+            <div class="sphere sphere-4"></div>
+            <div class="sphere sphere-5"></div>
+            <div class="sphere sphere-6"></div>
+
+            <div class="hero-inner">
+                <div class="hero-left">
+                    <h1 class="hero-title">Endulza<br>tu día</h1>
+                    <p class="hero-tagline">CON ALGO HECHO CON AMOR <i class="fas fa-heart"></i></p>
+                    <p class="hero-description">Postres, snacks y bebidas que<br>te encantarán.</p>
+                    <a href="#" class="btn-menu" id="btn-menu">VER MENÚ</a>
+                </div>
+
+                <div class="hero-center">
+                    <img src="./logo.png" alt="Hilda's Postres & Snacks" class="hero-big-logo">
+                </div>
+
+                <div class="hero-right">
+                    <div class="hero-cake-wrapper">
+                        <img src="C:\Users\ENB10\.gemini\antigravity-ide\brain\8cb2659a-39f1-4061-a8e4-2c626b55e6d4\hero_cake_1788281832136.jpg"
+                            alt="Pastel de Fresa" class="hero-cake-img">
+                        <div class="floating-tag" id="floating-tag">
+                            FRESCO, DELICIOSO<br>Y HECHO PARA TI <i class="fas fa-heart"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero wave bottom -->
+            <div class="hero-wave">
+                <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+                    <path fill="#fff0f3" d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z" />
+                </svg>
+            </div>
+        </section>
+
+        <!-- ========== PRODUCTS + SIDEBAR ========== -->
+        <section class="content-section" id="products">
+            <div class="content-inner">
+                <div class="products-area">
+                    <h2 class="section-heading">
+                        <span class="heading-line"></span>
+                        NUESTROS POSTRES
+                        <span class="heading-line"></span>
+                    </h2>
+
+                    <div class="products-grid">
+                        <!-- Card 1 -->
+                        <div class="product-card" id="product-fresas">
+                            <div class="bestseller-badge">Más vendido</div>
+                            <div class="product-img-wrapper">
+                                <img src="C:\Users\ENB10\.gemini\antigravity-ide\brain\8cb2659a-39f1-4061-a8e4-2c626b55e6d4\fresas_crema_1788281842198.jpg"
+                                    alt="Fresas con crema" class="product-img">
+                            </div>
+                            <div class="product-info">
+                                <h3>Fresas con crema</h3>
+                                <p>Fresas frescas con crema dulce y un toque especial.</p>
+                                <div class="product-footer">
+                                    <span class="product-price">$45.00</span>
+                                    <button class="btn-add-cart"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="product-card" id="product-hotcakes">
+                            <div class="product-img-wrapper">
+                                <img src="C:\Users\ENB10\.gemini\antigravity-ide\brain\8cb2659a-39f1-4061-a8e4-2c626b55e6d4\mini_hotcakes_1788281866952.jpg"
+                                    alt="Mini hot cakes" class="product-img">
+                            </div>
+                            <div class="product-info">
+                                <h3>Mini hot cakes</h3>
+                                <p>Hot cakes esponjosos con frutas y un toque de miel.</p>
+                                <div class="product-footer">
+                                    <span class="product-price">$55.00</span>
+                                    <button class="btn-add-cart"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="product-card" id="product-crepas">
+                            <div class="product-img-wrapper">
+                                <img src="C:\Users\ENB10\.gemini\antigravity-ide\brain\8cb2659a-39f1-4061-a8e4-2c626b55e6d4\crepas_1788281879920.jpg"
+                                    alt="Crepas" class="product-img">
+                            </div>
+                            <div class="product-info">
+                                <h3>Crepas</h3>
+                                <p>Deliciosas crepas con tu ingrediente favorito.</p>
+                                <div class="product-footer">
+                                    <span class="product-price">$50.00</span>
+                                    <button class="btn-add-cart"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="product-card" id="product-frappe">
+                            <div class="product-img-wrapper">
+                                <img src="C:\Users\ENB10\.gemini\antigravity-ide\brain\8cb2659a-39f1-4061-a8e4-2c626b55e6d4\frappe_fresa_1788281925206.jpg"
+                                    alt="Frappe de fresa" class="product-img">
+                            </div>
+                            <div class="product-info">
+                                <h3>Frappe de fresa</h3>
+                                <p>Bebida fría con el sabor dulce que te encanta.</p>
+                                <div class="product-footer">
+                                    <span class="product-price">$50.00</span>
+                                    <button class="btn-add-cart"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="see-all-wrapper">
+                        <a href="#" class="btn-see-all" id="btn-see-all">VER TODOS LOS POSTRES <img src="./logo.png"
+                                alt="" class="btn-logo-icon"></a>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="sidebar" id="sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">¿POR QUÉ ELEGIRNOS?</h3>
+                        <ul class="why-list">
+                            <li>
+                                <span class="why-icon"><i class="fas fa-seedling"></i></span>
+                                <div>
+                                    <strong>Ingredientes frescos</strong>
+                                    <p>Usamos ingredientes de la mejor calidad.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="why-icon heart"><i class="fas fa-heart"></i></span>
+                                <div>
+                                    <strong>Hecho con amor</strong>
+                                    <p>Cada postre es preparado especialmente para ti.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="why-icon variety"><i class="fas fa-smile-beam"></i></span>
+                                <div>
+                                    <strong>Variedad para todos</strong>
+                                    <p>Opciones para cada antojo y ocasión.</p>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="sidebar-divider"></div>
+
+                        <h3 class="sidebar-title">HAZ TU PEDIDO</h3>
+                        <ul class="order-list">
+                            <li>
+                                <span class="order-icon whatsapp"><i class="fab fa-whatsapp"></i></span>
+                                <span>(123) 456 7890</span>
+                            </li>
+                            <li>
+                                <span class="order-icon instagram"><i class="fab fa-instagram"></i></span>
+                                <span>@hildas.postres</span>
+                            </li>
+                            <li>
+                                <span class="order-icon delivery"><i class="fas fa-motorcycle"></i></span>
+                                <div>
+                                    <span>Servicio a domicilio</span><br>
+                                    <small>Consulta tu zona</small>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </aside>
+            </div>
+        </section>
+
+        <!-- ========== SNACKS SECTION ========== -->
+        <section class="snacks-section" id="snacks-section">
+            <!-- Snacks Banner / Hero -->
+            <div class="snacks-hero-banner">
+                <!-- Decorative Spheres -->
+                <div class="sphere sphere-snack-1"></div>
+                <div class="sphere sphere-snack-2"></div>
+                <div class="sphere sphere-snack-3"></div>
+
+                <div class="snacks-banner-inner">
+                    <div class="snacks-banner-left">
+                        <h1 class="snacks-title">Snacks <span class="heart-doodle">♡</span></h1>
+                        <h2 class="snacks-subtitle">ANTOJITOS QUE SIEMPRE ENAMORAN <i class="fas fa-heart"></i></h2>
+                        <p class="snacks-desc">Crujientes, irresistibles y llenos de sabor.<br>¡El complemento perfecto
+                            para tu día!</p>
+                    </div>
+
+                    <div class="snacks-banner-right">
+                        <div class="badge-doodle-container">
+                            <p class="script-badge-text">Pequeños<br>antojos,<br>grandes<br>momentos <i
+                                    class="fas fa-heart"></i></p>
+                            <div class="badge-dashed-underline"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Banner bottom wave -->
+                <div class="snacks-banner-wave">
+                    <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
+                        <path fill="#fff0f3"
+                            d="M0,25 C360,55 720,5 1080,40 C1260,55 1380,25 1440,35 L1440,50 L0,50 Z" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Categories Filter Pills -->
+            <div class="snacks-container">
+                <div class="snacks-categories">
+                    <button class="category-btn active" data-category="todos">Todos</button>
+                    <button class="category-btn" data-category="alitas">Alitas</button>
+                    <button class="category-btn" data-category="boneless">Boneless</button>
+                    <button class="category-btn" data-category="papas">Papas a la Francesa</button>
+                    <button class="category-btn" data-category="elotes">Elotes</button>
+                    <button class="category-btn" data-category="flan">Flan</button>
+                    <button class="category-btn" data-category="esquites">Esquites</button>
+                </div>
+
+                <!-- Product Grid -->
+                <div class="snacks-grid">
+
+                    <!-- Card 1: ALITAS -->
+                    <div class="snack-card" data-category="alitas">
+                        <div class="snack-img-wrapper">
+                            <img src="./images/alitas.jpg" alt="Alitas" class="snack-img">
+                        </div>
+                        <div class="snack-brush-badge">
+                            <span class="brush-ray">\\\</span>
+                            <span class="brush-text">ALITAS</span>
+                            <span class="brush-ray">///</span>
+                        </div>
+                        <p class="snack-description">Jugosas alitas bañadas en la salsa de tu preferencia.</p>
+                        <div class="snack-price">$95.00</div>
+                        <button class="btn-snack-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Agregar al carrito</span>
+                        </button>
+                    </div>
+
+                    <!-- Card 2: BONELESS -->
+                    <div class="snack-card" data-category="boneless">
+                        <div class="snack-img-wrapper">
+                            <img src="./images/boneless.jpg" alt="Boneless" class="snack-img">
+                        </div>
+                        <div class="snack-brush-badge">
+                            <span class="brush-ray">\\\</span>
+                            <span class="brush-text">BONELESS</span>
+                            <span class="brush-ray">///</span>
+                        </div>
+                        <p class="snack-description">Deliciosos trozos de pollo sin hueso, con el mejor sabor.</p>
+                        <div class="snack-price">$90.00</div>
+                        <button class="btn-snack-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Agregar al carrito</span>
+                        </button>
+                    </div>
+
+                    <!-- Card 3: PAPAS A LA FRANCESA -->
+                    <div class="snack-card" data-category="papas">
+                        <div class="snack-img-wrapper">
+                            <img src="./images/papas.jpg" alt="Papas a la Francesa" class="snack-img">
+                        </div>
+                        <div class="snack-brush-badge">
+                            <span class="brush-ray">\\\</span>
+                            <span class="brush-text">PAPAS A LA FRANCESA</span>
+                            <span class="brush-ray">///</span>
+                        </div>
+                        <p class="snack-description">Crujientes, doraditas y siempre frescas.</p>
+                        <div class="snack-price">$60.00</div>
+                        <button class="btn-snack-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Agregar al carrito</span>
+                        </button>
+                    </div>
+
+                    <!-- Card 4: ELOTES -->
+                    <div class="snack-card" data-category="elotes">
+                        <div class="snack-img-wrapper">
+                            <img src="./images/elotes.jpg" alt="Elotes" class="snack-img">
+                        </div>
+                        <div class="snack-brush-badge">
+                            <span class="brush-ray">\\\</span>
+                            <span class="brush-text">ELOTES</span>
+                            <span class="brush-ray">///</span>
+                        </div>
+                        <p class="snack-description">El antojo clásico, con todo el sabor tradicional.</p>
+                        <div class="snack-price">$50.00</div>
+                        <button class="btn-snack-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Agregar al carrito</span>
+                        </button>
+                    </div>
+
+                    <!-- Card 5: FLAN -->
+                    <div class="snack-card" data-category="flan">
+                        <div class="snack-img-wrapper">
+                            <img src="./images/flan.jpg" alt="Flan" class="snack-img">
+                        </div>
+                        <div class="snack-brush-badge">
+                            <span class="brush-ray">\\\</span>
+                            <span class="brush-text">FLAN</span>
+                            <span class="brush-ray">///</span>
+                        </div>
+                        <p class="snack-description">Suave, cremoso y simplemente delicioso.</p>
+                        <div class="snack-price">$45.00</div>
+                        <button class="btn-snack-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Agregar al carrito</span>
+                        </button>
+                    </div>
+
+                    <!-- Card 6: ESQUITES -->
+                    <div class="snack-card" data-category="esquites">
+                        <div class="snack-img-wrapper">
+                            <img src="./images/esquites.jpg" alt="Esquites" class="snack-img">
+                        </div>
+                        <div class="snack-brush-badge">
+                            <span class="brush-ray">\\\</span>
+                            <span class="brush-text">ESQUITES</span>
+                            <span class="brush-ray">///</span>
+                        </div>
+                        <p class="snack-description">Grano de elote tierno preparado con mayonesa, queso y chile.</p>
+                        <div class="snack-price">$48.00</div>
+                        <button class="btn-snack-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Agregar al carrito</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Inline Script for Snacks Filtering & Cart Interaction -->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // Category Filtering
+                const filterBtns = document.querySelectorAll('.snacks-categories .category-btn');
+                const snackCards = document.querySelectorAll('.snacks-grid .snack-card');
+
+                filterBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        filterBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+
+                        const targetCategory = btn.getAttribute('data-category');
+                        snackCards.forEach(card => {
+                            const cardCat = card.getAttribute('data-category');
+                            if (targetCategory === 'todos' || cardCat === targetCategory) {
+                                card.style.display = 'flex';
+                                card.style.animation = 'fadeIn 0.4s ease forwards';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    });
+                });
+
+                // Add to Cart Buttons
+                const cartBtns = document.querySelectorAll('.btn-snack-cart');
+                const cartBadge = document.querySelector('.cart-badge');
+                let cartCount = parseInt(cartBadge ? cartBadge.textContent : '2') || 2;
+
+                cartBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        cartCount++;
+                        if (cartBadge) {
+                            cartBadge.textContent = cartCount;
+                            cartBadge.style.transform = 'scale(1.3)';
+                            setTimeout(() => cartBadge.style.transform = 'scale(1)', 200);
+                        }
+
+                        const originalText = btn.innerHTML;
+                        btn.innerHTML = '<i class="fas fa-check"></i> <span>¡Agregado!</span>';
+                        btn.style.backgroundColor = '#4caf50';
+                        setTimeout(() => {
+                            btn.innerHTML = originalText;
+                            btn.style.backgroundColor = '';
+                        }, 1200);
+                    });
+                });
+            });
+        </script>
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer" id="footer">
+        <div class="footer-features">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-award"></i></div>
+                <div>
+                    <strong>CALIDAD GARANTIZADA</strong>
+                    <p>Ingredientes seleccionados</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-clock"></i></div>
+                <div>
+                    <strong>HECHO AL MOMENTO</strong>
+                    <p>Frescura en cada bocado</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-box-open"></i></div>
+                <div>
+                    <strong>EMPAQUES SEGUROS</strong>
+                    <p>Llegamos en perfectas condiciones</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-smile"></i></div>
+                <div>
+                    <strong>CLIENTES FELICES</strong>
+                    <p>Tu satisfacción es nuestra prioridad</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
