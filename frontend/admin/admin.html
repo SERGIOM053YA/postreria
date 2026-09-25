@@ -52,10 +52,44 @@
         .chart-track { height:14px; background:#faedf0; border-radius:99px; overflow:hidden; }
         .chart-bar { height:100%; background:linear-gradient(90deg,#f78ca2,#e95072); border-radius:99px; min-width:2px; }
         .empty-state { color:var(--admin-muted); padding:1rem 0; }
+        .sales-products { margin-top:2rem; }
+        .sales-products h3 { margin-bottom:.35rem; }
+        .sales-products .admin-table { min-width:520px; }
+        .sales-products .admin-table td:last-child,.sales-products .admin-table th:last-child { text-align:right; }
         @media(max-width:700px) { .admin-form,.date-filters,.stats-grid { grid-template-columns:1fr; } .admin-heading { align-items:flex-start; flex-direction:column; } }
+        /* Identidad visual compartida con la tienda */
+        body { background:var(--bg-cream,#fff0f3); color:var(--text-brown,#4a3b32); }
+        .admin-brand { position:relative; display:flex; align-items:center; justify-content:center; min-height:104px; padding:1rem 2rem; background:#fff; box-shadow:0 4px 18px rgba(74,59,50,.07); }
+        .admin-brand img { position:absolute; left:clamp(1rem,5vw,5rem); top:8px; width:82px; height:82px; object-fit:cover; border:4px solid white; border-radius:50%; box-shadow:0 4px 12px #0002; }
+        .admin-brand p { color:#8b6a71; font-size:.82rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; }
+        .admin-brand-wave { position:absolute; left:0; bottom:-17px; width:100%; height:20px; background:radial-gradient(22px 13px at 22px 0,#fff 98%,transparent 100%) 0 0/44px 20px repeat-x; }
+        .admin-shell { max-width:1240px; padding-top:3.5rem; }
+        .admin-heading { padding:1.5rem 1.8rem; margin-bottom:1.1rem; border:2px solid #ffccd8; border-radius:26px; background:linear-gradient(120deg,#fff 0%,#fff5f8 70%,#ffe8ef 100%); box-shadow:0 10px 28px rgba(240,84,115,.09); }
+        .admin-heading h1 { color:#e04868; font-family:'Pacifico',cursive; font-size:clamp(2rem,4vw,3rem); font-weight:400; }
+        .admin-heading p { color:#775c62; }
+        .admin-button { transition:transform .2s,box-shadow .2s,background .2s; text-decoration:none; }
+        .admin-button:hover { transform:translateY(-2px); box-shadow:0 7px 16px rgba(240,84,115,.2); }
+        .admin-button.primary,.admin-nav button.active { background:var(--primary-pink,#f05473); }
+        .admin-nav { gap:.75rem; }
+        .admin-nav button { border:1px solid #ffccd8; background:#fff; box-shadow:0 4px 12px rgba(240,84,115,.07); }
+        .admin-nav button:hover { border-color:#f05473; }
+        .admin-panel { border:2px solid #ffccd8; border-radius:26px; box-shadow:0 12px 32px rgba(240,84,115,.08); }
+        .admin-panel h2 { color:#443336; font-size:1.55rem; }
+        .admin-field input:focus,.admin-field select:focus,.admin-field textarea:focus,.date-filters input:focus,.date-filters select:focus { outline:3px solid #f0547330; border-color:#f05473; }
+        .admin-table th { color:#8b6a71; }
+        .admin-table tbody tr:hover { background:#fff7f9; }
+        .stat-card { border-color:#ffccd8; background:linear-gradient(135deg,#fff,#fff5f8); }
+        .stat-card strong { color:#e04868; }
+        .chart-track { background:#ffedf2; }
+        @media(max-width:700px) { .admin-brand { min-height:88px; justify-content:flex-end; padding-right:1rem; } .admin-brand img { width:66px; height:66px; } .admin-brand p { font-size:.68rem; letter-spacing:1px; } .admin-heading { padding:1.25rem; } }
     </style>
 </head>
 <body>
+    <header class="admin-brand">
+        <img src="../logo.png" alt="Hilda's Postres & Snacks">
+        <p>Hilda's Postres & Snacks</p>
+        <span class="admin-brand-wave" aria-hidden="true"></span>
+    </header>
     <main class="admin-shell">
         <header class="admin-heading">
             <div><h1>Administración</h1><p>Productos, disponibilidad y resumen de ventas</p></div>
@@ -102,6 +136,14 @@
             <h3>Desglose del periodo</h3>
             <div class="chart-list" id="sales-chart"></div>
             <p class="empty-state" id="sales-empty">No hay ventas registradas en las fechas seleccionadas.</p>
+            <div class="sales-products">
+                <h3>Productos vendidos</h3>
+                <p class="admin-hint">Consulta qué se vendió usando las fechas del calendario de arriba.</p>
+                <div class="admin-table-wrap">
+                    <table class="admin-table"><thead><tr><th>Producto</th><th>Unidades</th><th>Ingresos</th></tr></thead><tbody id="sales-product-rows"></tbody></table>
+                    <p class="empty-state" id="sales-products-empty">No hay productos vendidos en estas fechas.</p>
+                </div>
+            </div>
         </section>
     </main>
     <script>
@@ -241,12 +283,15 @@
                 const toText = document.getElementById('sales-to').value;
                 const chart = document.getElementById('sales-chart');
                 chart.replaceChildren();
+                const productRows = document.getElementById('sales-product-rows');
+                productRows.replaceChildren();
                 if (!fromText || !toText || fromText > toText) {
                     document.getElementById('sales-empty').hidden = false;
                     document.getElementById('sales-empty').textContent = 'Selecciona un rango de fechas válido.';
                     document.getElementById('sales-total').textContent = money(0);
                     document.getElementById('sales-count').textContent = '0';
                     document.getElementById('sales-units').textContent = '0';
+                    document.getElementById('sales-products-empty').hidden = false;
                     return;
                 }
                 document.getElementById('sales-empty').textContent = 'No hay ventas registradas en las fechas seleccionadas.';
@@ -259,6 +304,22 @@
                 document.getElementById('sales-count').textContent = sales.length;
                 document.getElementById('sales-units').textContent = units;
                 document.getElementById('sales-empty').hidden = sales.length > 0;
+                const productTotals = new Map();
+                sales.forEach(sale => (sale.items || []).forEach(item => {
+                    const name = String(item.name || 'Producto sin nombre');
+                    const quantity = Number(item.quantity) || 0;
+                    const price = Number(item.price) || 0;
+                    const product = productTotals.get(name) || { quantity:0, revenue:0 };
+                    product.quantity += quantity;
+                    product.revenue += quantity * price;
+                    productTotals.set(name, product);
+                }));
+                document.getElementById('sales-products-empty').hidden = productTotals.size > 0;
+                Array.from(productTotals.entries()).sort((a,b) => a[0].localeCompare(b[0], 'es')).forEach(([name, product]) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${escapeHTML(name)}</td><td>${product.quantity}</td><td>${money(product.revenue)}</td>`;
+                    productRows.appendChild(row);
+                });
 
                 const groups = new Map();
                 const mode = document.getElementById('sales-group').value;

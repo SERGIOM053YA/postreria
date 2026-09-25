@@ -60,11 +60,37 @@
         .success-card h2 { font-size:1.7rem; }
         .success-card a { display:inline-block; margin-top:.8rem; padding:.8rem 1.2rem; border-radius:999px; color:#fff; background:var(--primary-pink,#e95072); font-weight:700; text-decoration:none; }
         .success-card a[hidden] { display:none; }
+        .checkout-header { position:relative; display:flex; align-items:center; justify-content:center; min-height:112px; padding:1rem 2rem 1.5rem; background:#fff; box-shadow:0 4px 18px rgba(74,59,50,.07); z-index:2; }
+        .checkout-logo { position:absolute; left:clamp(1rem,5vw,5rem); top:4px; width:96px; height:96px; object-fit:cover; border:5px solid #fff; border-radius:50%; box-shadow:0 4px 12px #0002; }
+        .checkout-nav { display:flex; flex-wrap:wrap; justify-content:center; gap:clamp(.7rem,2.5vw,2.2rem); padding-left:110px; }
+        .checkout-nav a { color:#4a3b32; font-size:.9rem; font-weight:700; letter-spacing:.04em; text-decoration:none; }
+        .checkout-nav a:hover,.checkout-nav a.current { color:var(--primary-pink); }
+        .checkout-wave { position:absolute; left:0; bottom:-20px; width:100%; height:22px; }
+        .shipping-page { padding-top:2.5rem; }
+        .shipping-title { position:relative; margin:1rem 0 2rem; padding:1.6rem 1rem; border:2px solid #ffccd8; border-radius:26px; background:linear-gradient(120deg,#fff 0%,#fff5f8 70%,#ffe8ef 100%); box-shadow:0 10px 28px rgba(240,84,115,.08); }
+        .shipping-title h1 { color:#443336; font-family:'Pacifico',cursive; font-size:clamp(2rem,4vw,2.8rem); font-weight:400; }
+        .shipping-title .eyebrow { display:inline-block; padding:.4rem .8rem; border-radius:999px; background:#ffe7ed; }
+        .shipping-card { border:2px solid #ffccd8; border-radius:26px; box-shadow:0 12px 32px rgba(240,84,115,.08); }
+        .shipping-card h2 { color:#443336; }
+        .shipping-layout > .shipping-card:last-child { position:sticky; top:1rem; }
+        .payment-option { background:#fffdfd; transition:background .2s,border-color .2s,transform .2s; }
+        .payment-option:hover { transform:translateY(-2px); border-color:#f05473; }
+        .shipping-submit { transition:transform .2s,box-shadow .2s,background .2s; }
+        .shipping-submit:hover { transform:translateY(-2px); box-shadow:0 10px 24px #e9507245; }
+        .checkout-footer { margin-top:2.5rem; padding:1.2rem; background:#fff; border-top:2px solid #ffccd8; color:#8b6a71; text-align:center; font-size:.9rem; }
+        .checkout-footer i { color:#f05473; margin:0 .25rem; }
         @media(max-width:760px) { .shipping-layout { grid-template-columns:1fr; } .shipping-top { align-items:flex-start; } }
-        @media(max-width:520px) { .shipping-form,.payment-options { grid-template-columns:1fr; } .field.full,.payment-section,.shipping-submit,.form-message { grid-column:1; } }
+        @media(max-width:760px) { .shipping-layout > .shipping-card:last-child { position:static; } }
+        @media(max-width:520px) { .shipping-form,.payment-options { grid-template-columns:1fr; } .field.full,.payment-section,.shipping-submit,.form-message { grid-column:1; } .checkout-header { justify-content:flex-end; min-height:88px; padding:1rem; } .checkout-logo { left:1rem; width:68px; height:68px; } .checkout-nav { gap:.5rem .8rem; padding-left:76px; } .checkout-nav a { font-size:.68rem; } .shipping-title { padding:1.2rem .8rem; } }
     </style>
 </head>
 <body>
+    <header class="checkout-header">
+        <a href="../inicio.html" aria-label="Ir al inicio"><img class="checkout-logo" src="../logo.png" alt="Hilda's Postres & Snacks"></a>
+        <nav class="checkout-nav" aria-label="Navegación principal">
+        </nav>
+        <div class="checkout-wave" aria-hidden="true"><svg viewBox="0 0 1440 50" preserveAspectRatio="none" width="100%" height="100%"><path fill="#fff" d="M0,0 L0,30 Q60,50 120,30 Q180,10 240,30 Q300,50 360,30 Q420,10 480,30 Q540,50 600,30 Q660,10 720,30 Q780,50 840,30 Q900,10 960,30 Q1020,50 1080,30 Q1140,10 1200,30 Q1260,50 1320,30 Q1380,10 1440,30 L1440,0 Z"/></svg></div>
+    </header>
     <main class="shipping-page">
         <header class="shipping-top">
             <a class="shipping-brand" href="../inicio.html">Hilda's Postres</a>
@@ -131,6 +157,7 @@
             <a class="admin-button primary" href="../inicio.html">Volver a la tienda</a>
         </section>
     </main>
+    <footer class="checkout-footer"><i class="fas fa-heart"></i> Gracias por elegir Hilda's Postres & Snacks <i class="fas fa-heart"></i></footer>
     <script>
         (() => {
             const CART_KEY = 'hilda_shopping_cart';
