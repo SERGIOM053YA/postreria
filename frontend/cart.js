@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span>Envío</span>
                     <span>$0.00</span>
                 </div>
-                <p class="summary-note">(En compras mayores a $300)</p>
+                <p class="summary-note"></p>
                 
                 <div class="summary-total">
                     <span>Total</span>
