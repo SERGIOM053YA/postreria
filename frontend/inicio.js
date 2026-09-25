@@ -5,7 +5,6 @@ window.cliente = window.cliente || window.supabase.createClient(SUPABASE_URL, SU
 const cliente = window.cliente;
 
 // Función puente: Convierte el texto a minúsculas para evitar errores de coincidencia
-// Función puente: Convierte el texto a minúsculas para evitar errores de coincidencia
 function obtenerImagenLocal(nombreProducto) {
     const nombreNormalizado = nombreProducto.trim().toLowerCase();
 
@@ -21,7 +20,6 @@ function obtenerImagenLocal(nombreProducto) {
         "arroz con leche": "./images/arroz_leche.jpg"
     };
 
-    // Si el postre existe en el mapa, usa esa ruta. Si no, usa el logo por defecto.
     return mapaImagenes[nombreNormalizado] || "./logo.png";
 }
 

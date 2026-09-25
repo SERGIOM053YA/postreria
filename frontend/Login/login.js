@@ -1,67 +1,82 @@
-const loginForm = document.getElementById('loginForm');
-const passwordInput = document.getElementById('password');
-const togglePassword = document.getElementById('togglePassword');
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Credenciales de Supabase
+    const SUPABASE_URL = 'https://abwqlettqauklpufupaa.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFid3FsZXR0cWF1a2xwdWZ1cGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0MDgwOTYsImV4cCI6MjEwNDk4NDA5Nn0.5rpXHPuWskz9jm1GrbyEdXXgTbaQF1mmg7shpMqvZa8'; 
+    window.cliente = window.cliente || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const cliente = window.cliente;
 
-// Elementos de los requisitos
-const reqLength = document.getElementById('req-length');
-const reqUppercase = document.getElementById('req-uppercase');
-const reqLowercase = document.getElementById('req-lowercase');
-const reqNumber = document.getElementById('req-number');
-const reqSpecial = document.getElementById('req-special');
+    // 2. Elementos del DOM
+    const form = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passInput = document.getElementById('password');
+    const togglePass = document.getElementById('togglePassword');
+    const btnLogin = document.getElementById('btnLogin');
 
-// Ver/Ocultar contraseña
-togglePassword.addEventListener('click', () => {
-    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-    passwordInput.setAttribute('type', type);
-    togglePassword.classList.toggle('fa-eye');
-    togglePassword.classList.toggle('fa-eye-slash');
-});
+    const reqLength = document.getElementById('req-length');
+    const reqUppercase = document.getElementById('req-uppercase');
+    const reqLowercase = document.getElementById('req-lowercase');
+    const reqNumber = document.getElementById('req-number');
+    const reqSpecial = document.getElementById('req-special');
 
-// Validación en tiempo real
-passwordInput.addEventListener('input', () => {
-    const val = passwordInput.value;
-
-    // Requisito 1: Entre 8 y 20 caracteres
-    validateRequirement(reqLength, val.length >= 8 && val.length <= 20);
-
-    // Requisito 2: Al menos una mayúscula
-    validateRequirement(reqUppercase, /[A-Z]/.test(val));
-
-    // Requisito 3: Al menos una minúscula
-    validateRequirement(reqLowercase, /[a-z]/.test(val));
-
-    // Requisito 4: Al menos un número
-    validateRequirement(reqNumber, /[0-9]/.test(val));
-
-    // Requisito 5: Carácter especial
-    validateRequirement(reqSpecial, /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val));
-});
-
-function validateRequirement(element, isValid) {
-    const icon = element.querySelector('i');
-    if (isValid) {
-        element.classList.add('valid');
-        icon.className = 'fas fa-check-circle';
-    } else {
-        element.classList.remove('valid');
-        icon.className = 'fas fa-circle';
+    // 3. Mostrar / Ocultar Contraseña (Ojito)
+    if (togglePass) {
+        togglePass.addEventListener('click', () => {
+            const isPass = passInput.type === 'password';
+            passInput.type = isPass ? 'text' : 'password';
+            togglePass.classList.toggle('fa-eye', !isPass);
+            togglePass.classList.toggle('fa-eye-slash', isPass);
+        });
     }
-}
 
-// Envío del Formulario vía EventListener limpio
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const val = passwordInput.value;
+    // 4. Validación visual interactiva en tiempo real
+    if (passInput) {
+        passInput.addEventListener('input', () => {
+            const val = passInput.value;
+            validarCheck(reqLength, val.length >= 8 && val.length <= 20);
+            validarCheck(reqUppercase, /[A-Z]/.test(val));
+            validarCheck(reqLowercase, /[a-z]/.test(val));
+            validarCheck(reqNumber, /[0-9]/.test(val));
+            validarCheck(reqSpecial, /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val));
+        });
+    }
 
-    const isLengthValid = val.length >= 8 && val.length <= 20;
-    const hasUpper = /[A-Z]/.test(val);
-    const hasLower = /[a-z]/.test(val);
-    const hasNumber = /[0-9]/.test(val);
-    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val);
+    function validarCheck(item, esValido) {
+        if (!item) return;
+        const icon = item.querySelector('i');
+        item.classList.toggle('valid', esValido);
+        if (icon) {
+            icon.className = esValido ? 'fas fa-check-circle' : 'fas fa-circle';
+        }
+    }
 
-    if (isLengthValid && hasUpper && hasLower && hasNumber && hasSpecial) {
-        alert('¡Inicio de sesión exitoso!');
-    } else {
-        alert('Por favor asegúrate de que la contraseña cumpla con todos los requisitos.');
+    // 5. Envío y redirección a Inicio
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            btnLogin.disabled = true;
+            btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AUTENTICANDO...';
+
+            const { data, error } = await cliente.auth.signInWithPassword({
+                email: emailInput.value.trim(),
+                password: passInput.value
+            });
+
+            if (error) {
+                alert('Error de acceso: ' + error.message);
+                btnLogin.disabled = false;
+                btnLogin.innerHTML = 'INICIAR SESIÓN <i class="fas fa-arrow-right"></i>';
+                return;
+            }
+
+            // Guardar credenciales en el navegador
+            localStorage.setItem('sb_access_token', data.session.access_token);
+            localStorage.setItem('sb_user_id', data.user.id);
+            localStorage.setItem('sb_user_email', data.user.email);
+
+            alert('¡Inicio de sesión exitoso!');
+
+            // Redirección relativa y segura hacia el inicio
+            window.location.href = '../inicio.html';
+        });
     }
 });
