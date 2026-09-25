@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             alert('¡Inicio de sesión exitoso!');
 
-            // Redirección relativa y segura hacia el inicio
+            // Redirección relativa hacia el inicio
             window.location.href = '../inicio.html';
         });
     }

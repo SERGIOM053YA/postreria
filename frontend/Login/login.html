@@ -9,35 +9,104 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Vinculación del CSS -->
     <link rel="stylesheet" href="login.css">
-</head>
-<body>
+    
+    <!-- Reglas forzadas para garantizar el diseño original -->
+    <style>
+        /* 1. NAVBAR BLANCA Y ESTILIZADA */
+        .top-navbar {
+            background-color: #ffffff !important;
+            padding: 12px 40px !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+            position: relative;
+            z-index: 20;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .nav-brand img { height: 45px !important; width: auto !important; }
+        .nav-menu { display: flex; gap: 25px; }
+        .nav-menu a { text-decoration: none; color: #4a4a4a; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px; }
+        .nav-menu a:hover { color: #ff4d6d; }
+        .nav-icons { display: flex; align-items: center; gap: 20px; }
+        .cart-wrapper { position: relative; color: #4a4a4a; font-size: 20px; text-decoration: none; }
+        .cart-badge-count { position: absolute; top: -8px; right: -10px; background: #ff4d6d; color: white; font-size: 11px; font-weight: bold; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
+        .ws-link { color: #4a4a4a; font-size: 22px; text-decoration: none; }
+        .btn-user-nav { color: #ff4d6d; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px; text-decoration: none; display: flex; align-items: center; gap: 6px; }
 
-    <!-- Header -->
-    <header class="header">
-        <a href="#" class="logo-container">
-            <img src="./logo.png" alt="Hilda's Logo" onerror="this.style.display='none'">
-            <span class="logo-text">Hilda's</span>
+        /* 2. LAYOUT DOS COLUMNAS */
+        .page-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 80px;
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .hero-left { max-width: 420px; }
+        .hero-left h1 { font-family: 'Outfit', sans-serif; font-size: 52px; font-weight: 800; color: #2b2b2b; line-height: 1.1; margin-bottom: 8px; }
+        .hero-left p.hero-subtitle { color: #777; font-size: 18px; margin-bottom: 12px; font-family: 'Outfit', sans-serif; }
+        .hero-heart { color: #ff4d6d; font-size: 24px; margin-bottom: 16px; }
+        .pill-dessert { display: inline-flex; align-items: center; background: #ffffff; padding: 10px 20px; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 143, 163, 0.2); font-size: 15px; color: #555; font-weight: 600; font-family: 'Outfit', sans-serif; }
+
+        /* 3. TARJETA LOGIN */
+        .login-card { background: #fff; padding: 40px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.08); width: 100%; max-width: 400px; }
+        .card-badge-logo img { width: 75px !important; height: 75px !important; border-radius: 50%; object-fit: cover; margin-bottom: 15px; }
+        .login-card h2 { font-size: 28px; color: #ff4d6d; font-weight: 800; margin-bottom: 5px; font-family: 'Outfit', sans-serif; }
+        .login-card .subtitle { color: #777; font-size: 14px; margin-bottom: 25px; font-family: 'Outfit', sans-serif; }
+    </style>
+</head>
+<body style="background-color: #fff0f3; margin: 0; min-height: 100vh; display: flex; flex-direction: column;">
+
+    <!-- NAVBAR BLANCA -->
+    <header class="top-navbar">
+        <a href="../inicio.html" class="nav-brand">
+            <img src="../logo.png" alt="Hilda's Logo" onerror="this.src='./logo.png'">
         </a>
-        <a href="#" class="btn-back"><i class="fas fa-arrow-left"></i> Volver</a>
+        <nav class="nav-menu">
+            <a href="../inicio.html">INICIO</a>
+            <a href="/frontend/menu/menu.html">POSTRES</a>
+            <a href="/frontend/menu/menu.html">BEBIDAS</a>
+            <a href="/frontend/menu/menu.html">SNACKS</a>
+        </nav>
+        <div class="nav-icons">
+            <a href="/frontend/menu/menu.html" class="cart-wrapper">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge-count">0</span>
+            </a>
+            <a href="https://wa.me/5512345678" target="_blank" class="ws-link">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="login.html" class="btn-user-nav">
+                <i class="far fa-user"></i> Iniciar sesión
+            </a>
+        </div>
     </header>
 
-    <!-- Main Section con Formulario -->
-    <main class="login-main">
-        <!-- Esferas Decorativas -->
-        <div class="sphere sphere-1"></div>
-        <div class="sphere sphere-2"></div>
-        <div class="sphere sphere-3"></div>
-        <div class="sphere sphere-4"></div>
-
-        <div class="login-card">
+    <!-- LAYOUT CENTRAL -->
+    <div class="page-wrapper">
+        <!-- Izquierda -->
+        <div class="hero-left">
             <h1>¡Bienvenido!</h1>
+            <p class="hero-subtitle">Dulces momentos, siempre contigo.</p>
+            <div class="hero-heart">♥</div>
+            <div class="pill-dessert">
+                <span>🍓 Fresas con crema</span>
+            </div>
+        </div>
+
+        <!-- Derecha (Formulario) -->
+        <div class="login-card">
+            <div class="card-badge-logo">
+                <img src="../logo.png" alt="Logo" onerror="this.src='./logo.png'">
+            </div>
+            <h2>¡Inicia sesión!</h2>
             <p class="subtitle">Ingresa tus datos para continuar</p>
 
             <form id="loginForm">
-                <!-- Campo Correo -->
                 <div class="form-group">
                     <label for="email">Correo Electrónico</label>
                     <div class="input-wrapper">
@@ -46,7 +115,6 @@
                     </div>
                 </div>
 
-                <!-- Campo Contraseña -->
                 <div class="form-group">
                     <label for="password">Contraseña</label>
                     <div class="input-wrapper">
@@ -55,42 +123,26 @@
                         <i class="fas fa-eye toggle-password" id="togglePassword"></i>
                     </div>
 
-                    <!-- Lista de requisitos de contraseña -->
                     <div class="password-requirements">
                         <p>La contraseña debe contener:</p>
-                        <div class="requirement-item" id="req-length">
-                            <i class="fas fa-circle"></i> De 8 a 20 caracteres
-                        </div>
-                        <div class="requirement-item" id="req-uppercase">
-                            <i class="fas fa-circle"></i> Al menos una mayúscula (A-Z)
-                        </div>
-                        <div class="requirement-item" id="req-lowercase">
-                            <i class="fas fa-circle"></i> Al menos una minúscula (a-z)
-                        </div>
-                        <div class="requirement-item" id="req-number">
-                            <i class="fas fa-circle"></i> Al menos un número (0-9)
-                        </div>
-                        <div class="requirement-item" id="req-special">
-                            <i class="fas fa-circle"></i> Carácter especial (!@#$%^&*...)
-                        </div>
+                        <div class="requirement-item" id="req-length"><i class="fas fa-circle"></i> De 8 a 20 caracteres</div>
+                        <div class="requirement-item" id="req-uppercase"><i class="fas fa-circle"></i> Al menos una mayúscula (A-Z)</div>
+                        <div class="requirement-item" id="req-lowercase"><i class="fas fa-circle"></i> Al menos una minúscula (a-z)</div>
+                        <div class="requirement-item" id="req-number"><i class="fas fa-circle"></i> Al menos un número (0-9)</div>
+                        <div class="requirement-item" id="req-special"><i class="fas fa-circle"></i> Carácter especial (!@#$%^&*...)</div>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-login">INICIAR SESIÓN</button>
+                <button type="submit" class="btn-login" id="btnLogin">INICIAR SESIÓN <i class="fas fa-arrow-right"></i></button>
             </form>
 
-            <div class="login-footer-links">
-                <p>¿Olvidaste tu contraseña? <a href="../recuperarc/recuperarc.html">Recupérala aquí</a></p>
+            <div class="login-footer-links" style="margin-top: 20px; text-align: center; font-family: 'Outfit', sans-serif;">
+                <p style="color: #666; font-size: 14px;">¿Olvidaste tu contraseña? <a href="../recuperarc/recuperarc.html" style="color: #ff4d6d; font-weight: 600; text-decoration: none;">Recupérala aquí</a></p>
             </div>
         </div>
-    </main>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; Hilda's Postres & Snacks - Hecho con <i class="fas fa-heart"></i></p>
-    </footer>
-
-    <!-- Vinculación del JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="login.js"></script>
 </body>
 </html>

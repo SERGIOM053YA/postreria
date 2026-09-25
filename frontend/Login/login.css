@@ -15,7 +15,21 @@ body {
     position: relative;
     overflow-x: hidden;
 }
+/* Limitar el logo del Header */
+.header .logo-container img {
+    height: 45px !important;
+    width: auto !important;
+    max-width: 120px;
+}
 
+/* Limitar el logo circular dentro de la tarjeta de Login */
+.card-badge-logo img {
+    width: 75px !important;
+    height: 75px !important;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
 /* Header */
 .header {
     background-color: #ff8fa3;
@@ -261,4 +275,74 @@ body {
     font-size: 13px;
     position: relative;
     z-index: 10;
+}
+/* =========================================
+   RESTAURACIÓN DEL DISEÑO A DOS COLUMNAS
+   ========================================= */
+.login-main-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    min-height: calc(100vh - 90px);
+}
+
+.welcome-hero {
+    flex: 1;
+    max-width: 450px;
+}
+
+.welcome-hero h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 4rem;
+    font-weight: 800;
+    color: #2b2b2b;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-hero p {
+    color: #66707a;
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+}
+
+.dessert-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #ffffff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    box-shadow: 0 10px 25px rgba(255, 143, 163, 0.15);
+    font-weight: 600;
+    color: #4a4a4a;
+    margin-top: 1rem;
+}
+
+.login-card-container {
+    flex: 1;
+    max-width: 450px;
+    width: 100%;
+    position: relative;
+}
+
+/* Asegurar que la tarjeta ocupe su lado derecho correctamente */
+.login-card {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 2;
+}
+
+/* Evitar que el ícono del corazón rompa el texto */
+.heart-icon {
+    font-size: 1.5rem;
+    color: #ff4d6d;
+    margin: 0.5rem 0;
 }
