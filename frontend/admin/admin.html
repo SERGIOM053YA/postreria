@@ -81,7 +81,23 @@
         .stat-card { border-color:#ffccd8; background:linear-gradient(135deg,#fff,#fff5f8); }
         .stat-card strong { color:#e04868; }
         .chart-track { background:#ffedf2; }
-        @media(max-width:700px) { .admin-brand { min-height:88px; justify-content:flex-end; padding-right:1rem; } .admin-brand img { width:66px; height:66px; } .admin-brand p { font-size:.68rem; letter-spacing:1px; } .admin-heading { padding:1.25rem; } }
+        .orders-header { display:flex; flex-direction:column; gap:1.2rem; margin-bottom:1.5rem; }
+        .orders-title { display:flex; align-items:center; gap:.8rem; }
+        .orders-title i { font-size:1.8rem; color:var(--primary-pink,#e95072); }
+        .orders-title h2 { margin:0; }
+        .orders-filters { display:flex; flex-wrap:wrap; align-items:center; gap:.8rem; }
+        .filter-btn { background:#fff; border:1px solid #ffccd8; color:#8d3d54; padding:.5rem 1rem; border-radius:99px; font:600 .9rem Outfit,sans-serif; cursor:pointer; }
+        .filter-btn.active { background:#e95072; color:white; border-color:#e95072; }
+        .search-box { display:flex; align-items:center; background:#fff; border:1px solid #ffccd8; border-radius:99px; padding:.4rem .8rem; margin-left:auto; }
+        .search-box i { color:#a3868e; margin-right:.5rem; }
+        .search-box input { border:none; outline:none; background:transparent; font:inherit; color:#4a3b32; width:220px; }
+        .row-actions-btn { display:inline-flex; align-items:center; border:1px solid #ffccd8; background:#fff; color:#e95072; border-radius:99px; padding:.4rem .9rem; cursor:pointer; font-weight:600; font-size:.85rem; transition:all 0.2s; }
+        .row-actions-btn:hover { background:#fff5f8; transform:translateY(-1px); }
+        .pagination { display:flex; justify-content:center; align-items:center; gap:.4rem; margin-top:2rem; }
+        .pagination button { width:32px; height:32px; border:none; background:#fff5f8; color:#8d3d54; border-radius:50%; font-weight:600; cursor:pointer; }
+        .pagination button.active { background:#e95072; color:white; }
+        .orders-meta { display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; color:#8b6a71; font-size:.85rem; }
+        @media(max-width:700px) { .admin-brand { min-height:88px; justify-content:flex-end; padding-right:1rem; } .admin-brand img { width:66px; height:66px; } .admin-brand p { font-size:.68rem; letter-spacing:1px; } .admin-heading { padding:1.25rem; } .search-box { margin-left:0; width:100%; } .search-box input { width:100%; } }
     </style>
 </head>
 <body>
@@ -92,13 +108,20 @@
     </header>
     <main class="admin-shell">
         <header class="admin-heading">
-            <div><h1>Administración</h1><p>Productos, disponibilidad y resumen de ventas</p></div>
+            <div style="display:flex; align-items:center; gap:1.2rem;">
+                <i id="main-heading-icon" class="fas fa-box" style="font-size:2.8rem; color:#e95072;"></i>
+                <div>
+                    <h1 id="main-heading-title">Productos</h1>
+                    <p id="main-heading-desc">Gestiona el catálogo y disponibilidad de tu tienda</p>
+                </div>
+            </div>
             <a class="admin-button" href="../inicio.html"><i class="fas fa-store"></i> Ver tienda</a>
         </header>
 
         <nav class="admin-nav" aria-label="Secciones de administración">
             <button type="button" class="active" data-panel="products-panel"><i class="fas fa-box"></i> Productos</button>
             <button type="button" data-panel="sales-panel"><i class="fas fa-chart-line"></i> Ganancias</button>
+            <button type="button" data-panel="orders-panel"><i class="fas fa-clipboard-list"></i> Pedidos</button>
         </nav>
 
         <section class="admin-panel active" id="products-panel">
@@ -142,6 +165,54 @@
                 <div class="admin-table-wrap">
                     <table class="admin-table"><thead><tr><th>Producto</th><th>Unidades</th><th>Ingresos</th></tr></thead><tbody id="sales-product-rows"></tbody></table>
                     <p class="empty-state" id="sales-products-empty">No hay productos vendidos en estas fechas.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel" id="orders-panel">
+            <div class="orders-header">
+                <div class="orders-title">
+                    <i class="fas fa-box-open"></i>
+                    <div>
+                        <h2>Pedidos recibidos</h2>
+                        <p class="admin-hint">Aquí puedes ver y gestionar todos los pedidos de tu tienda.</p>
+                    </div>
+                </div>
+                <div class="orders-filters" id="orders-filters">
+                    <button type="button" class="filter-btn active" data-filter="all">Todos</button>
+                    <button type="button" class="filter-btn" data-filter="Pendiente">Pendientes</button>
+                    <button type="button" class="filter-btn" data-filter="En preparación">En preparación</button>
+                    <button type="button" class="filter-btn" data-filter="Enviado">Enviados</button>
+                    <button type="button" class="filter-btn" data-filter="Completado">Completados</button>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="order-search" placeholder="Buscar por número de pedido...">
+                    </div>
+                </div>
+            </div>
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th># Pedido</th>
+                            <th>Cliente</th>
+                            <th>Productos</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-rows"></tbody>
+                </table>
+                <p class="empty-state" id="orders-empty">No hay pedidos que coincidan con los filtros.</p>
+            </div>
+            <div class="orders-meta">
+                <span id="orders-showing">Mostrando 0 pedidos</span>
+                <div class="pagination">
+                    <button type="button"><i class="fas fa-chevron-left"></i></button>
+                    <button type="button" class="active">1</button>
+                    <button type="button"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
         </section>
@@ -199,10 +270,20 @@
             const form = document.getElementById('product-form');
             const message = document.getElementById('form-message');
 
+            const pageHeadings = {
+                'products-panel': { title:'Productos', desc:'Gestiona el catálogo y disponibilidad de tu tienda', icon:'fa-box' },
+                'sales-panel': { title:'Ganancias', desc:'Resumen de ventas e ingresos del negocio', icon:'fa-chart-line' },
+                'orders-panel': { title:'Pedidos', desc:'Gestiona los pedidos de tu tienda', icon:'fa-clipboard-list' }
+            };
             document.querySelectorAll('.admin-nav button').forEach(button => button.addEventListener('click', () => {
                 document.querySelectorAll('.admin-nav button').forEach(item => item.classList.toggle('active', item === button));
                 document.querySelectorAll('.admin-panel').forEach(panel => panel.classList.toggle('active', panel.id === button.dataset.panel));
+                const headerData = pageHeadings[button.dataset.panel];
+                document.getElementById('main-heading-title').textContent = headerData.title;
+                document.getElementById('main-heading-desc').textContent = headerData.desc;
+                document.getElementById('main-heading-icon').className = 'fas ' + headerData.icon;
                 if (button.dataset.panel === 'sales-panel') renderSales();
+                if (button.dataset.panel === 'orders-panel') renderOrders();
             }));
 
             function renderProducts() {
@@ -360,6 +441,95 @@
                 });
             }
             document.getElementById('sales-group').addEventListener('change', renderSales);
+            
+            function renderOrders() {
+                const search = document.getElementById('order-search').value.toLowerCase();
+                const activeFilter = document.querySelector('#orders-filters .filter-btn.active').dataset.filter;
+                let sales = read(SALES_KEY);
+                
+                // Seed mock orders if empty to demonstrate statuses
+                if (sales.length === 0) {
+                    const now = new Date();
+                    sales = [
+                        { id: 'mock1-123', date: new Date(now.getTime() - 1000*60*30).toISOString(), status: 'Pendiente', total: 125, items: [{name: 'Crepa de Fresa', quantity: 1, price: 60}, {name: 'Frappé de Oreo', quantity: 1, price: 65}], delivery: {name: 'María López', phone: '+52 555 123 4567'} },
+                        { id: 'mock2-124', date: new Date(now.getTime() - 1000*60*90).toISOString(), status: 'En preparación', total: 60, items: [{name: 'Crepa de Nutella', quantity: 1, price: 60}], delivery: {name: 'Ana Torres', phone: '+52 556 987 6543'} },
+                        { id: 'mock3-125', date: new Date(now.getTime() - 1000*60*150).toISOString(), status: 'Enviado', total: 60, items: [{name: 'Crepa de Fresa', quantity: 1, price: 60}], delivery: {name: 'Carlos Ramírez', phone: '+52 551 234 5678'} },
+                        { id: 'mock4-126', date: new Date(now.getTime() - 1000*60*200).toISOString(), status: 'Completado', total: 55, items: [{name: 'Crepa de Plátano', quantity: 1, price: 55}], delivery: {name: 'Sofía Hernández', phone: '+52 558 765 4321'} }
+                    ];
+                    write(SALES_KEY, sales);
+                }
+
+                sales.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                const tbody = document.getElementById('orders-rows');
+                tbody.replaceChildren();
+                let count = 0;
+                
+                sales.forEach(sale => {
+                    const status = sale.status || 'Pendiente';
+                    if (activeFilter !== 'all' && status !== activeFilter) return;
+                    const orderId = sale.id.split('-')[0].substring(0,6).toUpperCase();
+                    if (search && !orderId.toLowerCase().includes(search)) return;
+                    count++;
+                    const tr = document.createElement('tr');
+                    
+                    const dateObj = new Date(sale.date);
+                    const dateStr = dateObj.toLocaleDateString('es-MX', {day:'2-digit', month:'short', year:'numeric'});
+                    const timeStr = dateObj.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+
+                    let productsHtml = '';
+                    if (sale.items && sale.items.length > 0) {
+                         const firstItem = sale.items[0];
+                         const moreCount = sale.items.length - 1;
+                         const catalogItem = catalog.find(c => c.name === firstItem.name) || {image: '../images/placeholder.jpg'};
+                         productsHtml = `<div style="display:flex; align-items:center; gap:0.6rem;">
+                             <img src="${catalogItem.image}" class="admin-thumb" style="width:44px; height:44px;">
+                             <div>
+                                 <div style="font-weight:600; font-size:.9rem; color:#4a3b32;">${firstItem.name}</div>
+                                 <div style="font-size:.8rem; color:#81747a;">${firstItem.quantity} × ${money(firstItem.price)} ${moreCount > 0 ? `<span style="background:#ffe7ed; color:#e95072; padding:.1rem .4rem; border-radius:9px; font-weight:600; font-size:.7rem; margin-left:.3rem;">+${moreCount} más</span>` : ''}</div>
+                             </div>
+                         </div>`;
+                    }
+                    
+                    const statusColors = {
+                        'Pendiente': {bg:'#fff5e6', text:'#d97706', icon:'fa-clock'},
+                        'En preparación': {bg:'#e0f2fe', text:'#0284c7', icon:'fa-fire-burner'},
+                        'Enviado': {bg:'#dcfce7', text:'#16a34a', icon:'fa-truck'},
+                        'Completado': {bg:'#f3e8ff', text:'#9333ea', icon:'fa-check-circle'}
+                    };
+                    const color = statusColors[status] || statusColors['Pendiente'];
+                    const statusBadge = `<span style="background:${color.bg}; color:${color.text}; padding:.35rem .75rem; border-radius:999px; font-size:.78rem; font-weight:700; display:inline-flex; align-items:center; gap:.4rem;"><i class="fas ${color.icon}"></i> ${status}</span>`;
+
+                    tr.innerHTML = `
+                        <td style="font-weight:700; color:#555;">#${orderId}</td>
+                        <td>
+                            <div style="display:flex; flex-direction:column; gap:.2rem;">
+                                <span style="font-weight:600; font-size:.9rem;"><i class="far fa-user" style="color:#ffb3c1; width:16px;"></i> ${escapeHTML(sale.delivery?.name || 'Cliente')}</span>
+                                <span style="font-size:.85rem; color:#81747a;"><i class="fab fa-whatsapp" style="color:#ffb3c1; width:16px;"></i> ${escapeHTML(sale.delivery?.phone || 'N/A')}</span>
+                            </div>
+                        </td>
+                        <td>${productsHtml}</td>
+                        <td style="font-weight:800; color:#443336;">${money(sale.total)}</td>
+                        <td>${statusBadge}</td>
+                        <td style="font-size:.85rem; color:#81747a;">${dateStr}<br>${timeStr}</td>
+                        <td>
+                            <button class="row-actions-btn" data-id="${sale.id}"><i class="far fa-eye"></i> Ver detalle <i class="fas fa-chevron-right" style="font-size:.7rem; margin-left:.3rem;"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                document.getElementById('orders-empty').hidden = count > 0;
+                document.getElementById('orders-showing').textContent = `Mostrando ${count} pedidos`;
+            }
+
+            document.querySelectorAll('#orders-filters .filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#orders-filters .filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderOrders();
+                });
+            });
+            document.getElementById('order-search').addEventListener('input', renderOrders);
+
             renderProducts();
         })();
     </script>

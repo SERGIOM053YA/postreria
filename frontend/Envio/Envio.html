@@ -218,7 +218,8 @@
                     id: crypto.randomUUID?.() || `${Date.now()}-${Math.random()}`,
                     date: new Date().toISOString(), total,
                     items: cart.map(item => ({ name:item.name, quantity:Number(item.quantity) || 1, price:parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0 })),
-                    delivery: { address:data.get('address'), reference:data.get('reference'), phone:data.get('phone') },
+                    delivery: { name:data.get('recipient'), address:data.get('address'), reference:data.get('reference'), phone:data.get('phone') },
+                    status: 'Pendiente',
                     payment: payment === 'Efectivo'
                         ? { method:payment, cashMode:data.get('cashMode'), changeFor:data.get('changeFor') || '' }
                         : { method:payment }
