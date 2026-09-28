@@ -256,6 +256,18 @@ body {
     gap: 50px;
 }
 
+.hero-inner.login-centered {
+    max-width: 560px;
+}
+
+.login-centered .hero-left {
+    display: none;
+}
+
+.login-centered .hero-right {
+    flex: 0 1 100%;
+}
+
 /* ========== COLUMNA IZQUIERDA: BIENVENIDA ========== */
 .hero-left {
     flex: 1;
@@ -560,7 +572,11 @@ body {
     margin-top: 16px;
     font-size: 13px;
     color: #665255;
+    display: grid;
+    gap: 8px;
 }
+
+.login-footer-links p { margin: 0; }
 
 .login-footer-links a {
     color: #f05473;
