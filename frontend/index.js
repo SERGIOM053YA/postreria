@@ -4,10 +4,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 window.cliente = window.cliente || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const cliente = window.cliente;
 
-// Función puente: Convierte el texto a minúsculas para evitar errores de coincidencia
+// Función puente: Convierte el texto a minúsculas
 function obtenerImagenLocal(nombreProducto) {
     const nombreNormalizado = nombreProducto.trim().toLowerCase();
-
     const mapaImagenes = {
         "fresas con crema": "./images/fresas_crema.jpg",
         "mini hot cakes": "./images/mini_hotcakes.jpg",
@@ -19,7 +18,6 @@ function obtenerImagenLocal(nombreProducto) {
         "uvas con crema": "./images/uvas_crema.jpg",
         "arroz con leche": "./images/arroz_leche.jpg"
     };
-
     return mapaImagenes[nombreNormalizado] || "./logo.png";
 }
 
@@ -44,11 +42,11 @@ async function cargarCatalogoInicio() {
 
     grid.innerHTML = ''; 
 
-    // 3. Renderizamos combinando datos de la nube con imágenes locales
     productos.forEach(prod => {
         const card = document.createElement('div');
         card.className = 'product-card';
         card.id = `product-${prod.id}`;
+        card.dataset.producto_id = prod.id;
         
         const imagenSource = obtenerImagenLocal(prod.nombre);
 
@@ -65,9 +63,71 @@ async function cargarCatalogoInicio() {
                 </div>
             </div>
         `;
-        
         grid.appendChild(card);
     });
 }
 
-document.addEventListener('DOMContentLoaded', cargarCatalogoInicio);
+// 3. SEGURIDAD Y ROLES: Verificar sesión con manejo de errores
+async function verificarAutenticacionYRol() {
+    try {
+        console.log("Verificando estado de la sesión...");
+        const { data: { session }, error: sessionError } = await cliente.auth.getSession();
+        
+        if (sessionError) throw sessionError;
+
+        if (session && session.user) {
+            const user = session.user;
+            console.log("✅ Sesión activa detectada para:", user.email);
+            
+            // Extraer nombre seguro (evitar errores si no hay metadatos)
+            const nombreUsuario = user.user_metadata?.nombre || user.user_metadata?.full_name || (user.email ? user.email.split('@')[0] : 'Usuario');
+            
+            // 1. Cambiar visualmente el botón de login
+            const loginBtn = document.getElementById('login-btn');
+            if (loginBtn) {
+                loginBtn.innerHTML = `<i class="fas fa-sign-out-alt"></i><span>Salir (${nombreUsuario})</span>`;
+                loginBtn.href = '#';
+                loginBtn.style.backgroundColor = '#f8e7ec'; 
+                loginBtn.style.color = '#8d3d54';
+                loginBtn.style.borderColor = '#ffccd8';
+                
+                loginBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    await cliente.auth.signOut();
+                    window.location.reload(); 
+                });
+            }
+
+            // 2. Consultar el Rol en la tabla perfiles
+            const { data: perfil, error: perfilError } = await cliente
+                .from('perfiles')
+                .select('rol')
+                .eq('id', user.id)
+                .single();
+
+            if (perfilError) {
+                console.warn("⚠️ No se encontró perfil o la política RLS bloqueó la lectura:", perfilError.message);
+            }
+
+            if (perfil && (perfil.rol === 'Administrador' || perfil.rol === 'Cocinero')) {
+                console.log("🛡️ Permisos de KDS concedidos. Rol:", perfil.rol);
+                const adminBtn = document.getElementById('admin-btn');
+                if (adminBtn) {
+                    adminBtn.style.display = 'inline-flex';
+                }
+            } else {
+                console.log("Cliente estándar. El panel KDS se mantiene oculto.");
+            }
+        } else {
+            console.log("❌ No hay ninguna sesión activa en este navegador.");
+        }
+    } catch (err) {
+        console.error("Error crítico al verificar la sesión:", err);
+    }
+}
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', () => {
+    cargarCatalogoInicio();
+    verificarAutenticacionYRol();
+});
