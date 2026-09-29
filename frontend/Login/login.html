@@ -4,20 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - Hilda's Postres & Snacks</title>
-<<<<<<< HEAD
-    <!-- Fonts & FontAwesome -->
-=======
->>>>>>> feature/areli
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="login.css">
-<<<<<<< HEAD
     
-    <!-- Reglas forzadas para garantizar el diseño original -->
     <style>
-        /* 1. NAVBAR BLANCA Y ESTILIZADA */
+        /* NAVBAR BLANCA */
         .top-navbar {
             background-color: #ffffff !important;
             padding: 12px 40px !important;
@@ -40,7 +34,7 @@
         .ws-link { color: #4a4a4a; font-size: 22px; text-decoration: none; }
         .btn-user-nav { color: #ff4d6d; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px; text-decoration: none; display: flex; align-items: center; gap: 6px; }
 
-        /* 2. LAYOUT DOS COLUMNAS */
+        /* LAYOUT DOS COLUMNAS */
         .page-wrapper {
             display: flex;
             align-items: center;
@@ -56,8 +50,8 @@
         .hero-heart { color: #ff4d6d; font-size: 24px; margin-bottom: 16px; }
         .pill-dessert { display: inline-flex; align-items: center; background: #ffffff; padding: 10px 20px; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 143, 163, 0.2); font-size: 15px; color: #555; font-weight: 600; font-family: 'Outfit', sans-serif; }
 
-        /* 3. TARJETA LOGIN */
-        .login-card { background: #fff; padding: 40px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.08); width: 100%; max-width: 400px; }
+        /* TARJETA LOGIN */
+        .login-card { background: #fff; padding: 40px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; }
         .card-badge-logo img { width: 75px !important; height: 75px !important; border-radius: 50%; object-fit: cover; margin-bottom: 15px; }
         .login-card h2 { font-size: 28px; color: #ff4d6d; font-weight: 800; margin-bottom: 5px; font-family: 'Outfit', sans-serif; }
         .login-card .subtitle { color: #777; font-size: 14px; margin-bottom: 25px; font-family: 'Outfit', sans-serif; }
@@ -65,44 +59,42 @@
 </head>
 <body style="background-color: #fff0f3; margin: 0; min-height: 100vh; display: flex; flex-direction: column;">
 
-    <!-- NAVBAR BLANCA -->
+    <!-- NAVBAR -->
     <header class="top-navbar">
         <a href="../inicio.html" class="nav-brand">
             <img src="../logo.png" alt="Hilda's Logo" onerror="this.src='./logo.png'">
         </a>
         <nav class="nav-menu">
             <a href="../inicio.html">INICIO</a>
-            <a href="/frontend/menu/menu.html">POSTRES</a>
-            <a href="/frontend/menu/menu.html">BEBIDAS</a>
-            <a href="/frontend/menu/menu.html">SNACKS</a>
+            <a href="../postres.html">POSTRES</a>
+            <a href="../bebidas.html">BEBIDAS</a>
+            <a href="../snacks.html">SNACKS</a>
         </nav>
         <div class="nav-icons">
-            <a href="/frontend/menu/menu.html" class="cart-wrapper">
+            <a href="../carrito.html" class="cart-wrapper">
                 <i class="fas fa-shopping-cart"></i>
                 <span class="cart-badge-count">0</span>
             </a>
             <a href="https://wa.me/5512345678" target="_blank" class="ws-link">
                 <i class="fab fa-whatsapp"></i>
             </a>
-            <a href="login.html" class="btn-user-nav">
-                <i class="far fa-user"></i> Iniciar sesión
+            <a href="registro.html" class="btn-user-nav">
+                <i class="far fa-user"></i> Crear cuenta
             </a>
         </div>
     </header>
 
     <!-- LAYOUT CENTRAL -->
     <div class="page-wrapper">
-        <!-- Izquierda -->
-        <div class="hero-left">
+        <!-- <div class="hero-left">
             <h1>¡Bienvenido!</h1>
             <p class="hero-subtitle">Dulces momentos, siempre contigo.</p>
             <div class="hero-heart">♥</div>
             <div class="pill-dessert">
                 <span>🍓 Fresas con crema</span>
             </div>
-        </div>
+        </div-->
 
-        <!-- Derecha (Formulario) -->
         <div class="login-card">
             <div class="card-badge-logo">
                 <img src="../logo.png" alt="Logo" onerror="this.src='./logo.png'">
@@ -111,7 +103,7 @@
             <p class="subtitle">Ingresa tus datos para continuar</p>
 
             <form id="loginForm">
-                <div class="form-group">
+                <div class="form-group" style="text-align: left;">
                     <label for="email">Correo Electrónico</label>
                     <div class="input-wrapper">
                         <i class="fas fa-envelope input-icon"></i>
@@ -119,21 +111,12 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="text-align: left;">
                     <label for="password">Contraseña</label>
                     <div class="input-wrapper">
                         <i class="fas fa-lock input-icon"></i>
                         <input type="password" id="password" placeholder="••••••••" required>
                         <i class="fas fa-eye toggle-password" id="togglePassword"></i>
-                    </div>
-
-                    <div class="password-requirements">
-                        <p>La contraseña debe contener:</p>
-                        <div class="requirement-item" id="req-length"><i class="fas fa-circle"></i> De 8 a 20 caracteres</div>
-                        <div class="requirement-item" id="req-uppercase"><i class="fas fa-circle"></i> Al menos una mayúscula (A-Z)</div>
-                        <div class="requirement-item" id="req-lowercase"><i class="fas fa-circle"></i> Al menos una minúscula (a-z)</div>
-                        <div class="requirement-item" id="req-number"><i class="fas fa-circle"></i> Al menos un número (0-9)</div>
-                        <div class="requirement-item" id="req-special"><i class="fas fa-circle"></i> Carácter especial (!@#$%^&*...)</div>
                     </div>
                 </div>
 
@@ -141,6 +124,7 @@
             </form>
 
             <div class="login-footer-links" style="margin-top: 20px; text-align: center; font-family: 'Outfit', sans-serif;">
+                <p style="color: #666; font-size: 14px; margin-bottom: 8px;">¿No tienes cuenta? <a href="registro.html" style="color: #ff4d6d; font-weight: 600; text-decoration: none;">Regístrate aquí</a></p>
                 <p style="color: #666; font-size: 14px;">¿Olvidaste tu contraseña? <a href="../recuperarc/recuperarc.html" style="color: #ff4d6d; font-weight: 600; text-decoration: none;">Recupérala aquí</a></p>
             </div>
         </div>
@@ -150,142 +134,3 @@
     <script src="login.js"></script>
 </body>
 </html>
-=======
-</head>
-<body>
-
-    <!-- ========== HEADER (réplica exacta de inicio.html) ========== -->
-    <header class="header" id="header">
-        <!-- Logo sobresaliente a la izquierda -->
-        <div class="logo-container">
-            <img src="../logo.png" alt="Hilda's Postres & Snacks" class="logo">
-        </div>
-
-        <!-- Onda blanca inferior (igual que inicio.html) -->
-        <div class="header-wave">
-            <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
-                <path fill="#ffffff"
-                    d="M0,0 L0,30 Q60,50 120,30 Q180,10 240,30 Q300,50 360,30 Q420,10 480,30 Q540,50 600,30 Q660,10 720,30 Q780,50 840,30 Q900,10 960,30 Q1020,50 1080,30 Q1140,10 1200,30 Q1260,50 1320,30 Q1380,10 1440,30 L1440,0 Z" />
-            </svg>
-        </div>
-    </header>
-
-    <!-- ========== HERO / SECCIÓN PRINCIPAL (fondo rosa igual que inicio.html) ========== -->
-    <main class="hero-section">
-
-        <!-- Esferas decorativas igual que inicio.html -->
-        <div class="sphere sphere-1"></div>
-        <div class="sphere sphere-2"></div>
-        <div class="sphere sphere-3"></div>
-        <div class="sphere sphere-4"></div>
-        <div class="sphere sphere-5"></div>
-        <div class="sphere sphere-6"></div>
-
-        <!-- Doodles SVG decorativos -->
-        <div class="bg-doodle strawberry-doodle">
-            <svg width="130" height="150" viewBox="0 0 100 120" fill="none">
-                <path d="M50 20C30 20 15 40 15 70C15 95 35 115 50 115C65 115 85 95 85 70C85 40 70 20 50 20Z" fill="#d63859" fill-opacity="0.18"/>
-                <path d="M50 20C45 10 35 5 25 10C35 20 45 20 50 20Z" fill="#2ec4b6" fill-opacity="0.22"/>
-                <path d="M50 20C55 10 65 5 75 10C65 20 55 20 50 20Z" fill="#2ec4b6" fill-opacity="0.22"/>
-                <circle cx="35" cy="55" r="2.5" fill="#fff" fill-opacity="0.6"/>
-                <circle cx="55" cy="48" r="2.5" fill="#fff" fill-opacity="0.6"/>
-                <circle cx="63" cy="68" r="2.5" fill="#fff" fill-opacity="0.6"/>
-                <circle cx="40" cy="78" r="2.5" fill="#fff" fill-opacity="0.6"/>
-                <circle cx="50" cy="97" r="2.5" fill="#fff" fill-opacity="0.6"/>
-            </svg>
-        </div>
-
-        <div class="bg-doodle heart-doodle">
-            <svg width="65" height="65" viewBox="0 0 24 24" fill="#d63859" fill-opacity="0.22">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-        </div>
-
-        <div class="hero-inner login-centered">
-            <!-- COLUMNA IZQUIERDA: BIENVENIDA Y POSTRE -->
-            <div class="hero-left">
-                <div class="welcome-heading">
-                    <span class="sparkle-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="#f05473"><path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/></svg>
-                    </span>
-                    <h1 class="welcome-title">¡Bienvenido!</h1>
-                    <span class="sparkle-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#f05473"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    </span>
-                </div>
-                <p class="welcome-subtitle">Dulces momentos, siempre<br>contigo.</p>
-                <div class="small-heart">♥</div>
-
-                <div class="dessert-showcase">
-                    <img src="" alt="Fresas con crema" class="dessert-img"
-                        onerror="this.src='file:/C:/Users/ENB10/.gemini/antigravity-ide/brain/d679154b-4e28-4b77-88a7-e7994cbf7ab7/strawberry_dessert_cup_1789416362201.jpg'">
-                </div>
-            </div>
-
-            <!-- COLUMNA DERECHA: TARJETA DE LOGIN -->
-            <div class="hero-right">
-                <div class="login-card">
-                    <div class="card-header-logo">
-                        <span class="doodle-spark">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="#f05473"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>
-                        </span>
-                        <div class="card-logo-badge">
-                            <img src="../logo.png" alt="Hilda's Logo">
-                        </div>
-                        <span class="doodle-spark">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="#f05473"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/></svg>
-                        </span>
-                    </div>
-
-                    <h2 class="card-title">¡Inicia sesión!</h2>
-                    <p class="card-subtitle">Ingresa tus datos para continuar</p>
-
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <label for="email">Correo Electrónico</label>
-                            <div class="input-wrapper">
-                                <i class="fas fa-envelope input-icon"></i>
-                                <input type="email" id="email" placeholder="tu@correo.com" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password">Contraseña</label>
-                            <div class="input-wrapper">
-                                <i class="fas fa-lock input-icon"></i>
-                                <input type="password" id="password" placeholder="••••••••" required>
-                                <i class="fas fa-eye toggle-password" id="togglePassword"></i>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn-login">
-                            <span>INICIAR SESIÓN</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </form>
-
-                    <div class="login-footer-links">
-                        <p>¿No tienes cuenta? <a href="../registro/registro.html">Regístrate aquí</a></p>
-                        <p><a href="../recuperarc/recuperarc.html">¿Olvidaste tu contraseña?</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Onda blanca inferior del hero (igual que inicio.html) -->
-        <div class="hero-wave">
-            <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
-                <path fill="#fff0f3" d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z" />
-            </svg>
-        </div>
-    </main>
-
-    <!-- ========== FOOTER ========== -->
-    <footer class="footer">
-        <p>&copy; Hilda's Postres & Snacks - Hecho con <i class="fas fa-heart"></i></p>
-    </footer>
-
-    <script src="login.js"></script>
-</body>
-</html>
->>>>>>> feature/areli

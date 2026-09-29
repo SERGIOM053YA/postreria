@@ -86,14 +86,14 @@
 </head>
 <body>
     <header class="checkout-header">
-        <a href="../inicio.html" aria-label="Ir al inicio"><img class="checkout-logo" src="../logo.png" alt="Hilda's Postres & Snacks"></a>
+        <a href="../index.html" aria-label="Ir al inicio"><img class="checkout-logo" src="../logo.png" alt="Hilda's Postres & Snacks"></a>
         <nav class="checkout-nav" aria-label="Navegación principal">
         </nav>
         <div class="checkout-wave" aria-hidden="true"><svg viewBox="0 0 1440 50" preserveAspectRatio="none" width="100%" height="100%"><path fill="#fff" d="M0,0 L0,30 Q60,50 120,30 Q180,10 240,30 Q300,50 360,30 Q420,10 480,30 Q540,50 600,30 Q660,10 720,30 Q780,50 840,30 Q900,10 960,30 Q1020,50 1080,30 Q1140,10 1200,30 Q1260,50 1320,30 Q1380,10 1440,30 L1440,0 Z"/></svg></div>
     </header>
     <main class="shipping-page">
         <header class="shipping-top">
-            <a class="shipping-brand" href="../inicio.html">Hilda's Postres</a>
+            <a class="shipping-brand" href="../index.html">Hilda's Postres</a>
             <a class="back-link" href="../carrito.html"><i class="fas fa-arrow-left"></i> Volver al carrito</a>
         </header>
         <div id="checkout-content">
@@ -154,94 +154,190 @@
             <h2>¡Recibimos tu pedido!</h2>
             <p id="success-message">Guardamos tus datos de entrega y método de pago. Pronto nos pondremos en contacto contigo.</p>
             <a class="whatsapp-proof" id="success-whatsapp-link" href="https://wa.me/" target="_blank" rel="noopener noreferrer" hidden><i class="fab fa-whatsapp" aria-hidden="true"></i> Enviar comprobante por WhatsApp</a>
-            <a class="admin-button primary" href="../inicio.html">Volver a la tienda</a>
+            <a class="admin-button primary" href="../index.html">Volver a la tienda</a>
         </section>
     </main>
     <footer class="checkout-footer"><i class="fas fa-heart"></i> Gracias por elegir Hilda's Postres & Snacks <i class="fas fa-heart"></i></footer>
-    <script>
-        (() => {
-            const CART_KEY = 'hilda_shopping_cart';
-            const SALES_KEY = 'hilda_sales';
-            // Completa estos datos con la cuenta del negocio y el número de WhatsApp (solo dígitos, con clave de país).
-            const transferInfo = { holder:'', bank:'', account:'', whatsappNumber:'' };
-            const read = key => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } };
-            const cart = read(CART_KEY);
-            const form = document.getElementById('shipping-form');
-            const formatMoney = value => new Intl.NumberFormat('es-MX', { style:'currency', currency:'MXN' }).format(value);
-            const orderItems = document.getElementById('order-items');
-            const total = cart.reduce((sum, item) => sum + (parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0) * (Number(item.quantity) || 1), 0);
-            document.getElementById('order-total').textContent = formatMoney(total);
-            if (cart.length) {
-                cart.forEach(item => {
-                    const row = document.createElement('div'); row.className = 'order-item';
-                    const description = item.desc || '';
-                    const instructions = item.instructions ? ` · ${item.instructions}` : '';
-                    const name = document.createElement('span'); name.textContent = `${item.name} × ${item.quantity || 1}`;
-                    const price = document.createElement('strong');
-                    price.textContent = formatMoney((parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0) * (Number(item.quantity) || 1));
-                    const details = document.createElement('small'); details.textContent = description + instructions;
-                    row.append(name, price); row.appendChild(details); orderItems.appendChild(row);
-                });
-            } else {
-                orderItems.innerHTML = '<p class="empty-order">Tu carrito está vacío. <a href="../inicio.html">Regresa a la tienda</a> para agregar productos.</p>';
-                form.querySelector('button[type="submit"]').disabled = true;
-                form.querySelector('button[type="submit"]').style.opacity = '.55';
+
+<!-- SDK Oficial de Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Inicializar Supabase
+    const SUPABASE_URL = 'https://abwqlettqauklpufupaa.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFid3FsZXR0cWF1a2xwdWZ1cGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0MDgwOTYsImV4cCI6MjEwNDk4NDA5Nn0.5rpXHPuWskz9jm1GrbyEdXXgTbaQF1mmg7shpMqvZa8';
+    const cliente = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 2. Renderizar la Interfaz del Resumen de Pedido
+    const CART_KEY = 'hilda_shopping_cart';
+    const read = key => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } };
+    const cart = read(CART_KEY);
+    const form = document.getElementById('shipping-form'); // Asegúrate de que el id sea 'shipping-form'
+    const formatMoney = value => new Intl.NumberFormat('es-MX', { style:'currency', currency:'MXN' }).format(value);
+    const orderItems = document.getElementById('order-items');
+    
+    const total = cart.reduce((sum, item) => sum + (parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0) * (Number(item.quantity) || 1), 0);
+    const totalEl = document.getElementById('order-total');
+    if (totalEl) totalEl.textContent = formatMoney(total);
+    
+    if (cart.length && orderItems) {
+        cart.forEach(item => {
+            const row = document.createElement('div'); row.className = 'order-item';
+            const description = item.desc || '';
+            const instructions = item.instructions ? ` · ${item.instructions}` : '';
+            const name = document.createElement('span'); name.textContent = `${item.name} × ${item.quantity || 1}`;
+            const price = document.createElement('strong');
+            price.textContent = formatMoney((parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0) * (Number(item.quantity) || 1));
+            const details = document.createElement('small'); details.textContent = description + instructions;
+            row.append(name, price); row.appendChild(details); orderItems.appendChild(row);
+        });
+    } else if (orderItems) {
+        orderItems.innerHTML = '<p class="empty-order">Tu carrito está vacío. <a href="../inicio.html">Regresa a la tienda</a> para agregar productos.</p>';
+        if (form) {
+            const btnSubmit = form.querySelector('button[type="submit"]');
+            if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.style.opacity = '.55'; }
+        }
+    }
+
+    // 3. Lógica visual para Efectivo vs Transferencia
+    const transferInfo = { whatsappNumber: '5512345678' };
+    const cashOptions = document.getElementById('cash-options');
+    const transferDetails = document.getElementById('transfer-details');
+    
+    document.querySelectorAll('input[name="payment"]').forEach(input => input.addEventListener('change', () => {
+        const isCash = input.value === 'Efectivo' && input.checked;
+        const isTransfer = input.value === 'Transferencia' && input.checked;
+        if (cashOptions) {
+            cashOptions.classList.toggle('visible', isCash);
+            cashOptions.querySelectorAll('input[name="cashMode"]').forEach(mode => { mode.required = isCash; if (!isCash) mode.checked = false; });
+        }
+        if (!isCash) { 
+            const changeField = document.getElementById('change-field');
+            const changeFor = document.getElementById('change-for');
+            if (changeField) changeField.hidden = true; 
+            if (changeFor) changeFor.required = false; 
+        }
+        if (transferDetails) transferDetails.classList.toggle('visible', isTransfer);
+    }));
+    document.querySelector('input[name="payment"]:checked')?.dispatchEvent(new Event('change'));
+    
+    document.querySelectorAll('input[name="cashMode"]').forEach(input => input.addEventListener('change', () => {
+        const needsChange = input.value === 'Necesito cambio' && input.checked;
+        const changeField = document.getElementById('change-field');
+        const changeFor = document.getElementById('change-for');
+        if (changeField) changeField.hidden = !needsChange;
+        if (changeFor) changeFor.required = needsChange;
+    }));
+
+    // 4. Lógica de Envío con Geolocalización Obligatoria
+    if (form) {
+        form.addEventListener('submit', async event => {
+            event.preventDefault();
+            if (!cart.length || total <= 0) return;
+            
+            const btnSubmit = form.querySelector('button[type="submit"]');
+            let formMessage = document.getElementById('form-message');
+            if (!formMessage) {
+                formMessage = document.createElement('p');
+                formMessage.id = 'form-message';
+                formMessage.style.color = '#e74c3c';
+                formMessage.style.fontWeight = 'bold';
+                form.appendChild(formMessage);
             }
 
-            const cashOptions = document.getElementById('cash-options');
-            const transferDetails = document.getElementById('transfer-details');
-            document.getElementById('transfer-holder').textContent = transferInfo.holder || 'Por agregar';
-            document.getElementById('transfer-bank').textContent = transferInfo.bank || 'Por agregar';
-            document.getElementById('transfer-account').textContent = transferInfo.account || 'Por agregar';
-            document.getElementById('whatsapp-proof-link').href = `https://wa.me/${transferInfo.whatsappNumber}`;
-            document.querySelectorAll('input[name="payment"]').forEach(input => input.addEventListener('change', () => {
-                const isCash = input.value === 'Efectivo' && input.checked;
-                const isTransfer = input.value === 'Transferencia' && input.checked;
-                cashOptions.classList.toggle('visible', isCash);
-                cashOptions.querySelectorAll('input[name="cashMode"]').forEach(mode => { mode.required = isCash; if (!isCash) mode.checked = false; });
-                if (!isCash) { document.getElementById('change-field').hidden = true; document.getElementById('change-for').required = false; }
-                transferDetails.classList.toggle('visible', isTransfer);
-            }));
-            document.querySelector('input[name="payment"]:checked')?.dispatchEvent(new Event('change'));
-            document.querySelectorAll('input[name="cashMode"]').forEach(input => input.addEventListener('change', () => {
-                const needsChange = input.value === 'Necesito cambio' && input.checked;
-                document.getElementById('change-field').hidden = !needsChange;
-                document.getElementById('change-for').required = needsChange;
-            }));
+            btnSubmit.disabled = true;
+            formMessage.textContent = 'Solicitando permisos de ubicación... Por favor, acepta en la ventana emergente.';
+            btnSubmit.innerHTML = '<i class="fas fa-map-marker-alt fa-bounce"></i> Verificando cobertura...';
 
-            form.addEventListener('submit', event => {
-                event.preventDefault();
-                if (!cart.length || total <= 0) return;
-                const data = new FormData(form);
-                const payment = data.get('payment');
-                const sale = {
-                    id: crypto.randomUUID?.() || `${Date.now()}-${Math.random()}`,
-                    date: new Date().toISOString(), total,
-                    items: cart.map(item => ({ name:item.name, quantity:Number(item.quantity) || 1, price:parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0 })),
-                    delivery: { name:data.get('recipient'), address:data.get('address'), reference:data.get('reference'), phone:data.get('phone') },
-                    status: 'Pendiente',
-                    payment: payment === 'Efectivo'
-                        ? { method:payment, cashMode:data.get('cashMode'), changeFor:data.get('changeFor') || '' }
-                        : { method:payment }
-                };
-                try {
-                    const sales = read(SALES_KEY);
-                    sales.push(sale);
-                    localStorage.setItem(SALES_KEY, JSON.stringify(sales));
-                    localStorage.removeItem(CART_KEY);
-                    if (payment === 'Transferencia') {
-                        const whatsappLink = document.getElementById('success-whatsapp-link');
-                        whatsappLink.href = `https://wa.me/${transferInfo.whatsappNumber}`;
-                        whatsappLink.hidden = false;
-                        document.getElementById('success-message').textContent = 'Para verificar la transferencia, envía tu comprobante por WhatsApp usando el botón. Completa el número del negocio en la configuración de esta página.';
+            if (!navigator.geolocation) {
+                formMessage.textContent = 'Tu navegador no soporta geolocalización. Imposible validar la entrega.';
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = 'Confirmar pedido';
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const userLat = position.coords.latitude;
+                    const userLon = position.coords.longitude;
+                    
+                    formMessage.textContent = ''; 
+                    btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando pedido...';
+                    
+                    const data = new FormData(form);
+                    const paymentMethod = data.get('payment');
+                    const estadoPedido = paymentMethod === 'Efectivo' ? 'Por Preparar' : 'Pendiente de Validación';
+                    const direccionCompleta = data.get('address') + ' | Ref: ' + data.get('reference');
+                    const notasPago = paymentMethod === 'Efectivo' && data.get('cashMode') === 'Necesito cambio' 
+                                      ? `Cambio de: ${data.get('changeFor')}` : '';
+
+                    const { data: pedidoData, error: pedidoError } = await cliente.from('pedidos').insert([{
+                        cliente_nombre: data.get('recipient'),
+                        cliente_telefono: data.get('phone'),
+                        tipo_entrega: 'A Domicilio',
+                        metodo_pago: paymentMethod,
+                        estado: estadoPedido,
+                        total: total,
+                        direccion_entrega: direccionCompleta + (notasPago ? ` | Notas de pago: ${notasPago}` : ''),
+                        latitud: userLat,
+                        longitud: userLon
+                    }]).select('id').single();
+
+                    if (pedidoError) {
+                        formMessage.textContent = pedidoError.message;
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = 'Confirmar pedido';
+                        return;
                     }
-                    document.getElementById('checkout-content').hidden = true;
-                    document.getElementById('success-card').style.display = 'block';
-                } catch {
-                    document.getElementById('form-message').textContent = 'No se pudo guardar el pedido. Revisa el espacio disponible en el navegador e inténtalo de nuevo.';
-                }
-            });
-        })();
-    </script>
+
+                    const nuevoPedidoId = pedidoData.id;
+
+                    const itemsAInsertar = cart.map(item => ({
+                        pedido_id: nuevoPedidoId,
+                        producto_id: item.producto_id,
+                        cantidad: item.quantity,
+                        precio_unitario: parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0,
+                    }));
+
+                    await cliente.from('pedido_items').insert(itemsAInsertar);
+
+                    localStorage.removeItem(CART_KEY);
+                    
+                    if (paymentMethod === 'Transferencia') {
+                        const whatsappLink = document.getElementById('success-whatsapp-link');
+                        if (whatsappLink) {
+                            whatsappLink.href = `https://wa.me/${transferInfo.whatsappNumber}?text=Hola, acabo de realizar el pedido #${nuevoPedidoId}. Envío mi comprobante:`;
+                            whatsappLink.hidden = false;
+                        }
+                        const successMsg = document.getElementById('success-message');
+                        if (successMsg) successMsg.textContent = `Pedido #${nuevoPedidoId} registrado. Para verificar tu transferencia, envía tu comprobante por WhatsApp.`;
+                    } else {
+                        const successMsg = document.getElementById('success-message');
+                        if (successMsg) successMsg.textContent = `¡Tu pedido #${nuevoPedidoId} está en cocina! Pronto nos pondremos en contacto.`;
+                    }
+
+                    const checkoutContent = document.getElementById('checkout-content');
+                    const successCard = document.getElementById('success-card');
+                    if (checkoutContent) checkoutContent.hidden = true;
+                    if (successCard) successCard.style.display = 'block';
+
+                }, 
+                (error) => {
+                    console.error("Error de ubicación:", error);
+                    if (error.code === error.PERMISSION_DENIED) {
+                        formMessage.textContent = 'Debes permitir el acceso a tu ubicación para verificar si estás en nuestra zona de entrega.';
+                    } else {
+                        formMessage.textContent = 'No pudimos obtener tu ubicación. Verifica tu conexión o GPS.';
+                    }
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = 'Confirmar pedido';
+                }, 
+                { enableHighAccuracy: true }
+            );
+        });
+    }
+});
+</script>
 </body>
 </html>

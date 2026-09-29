@@ -89,7 +89,6 @@ body {
     z-index: 1;
 }
 
-<<<<<<< HEAD
 .sphere-1 { width: 120px; height: 120px; top: 12%; left: -40px; }
 .sphere-2 { width: 80px; height: 80px; bottom: 15%; right: -20px; }
 .sphere-3 { width: 60px; height: 60px; top: 40%; right: 5%; }
@@ -104,7 +103,483 @@ body {
     padding: 40px 20px;
     position: relative;
     z-index: 2;
-=======
+}
+
+.login-card {
+    background: #ffffff;
+    border-radius: 28px;
+    padding: 40px 35px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 15px 35px rgba(255, 143, 163, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    text-align: center;
+}
+
+.login-card h1 {
+    font-family: 'Pacifico', cursive;
+    color: #ff4d6d;
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.login-card p.subtitle {
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 28px;
+}
+
+/* Formulario */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper i.input-icon {
+    position: absolute;
+    left: 15px;
+    color: #ff8fa3;
+    font-size: 16px;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 14px 45px 14px 45px;
+    border: 2px solid #ffe0e6;
+    border-radius: 14px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+    background-color: #fffafb;
+}
+
+.input-wrapper input:focus {
+    border-color: #ff4d6d;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(255, 77, 109, 0.1);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.toggle-password:hover {
+    color: #ff4d6d;
+}
+
+/* Reglas de Validación de Contraseña */
+.password-requirements {
+    background: #fff8f9;
+    border: 1px solid #ffe0e6;
+    border-radius: 12px;
+    padding: 12px 15px;
+    margin-top: 12px;
+}
+
+.password-requirements p {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.requirement-item {
+    font-size: 12px;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    transition: all 0.3s ease;
+}
+
+.requirement-item:last-child {
+    margin-bottom: 0;
+}
+
+.requirement-item i {
+    font-size: 10px;
+}
+
+.requirement-item.valid {
+    color: #2ec4b6;
+    font-weight: 500;
+}
+
+.requirement-item.valid i {
+    color: #2ec4b6;
+}
+
+/* Botón de Iniciar Sesión */
+.btn-login {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(90deg, #ff4d6d, #ff8fa3);
+    color: #ffffff;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(255, 77, 109, 0.3);
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 77, 109, 0.4);
+}
+
+.login-footer-links {
+    margin-top: 20px;
+    font-size: 13px;
+}
+
+.login-footer-links a {
+    color: #ff4d6d;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-footer-links a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+    background-color: #ff8fa3;
+    color: #ffffff;
+    text-align: center;
+    padding: 15px;
+    font-size: 13px;
+    position: relative;
+    z-index: 10;
+}
+/* =========================================
+   RESTAURACIÓN DEL DISEÑO A DOS COLUMNAS
+   ========================================= */
+.login-main-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    min-height: calc(100vh - 90px);
+}
+
+.welcome-hero {
+    flex: 1;
+    max-width: 450px;
+}
+
+.welcome-hero h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 4rem;
+    font-weight: 800;
+    color: #2b2b2b;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-hero p {
+    color: #66707a;
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+}
+
+.dessert-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #ffffff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    box-shadow: 0 10px 25px rgba(255, 143, 163, 0.15);
+    font-weight: 600;
+    color: #4a4a4a;
+    margin-top: 1rem;
+}
+
+.login-card-container {
+    flex: 1;
+    max-width: 450px;
+    width: 100%;
+    position: relative;
+}
+
+/* Asegurar que la tarjeta ocupe su lado derecho correctamente */
+.login-card {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 2;
+}
+
+/* Evitar que el ícono del corazón rompa el texto */
+.heart-icon {
+    font-size: 1.5rem;
+    color: #ff4d6d;
+    margin: 0.5rem 0;
+}
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: #fff0f3;
+    color: #333333;
+}
+
+/* ========== HEADER — RÉPLICA EXACTA DE inicio.html ========== */
+.header {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 5rem 2rem 5rem;
+    position: relative;
+    z-index: 20;
+}
+
+/* Logo sobresaliente a la izquierda (posición absoluta, igual que inicio.html) */
+.logo-container {
+    position: absolute;
+    left: 5rem;
+    top: 5px;
+    z-index: 30;
+}
+
+.logo {
+    width: 140px;
+    border-radius: 50%;
+    border: 5px solid #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Navbar centrado */
+.navbar {
+    display: flex;
+    gap: 2.5rem;
+    margin: 0 auto;
+    z-index: 20;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #333333;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+    letter-spacing: 0.5px;
+    padding-bottom: 5px;
+    position: relative;
+}
+
+.navbar a:hover,
+.navbar a.active {
+    color: #f05473;
+}
+
+.navbar a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #f05473;
+    border-radius: 2px;
+}
+
+/* Íconos a la derecha (posición absoluta, igual que inicio.html) */
+.header-icons {
+    position: absolute;
+    right: 5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    z-index: 20;
+}
+
+.cart-icon {
+    position: relative;
+    font-size: 1.5rem;
+    color: #333333;
+    cursor: pointer;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background-color: #f05473;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.whatsapp-header-icon {
+    font-size: 1.8rem;
+    color: #333333;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.whatsapp-header-icon:hover {
+    color: #f05473;
+}
+
+.header-divider {
+    width: 1px;
+    height: 22px;
+    background-color: #d1d5db;
+    margin: 0 0.2rem;
+}
+
+.login-header-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: #333333;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+}
+
+.login-header-btn:hover {
+    color: #f05473;
+}
+
+.login-header-btn i {
+    font-size: 1.2rem;
+}
+
+/* Onda que sale hacia abajo del header (réplica exacta de inicio.html) */
+.header-wave {
+    position: absolute;
+    bottom: -30px;
+    left: 0;
+    width: 100%;
+    height: 35px;
+    z-index: 10;
+    filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.08));
+    pointer-events: none;
+}
+
+.header-wave svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ========== HERO / SECCIÓN PRINCIPAL (fondo rosa igual que inicio.html) ========== */
+.hero-section {
+    background-color: #ffb8c8;
+    position: relative;
+    padding: 4rem 4rem 7rem 4rem;
+    z-index: 10;
+    min-height: calc(100vh - 90px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Esferas decorativas (mismos estilos que inicio.html) */
+.sphere {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: inset -5px -5px 10px rgba(242, 107, 128, 0.2), 0 5px 15px rgba(242, 107, 128, 0.1);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.sphere-1 {
+    width: 60px;
+    height: 60px;
+    top: 10%;
+    left: 5%;
+}
+
+.sphere-2 {
+    width: 40px;
+    height: 40px;
+    top: 30%;
+    left: 35%;
+}
+
+.sphere-3 {
+    width: 80px;
+    height: 80px;
+    bottom: 20%;
+    left: 15%;
+}
+
+.sphere-4 {
+    width: 50px;
+    height: 50px;
+    top: 15%;
+    right: 25%;
+}
+
+.sphere-5 {
+    width: 70px;
+    height: 70px;
+    bottom: 30%;
+    right: 5%;
+}
+
+.sphere-6 {
+    width: 30px;
+    height: 30px;
+    top: 50%;
+    left: 45%;
+}
+
+/* Doodles de fondo */
+.bg-doodle {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+}
+
 .strawberry-doodle {
     right: 5%;
     top: 42%;
@@ -235,38 +710,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
->>>>>>> feature/areli
 }
 
 .login-card {
     background: #ffffff;
     border-radius: 28px;
-<<<<<<< HEAD
-    padding: 40px 35px;
-    width: 100%;
-    max-width: 440px;
-    box-shadow: 0 15px 35px rgba(255, 143, 163, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    text-align: center;
-}
-
-.login-card h1 {
-    font-family: 'Pacifico', cursive;
-    color: #ff4d6d;
-    font-size: 32px;
-    margin-bottom: 8px;
-}
-
-.login-card p.subtitle {
-    color: #777;
-    font-size: 14px;
-    margin-bottom: 28px;
-}
-
-/* Formulario */
-.form-group {
-    margin-bottom: 20px;
-=======
     padding: 32px 36px 38px 36px;
     width: 100%;
     max-width: 440px;
@@ -327,23 +775,15 @@ body {
 /* FORMULARIO */
 .form-group {
     margin-bottom: 16px;
->>>>>>> feature/areli
     text-align: left;
 }
 
 .form-group label {
     display: block;
-<<<<<<< HEAD
-    font-weight: 600;
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 8px;
-=======
     font-weight: 700;
     font-size: 13px;
     color: #554447;
     margin-bottom: 6px;
->>>>>>> feature/areli
 }
 
 .input-wrapper {
@@ -354,36 +794,14 @@ body {
 
 .input-wrapper i.input-icon {
     position: absolute;
-<<<<<<< HEAD
-    left: 15px;
-    color: #ff8fa3;
-    font-size: 16px;
-=======
     left: 16px;
     color: #f05473;
     font-size: 14px;
     pointer-events: none;
->>>>>>> feature/areli
 }
 
 .input-wrapper input {
     width: 100%;
-<<<<<<< HEAD
-    padding: 14px 45px 14px 45px;
-    border: 2px solid #ffe0e6;
-    border-radius: 14px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 15px;
-    outline: none;
-    transition: all 0.3s ease;
-    background-color: #fffafb;
-}
-
-.input-wrapper input:focus {
-    border-color: #ff4d6d;
-    background-color: #ffffff;
-    box-shadow: 0 0 0 4px rgba(255, 77, 109, 0.1);
-=======
     padding: 12px 42px 12px 44px;
     border: 1.5px solid #ffccd5;
     border-radius: 25px;
@@ -399,52 +817,18 @@ body {
     border-color: #f05473;
     background-color: #ffffff;
     box-shadow: 0 0 0 3px rgba(240, 84, 115, 0.12);
->>>>>>> feature/areli
 }
 
 .toggle-password {
     position: absolute;
-<<<<<<< HEAD
-    right: 15px;
-    color: #aaa;
-    cursor: pointer;
-=======
     right: 16px;
     color: #aa8890;
     cursor: pointer;
     font-size: 14px;
->>>>>>> feature/areli
     transition: color 0.3s ease;
 }
 
 .toggle-password:hover {
-<<<<<<< HEAD
-    color: #ff4d6d;
-}
-
-/* Reglas de Validación de Contraseña */
-.password-requirements {
-    background: #fff8f9;
-    border: 1px solid #ffe0e6;
-    border-radius: 12px;
-    padding: 12px 15px;
-    margin-top: 12px;
-}
-
-.password-requirements p {
-    font-size: 12px;
-    font-weight: 600;
-    color: #666;
-    margin-bottom: 6px;
-}
-
-.requirement-item {
-    font-size: 12px;
-    color: #888;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-=======
     color: #f05473;
 }
 
@@ -470,7 +854,6 @@ body {
     display: flex;
     align-items: center;
     gap: 7px;
->>>>>>> feature/areli
     margin-bottom: 4px;
     transition: all 0.3s ease;
 }
@@ -480,45 +863,18 @@ body {
 }
 
 .requirement-item i {
-<<<<<<< HEAD
-    font-size: 10px;
-=======
     font-size: 7px;
     color: #f05473;
     transition: all 0.3s ease;
->>>>>>> feature/areli
 }
 
 .requirement-item.valid {
     color: #2ec4b6;
-<<<<<<< HEAD
-    font-weight: 500;
-=======
     font-weight: 600;
->>>>>>> feature/areli
 }
 
 .requirement-item.valid i {
     color: #2ec4b6;
-<<<<<<< HEAD
-}
-
-/* Botón de Iniciar Sesión */
-.btn-login {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(90deg, #ff4d6d, #ff8fa3);
-    color: #ffffff;
-    border: none;
-    border-radius: 14px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 6px 20px rgba(255, 77, 109, 0.3);
-    transition: all 0.3s ease;
-    margin-top: 10px;
-=======
     font-size: 10px;
 }
 
@@ -542,25 +898,10 @@ body {
     justify-content: center;
     gap: 10px;
     letter-spacing: 0.5px;
->>>>>>> feature/areli
 }
 
 .btn-login:hover {
     transform: translateY(-2px);
-<<<<<<< HEAD
-    box-shadow: 0 8px 25px rgba(255, 77, 109, 0.4);
-}
-
-.login-footer-links {
-    margin-top: 20px;
-    font-size: 13px;
-}
-
-.login-footer-links a {
-    color: #ff4d6d;
-    text-decoration: none;
-    font-weight: 600;
-=======
     box-shadow: 0 10px 26px rgba(240, 84, 115, 0.45);
     background: linear-gradient(135deg, #d63859, #f05473);
 }
@@ -589,95 +930,12 @@ body {
     color: #f05473;
     text-decoration: none;
     font-weight: 700;
->>>>>>> feature/areli
 }
 
 .login-footer-links a:hover {
     text-decoration: underline;
 }
 
-<<<<<<< HEAD
-/* Footer */
-.footer {
-    background-color: #ff8fa3;
-    color: #ffffff;
-    text-align: center;
-    padding: 15px;
-    font-size: 13px;
-    position: relative;
-    z-index: 10;
-}
-/* =========================================
-   RESTAURACIÓN DEL DISEÑO A DOS COLUMNAS
-   ========================================= */
-.login-main-layout {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5rem;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 3rem 2rem;
-    min-height: calc(100vh - 90px);
-}
-
-.welcome-hero {
-    flex: 1;
-    max-width: 450px;
-}
-
-.welcome-hero h1 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 4rem;
-    font-weight: 800;
-    color: #2b2b2b;
-    line-height: 1.1;
-    margin-bottom: 0.5rem;
-}
-
-.welcome-hero p {
-    color: #66707a;
-    font-size: 1.15rem;
-    margin-bottom: 1rem;
-}
-
-.dessert-badge {
-    display: inline-flex;
-    align-items: center;
-    background: #ffffff;
-    padding: 0.75rem 1.5rem;
-    border-radius: 30px;
-    box-shadow: 0 10px 25px rgba(255, 143, 163, 0.15);
-    font-weight: 600;
-    color: #4a4a4a;
-    margin-top: 1rem;
-}
-
-.login-card-container {
-    flex: 1;
-    max-width: 450px;
-    width: 100%;
-    position: relative;
-}
-
-/* Asegurar que la tarjeta ocupe su lado derecho correctamente */
-.login-card {
-    width: 100%;
-    background: #ffffff;
-    border-radius: 24px;
-    padding: 2.5rem;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
-    position: relative;
-    z-index: 2;
-}
-
-/* Evitar que el ícono del corazón rompa el texto */
-.heart-icon {
-    font-size: 1.5rem;
-    color: #ff4d6d;
-    margin: 0.5rem 0;
-}
-=======
 /* Onda blanca inferior del hero */
 .hero-wave {
     position: absolute;
@@ -800,4 +1058,3 @@ body {
         border-radius: 22px;
     }
 }
->>>>>>> feature/areli

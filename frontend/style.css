@@ -80,17 +80,10 @@ body {
 
 .header-icons {
     position: absolute;
-<<<<<<< HEAD
-    right: 12rem;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-=======
     right: 5rem;
     display: flex;
     align-items: center;
     gap: 1.2rem;
->>>>>>> feature/areli
     z-index: 20;
 }
 
@@ -123,8 +116,6 @@ body {
     text-decoration: none;
 }
 
-<<<<<<< HEAD
-=======
 .header-divider {
     width: 1px;
     height: 22px;
@@ -151,7 +142,6 @@ body {
     font-size: 1.2rem;
 }
 
->>>>>>> feature/areli
 .header-wave {
     position: absolute;
     bottom: -30px;
@@ -435,8 +425,6 @@ body {
 .btn-add-cart:hover {
     background: var(--dark-pink);
 }
-<<<<<<< HEAD
-=======
 .product-unavailable-button,
 .btn-add-cart.product-unavailable-button {
     width: auto;
@@ -448,7 +436,6 @@ body {
     cursor: not-allowed;
     font-size: 0.78rem;
 }
->>>>>>> feature/areli
 
 .see-all-wrapper {
     text-align: center;
@@ -712,18 +699,12 @@ body {
         right: 1rem;
         top: 0.8rem;
     }
-<<<<<<< HEAD
-    .cart-icon, .whatsapp-header-icon {
-        font-size: 1.3rem;
-    }
-=======
     .cart-icon, .whatsapp-header-icon, .login-header-btn i {
         font-size: 1.3rem;
     }
     .login-header-btn span {
         font-size: 0.85rem;
     }
->>>>>>> feature/areli
 
     .hero-title {
         font-size: 2.8rem;
@@ -802,8 +783,6 @@ body {
         gap: 1.2rem;
     }
 }
-<<<<<<< HEAD
-=======
 
 /* ==========================================
    SNACKS SECTION (MATCHING IMAGE 3 REFERENCE)
@@ -1188,4 +1167,3 @@ body {
         font-size: 0.8rem;
     }
 }
->>>>>>> feature/areli
