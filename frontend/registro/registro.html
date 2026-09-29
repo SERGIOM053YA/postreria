@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hilda's Postres & Snacks - Registro</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .auth-container {
+            max-width: 450px;
+            margin: 2rem auto 4rem auto;
+            padding: 2.5rem 2rem;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid #ffeef2;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 0.4rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i.input-icon {
+            position: absolute;
+            left: 15px;
+            color: #ff6b81;
+            font-size: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px 12px 42px;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            color: #333;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            border-color: #ff6b81;
+            box-shadow: 0 0 8px rgba(255, 107, 129, 0.2);
+        }
+
+        /* Indicadores de requerimiento de contraseña */
+        .password-requirements {
+            background: #fff0f3;
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 8px;
+            font-size: 0.82rem;
+            color: #555;
+        }
+
+        .password-requirements p {
+            margin: 0 0 6px 0;
+            font-weight: 600;
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 3px;
+        }
+
+        .requirement-item i {
+            font-size: 0.75rem;
+            color: #ccc;
+        }
+
+        .requirement-item.valid i {
+            color: #2ed573;
+        }
+
+        .requirement-item.valid {
+            color: #2ed573;
+        }
+
+        .error-message {
+            color: #ff4757;
+            font-size: 0.8rem;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .btn-register-submit {
+            width: 100%;
+            padding: 14px;
+            background: #ff6b81;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: 1rem;
+            box-shadow: 0 4px 12px rgba(255, 107, 129, 0.3);
+        }
+
+        .btn-register-submit:hover {
+            background: #ee5253;
+            transform: translateY(-2px);
+        }
+
+        .auth-footer-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .auth-footer-link a {
+            color: #ff6b81;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <header class="header" id="header">
+        <div class="logo-container">
+            <a href="../inicio.html">
+                <img src="../logo.png" alt="Hilda's Postres & Snacks" class="logo">
+            </a>
+        </div>
+        <div class="header-icons">
+
+        </div>
+        <div class="header-wave">
+            <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
+                <path fill="#ffffff" d="M0,0 L0,30 Q60,50 120,30 Q180,10 240,30 Q300,50 360,30 Q420,10 480,30 Q540,50 600,30 Q660,10 720,30 Q780,50 840,30 Q900,10 960,30 Q1020,50 1080,30 Q1140,10 1200,30 Q1260,50 1320,30 Q1380,10 1440,30 L1440,0 Z" />
+            </svg>
+        </div>
+    </header>
+
+    <main>
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2>Crea tu cuenta <span style="color:#ff6b81;">♡</span></h2>
+                <p>Regístrate para realizar tus pedidos más rápido</p>
+            </div>
+
+            <form id="register-form" onsubmit="validateAndSubmit(event)" novalidate>
+                <div class="form-group">
+                    <label for="name">Nombre completo</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon" aria-hidden="true"></i>
+                        <input type="text" id="name" name="name" class="form-input" placeholder="Ej. María López" autocomplete="name" required>
+                    </div>
+                </div>
+
+                <!-- CORREO ELECTRÓNICO (MAX 30 CARACTERES) -->
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" id="email" maxlength="30" class="form-input" placeholder="ejemplo@correo.com" required>
+                    </div>
+                    <span class="error-message" id="email-error">Por favor, ingresa un correo válido (Máx. 30 caracteres).</span>
+                </div>
+
+                <!-- NÚMERO DE TELÉFONO -->
+                <div class="form-group">
+                    <label for="phone">Número de Teléfono</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone input-icon"></i>
+                        <input type="tel" id="phone" maxlength="10" class="form-input" placeholder="10 dígitos" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+                    </div>
+                    <span class="error-message" id="phone-error">Ingresa un número telefónico válido de 10 dígitos.</span>
+                </div>
+
+                <!-- CONTRASEÑA -->
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="password" class="form-input" placeholder="••••••••" oninput="validatePasswordRequirements()" required>
+                    </div>
+                    <div class="password-requirements">
+                        <p>La contraseña debe contener:</p>
+                        <div class="requirement-item" id="req-uppercase"><i class="fas fa-circle"></i> Al menos una letra mayúscula</div>
+                        <div class="requirement-item" id="req-lowercase"><i class="fas fa-circle"></i> Al menos una letra minúscula</div>
+                        <div class="requirement-item" id="req-number"><i class="fas fa-circle"></i> Al menos un número</div>
+                        <div class="requirement-item" id="req-special"><i class="fas fa-circle"></i> Al menos un carácter especial </div>
+                    </div>
+                </div>
+
+                <!-- CONFIRMAR CONTRASEÑA -->
+                <div class="form-group">
+                    <label for="confirm-password">Confirmar Contraseña</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-check-double input-icon"></i>
+                        <input type="password" id="confirm-password" class="form-input" placeholder="••••••••" oninput="checkPasswordMatch()" required>
+                    </div>
+                    <span class="error-message" id="match-error">Las contraseñas no coinciden.</span>
+                </div>
+
+                <button type="submit" class="btn-register-submit">Crear Cuenta</button>
+            </form>
+
+            <div class="auth-footer-link">
+                ¿Ya tienes una cuenta? <a href="../login/login.html">Inicia sesión aquí</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- JS DE VALIDACIÓN -->
+    <script>
+        function validatePasswordRequirements() {
+            const pwd = document.getElementById('password').value;
+
+            const hasUpper = /[A-Z]/.test(pwd);
+            const hasLower = /[a-z]/.test(pwd);
+            const hasNumber = /[0-9]/.test(pwd);
+            const hasSpecial = /[@$!%*?&]/.test(pwd);
+
+            toggleRequirement('req-uppercase', hasUpper);
+            toggleRequirement('req-lowercase', hasLower);
+            toggleRequirement('req-number', hasNumber);
+            toggleRequirement('req-special', hasSpecial);
+
+            checkPasswordMatch();
+            return hasUpper && hasLower && hasNumber && hasSpecial;
+        }
+
+        function toggleRequirement(elementId, isValid) {
+            const el = document.getElementById(elementId);
+            const icon = el.querySelector('i');
+            if (isValid) {
+                el.classList.add('valid');
+                icon.className = 'fas fa-check-circle';
+            } else {
+                el.classList.remove('valid');
+                icon.className = 'fas fa-circle';
+            }
+        }
+
+        function checkPasswordMatch() {
+            const pwd = document.getElementById('password').value;
+            const confirmPwd = document.getElementById('confirm-password').value;
+            const matchError = document.getElementById('match-error');
+
+            if (confirmPwd.length > 0 && pwd !== confirmPwd) {
+                matchError.style.display = 'block';
+                return false;
+            } else {
+                matchError.style.display = 'none';
+                return true;
+            }
+        }
+
+        function validateAndSubmit(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const pwd = document.getElementById('password').value;
+            const confirmPwd = document.getElementById('confirm-password').value;
+
+            let isValid = true;
+
+            // Validar correo (Max 30 caracteres)
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email) || email.length > 30) {
+                document.getElementById('email-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('email-error').style.display = 'none';
+            }
+
+            // Validar teléfono (10 dígitos)
+            if (phone.length !== 10) {
+                document.getElementById('phone-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('phone-error').style.display = 'none';
+            }
+
+            // Validar requisitos de contraseña
+            if (!validatePasswordRequirements()) {
+                alert('La contraseña no cumple con los requisitos de seguridad.');
+                isValid = false;
+            }
+
+            // Validar coincidencia de contraseña
+            if (pwd !== confirmPwd) {
+                document.getElementById('match-error').style.display = 'block';
+                isValid = false;
+            }
+
+            if (isValid) {
+                alert('¡Registro exitoso! Redirigiendo...');
+                // Aquí va la lógica para enviar a tu servidor o Supabase
+            }
+        }
+    </script>
+</body>
+
+</html>

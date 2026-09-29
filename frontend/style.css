@@ -80,10 +80,17 @@ body {
 
 .header-icons {
     position: absolute;
+<<<<<<< HEAD
     right: 12rem;
     display: flex;
     align-items: center;
     gap: 1.5rem;
+=======
+    right: 5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+>>>>>>> feature/areli
     z-index: 20;
 }
 
@@ -116,6 +123,35 @@ body {
     text-decoration: none;
 }
 
+<<<<<<< HEAD
+=======
+.header-divider {
+    width: 1px;
+    height: 22px;
+    background-color: #d1d5db;
+    margin: 0 0.2rem;
+}
+
+.login-header-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+}
+
+.login-header-btn:hover {
+    color: var(--primary-pink);
+}
+
+.login-header-btn i {
+    font-size: 1.2rem;
+}
+
+>>>>>>> feature/areli
 .header-wave {
     position: absolute;
     bottom: -30px;
@@ -399,6 +435,20 @@ body {
 .btn-add-cart:hover {
     background: var(--dark-pink);
 }
+<<<<<<< HEAD
+=======
+.product-unavailable-button,
+.btn-add-cart.product-unavailable-button {
+    width: auto;
+    min-width: 72px;
+    padding: 0 0.7rem;
+    border-radius: 18px;
+    background: #8d8588;
+    color: #fff;
+    cursor: not-allowed;
+    font-size: 0.78rem;
+}
+>>>>>>> feature/areli
 
 .see-all-wrapper {
     text-align: center;
@@ -662,9 +712,18 @@ body {
         right: 1rem;
         top: 0.8rem;
     }
+<<<<<<< HEAD
     .cart-icon, .whatsapp-header-icon {
         font-size: 1.3rem;
     }
+=======
+    .cart-icon, .whatsapp-header-icon, .login-header-btn i {
+        font-size: 1.3rem;
+    }
+    .login-header-btn span {
+        font-size: 0.85rem;
+    }
+>>>>>>> feature/areli
 
     .hero-title {
         font-size: 2.8rem;
@@ -743,3 +802,390 @@ body {
         gap: 1.2rem;
     }
 }
+<<<<<<< HEAD
+=======
+
+/* ==========================================
+   SNACKS SECTION (MATCHING IMAGE 3 REFERENCE)
+   ========================================== */
+
+.snacks-section {
+    padding-bottom: 5rem;
+}
+
+.snacks-hero-banner {
+    background: linear-gradient(135deg, #fde4ec 0%, #fcd4e2 100%);
+    position: relative;
+    padding: 3rem 5rem 5rem 5rem;
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+}
+
+.sphere-snack-1 { width: 70px; height: 70px; top: 15%; left: 8%; }
+.sphere-snack-2 { width: 45px; height: 45px; bottom: 25%; left: 40%; }
+.sphere-snack-3 { width: 60px; height: 60px; top: 20%; right: 20%; }
+
+.snacks-banner-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+}
+
+.snacks-banner-left {
+    max-width: 600px;
+}
+
+.snacks-title {
+    font-family: 'Pacifico', cursive;
+    font-size: 4.8rem;
+    color: var(--text-brown);
+    line-height: 1.2;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.heart-doodle {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    color: var(--primary-pink);
+    font-size: 3.5rem;
+}
+
+.snacks-subtitle {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 1.8px;
+    color: var(--text-brown);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.snacks-subtitle i {
+    color: var(--primary-pink);
+    font-size: 1rem;
+}
+
+.snacks-desc {
+    font-size: 1.25rem;
+    color: #66707a;
+    line-height: 1.4;
+    font-weight: 400;
+}
+
+.snacks-banner-right {
+    position: relative;
+}
+
+.badge-doodle-container {
+    text-align: right;
+    position: relative;
+}
+
+.script-badge-text {
+    font-family: 'Pacifico', cursive;
+    font-size: 2.2rem;
+    color: var(--primary-pink);
+    line-height: 1.1;
+    transform: rotate(-5deg);
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
+}
+
+.script-badge-text i {
+    font-size: 1.5rem;
+}
+
+.badge-dashed-underline {
+    width: 140px;
+    height: 12px;
+    border-bottom: 3px dashed var(--primary-pink);
+    margin: 5px 0 0 auto;
+    border-radius: 50%;
+    transform: rotate(-5deg);
+}
+
+.badge-sparkle-rays {
+    color: var(--primary-pink);
+    font-size: 1.2rem;
+    margin-top: 8px;
+    letter-spacing: 4px;
+}
+
+.snacks-banner-wave {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    z-index: 5;
+}
+
+.snacks-banner-wave svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Category Filter Pills */
+.snacks-container {
+    max-width: 1550px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.snacks-categories {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+}
+
+.category-btn {
+    background-color: #fce4ec;
+    color: var(--primary-pink);
+    border: none;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    outline: none;
+}
+
+.category-btn:hover {
+    background-color: #f8bbd0;
+    transform: translateY(-2px);
+}
+
+.category-btn.active {
+    background-color: var(--primary-pink);
+    color: var(--white);
+    box-shadow: 0 6px 18px rgba(240, 84, 115, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Snacks Cards Grid */
+.snacks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.8rem;
+    justify-content: center;
+}
+
+.snack-card {
+    background-color: var(--white);
+    border-radius: 22px;
+    padding: 1.2rem;
+    box-shadow: 0 8px 25px rgba(240, 84, 115, 0.08);
+    border: 1.5px solid #fce4ec;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.snack-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 32px rgba(240, 84, 115, 0.18);
+}
+
+/* Image Container matching reference frame */
+.snack-img-wrapper {
+    width: 100%;
+    height: 200px;
+    background-color: #fde2e8;
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0.8rem;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.snack-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 14px;
+    transition: transform 0.4s ease;
+}
+
+.snack-card:hover .snack-img {
+    transform: scale(1.05);
+}
+
+.sparkle-icon {
+    position: absolute;
+    font-size: 0.9rem;
+    z-index: 5;
+    pointer-events: none;
+}
+.sparkle-icon.top-left { top: 8px; left: 10px; }
+.sparkle-icon.top-right { top: 8px; right: 10px; }
+
+/* Pink Brush Title Badge */
+.snack-brush-badge {
+    background-color: var(--primary-pink);
+    color: var(--white);
+    padding: 6px 18px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0.8rem;
+    box-shadow: 0 4px 12px rgba(240, 84, 115, 0.35);
+}
+
+.brush-text {
+    font-weight: 800;
+    font-size: 0.92rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.brush-ray {
+    font-size: 0.7rem;
+    opacity: 0.85;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* Description & Price */
+.snack-description {
+    font-size: 0.88rem;
+    color: var(--text-light);
+    line-height: 1.35;
+    margin-bottom: 0.8rem;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.snack-price {
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--primary-pink);
+    margin-bottom: 1rem;
+}
+
+/* Full Width Cart Pill Button */
+.btn-snack-cart {
+    width: 100%;
+    background-color: var(--primary-pink);
+    color: var(--white);
+    border: none;
+    padding: 11px 16px;
+    border-radius: 30px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.92rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 6px 16px rgba(240, 84, 115, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-snack-cart:hover {
+    background-color: var(--dark-pink);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(240, 84, 115, 0.45);
+}
+
+.btn-snack-cart i {
+    font-size: 0.95rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive adjustments for Snacks section */
+@media (max-width: 992px) {
+    .snacks-hero-banner {
+        padding: 2.5rem 1.5rem 4rem 1.5rem;
+    }
+    .snacks-banner-inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+    }
+    .snacks-title {
+        font-size: 3.5rem;
+        justify-content: center;
+    }
+    .script-badge-text {
+        font-size: 1.8rem;
+    }
+    .badge-dashed-underline {
+        margin: 5px auto 0 auto;
+    }
+    .snacks-categories {
+        gap: 0.5rem;
+    }
+    .category-btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .snacks-title {
+        font-size: 2.8rem;
+    }
+    .snacks-desc {
+        font-size: 1rem;
+    }
+    .snacks-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+    }
+    .snack-card {
+        padding: 0.7rem;
+        border-radius: 16px;
+    }
+    .snack-img-wrapper {
+        height: 140px;
+        border-radius: 12px;
+    }
+    .brush-text {
+        font-size: 0.75rem;
+    }
+    .snack-brush-badge {
+        padding: 4px 10px;
+    }
+    .snack-description {
+        font-size: 0.75rem;
+        min-height: 34px;
+    }
+    .snack-price {
+        font-size: 1.1rem;
+        margin-bottom: 0.6rem;
+    }
+    .btn-snack-cart {
+        padding: 9px 10px;
+        font-size: 0.8rem;
+    }
+}
+>>>>>>> feature/areli

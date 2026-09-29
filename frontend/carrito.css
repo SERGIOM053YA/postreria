@@ -22,8 +22,12 @@
 }
 
 @keyframes slideInRight {
-    from { transform: translateX(100%); }
-    to { transform: translateX(0); }
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
 }
 
 .cart-header {
@@ -76,7 +80,9 @@
     transition: color 0.2s;
 }
 
-.cart-close:hover { color: var(--text-dark); }
+.cart-close:hover {
+    color: var(--text-dark);
+}
 
 .cart-items {
     flex: 1;
@@ -148,7 +154,9 @@
     transition: color 0.2s;
 }
 
-.cart-item-delete:hover { color: var(--primary-pink); }
+.cart-item-delete:hover {
+    color: var(--primary-pink);
+}
 
 .cart-item-quantity {
     display: flex;
@@ -183,7 +191,6 @@
     color: var(--text-dark);
     font-family: inherit;
     -moz-appearance: textfield;
-    appearance: textfield;
 }
 
 .cart-item-quantity input::-webkit-outer-spin-button,
@@ -225,7 +232,9 @@
     color: var(--text-dark);
 }
 
-.summary-total .total-price { color: var(--primary-pink); }
+.summary-total .total-price {
+    color: var(--primary-pink);
+}
 
 .cart-buttons {
     display: flex;
@@ -251,7 +260,9 @@
     transition: background-color 0.3s;
 }
 
-.btn-checkout:hover { background-color: var(--dark-pink); }
+.btn-checkout:hover {
+    background-color: var(--dark-pink);
+}
 
 .btn-continue {
     background-color: transparent;
@@ -270,9 +281,13 @@
     transition: all 0.3s;
 }
 
-.btn-continue:hover { background-color: #fff5f7; }
+.btn-continue:hover {
+    background-color: #fff5f7;
+}
 
-/* MODAL DE INSTRUCCIONES Y CHECKOUT */
+/* ============================================================
+   MODAL DE INSTRUCCIONES ESPECIALES (AL AGREGAR PRODUCTO)
+   ============================================================ */
 .custom-modal-overlay {
     position: fixed;
     inset: 0;
@@ -286,7 +301,9 @@
     transition: opacity 0.3s ease;
 }
 
-.custom-modal-overlay.show { opacity: 1; }
+.custom-modal-overlay.show {
+    opacity: 1;
+}
 
 .custom-modal {
     background: #ffffff;
@@ -300,7 +317,9 @@
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.custom-modal.show { transform: translateY(0) scale(1); }
+.custom-modal.show {
+    transform: translateY(0) scale(1);
+}
 
 .custom-modal-header {
     display: flex;
@@ -321,7 +340,7 @@
 }
 
 .custom-modal-title {
-    color: var(--primary-pink);
+    color: var(--primary-pink, #f05473);
     font-size: 1.45rem;
     font-weight: 800;
     margin: 0;
@@ -340,7 +359,7 @@
 }
 
 .custom-modal-close:hover {
-    color: var(--primary-pink);
+    color: var(--primary-pink, #f05473);
     transform: scale(1.1);
 }
 
@@ -377,15 +396,24 @@
     box-sizing: border-box;
 }
 
+#custom-modal-sauce {
+    min-height: 48px;
+    resize: none;
+}
+
 .custom-modal-textarea:focus {
-    border-color: var(--primary-pink);
+    border-color: var(--primary-pink, #f05473);
     background-color: #ffffff;
     box-shadow: 0 0 0 3px rgba(240, 84, 115, 0.15);
 }
 
+.custom-modal-textarea::placeholder {
+    color: #a0aec0;
+}
+
 .btn-custom-add-cart {
     width: 100%;
-    background-color: var(--primary-pink);
+    background-color: var(--primary-pink, #f05473);
     color: #ffffff;
     border: none;
     border-radius: 30px;
@@ -400,18 +428,22 @@
     gap: 0.6rem;
     margin-top: 1.4rem;
     box-shadow: 0 6px 18px rgba(240, 84, 115, 0.35);
-    transition: background-color 0.3s, transform 0.2s;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
 }
 
 .btn-custom-add-cart:hover {
-    background-color: var(--dark-pink);
+    background-color: var(--dark-pink, #d93d5c);
     transform: translateY(-2px);
     box-shadow: 0 8px 22px rgba(240, 84, 115, 0.45);
 }
 
+.btn-custom-add-cart:active {
+    transform: translateY(0);
+}
+
 .cart-item-note {
     font-size: 0.8rem;
-    color: var(--primary-pink);
+    color: var(--primary-pink, #f05473);
     background: #fff0f3;
     border-radius: 8px;
     padding: 4px 8px;

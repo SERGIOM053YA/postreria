@@ -89,6 +89,7 @@ body {
     z-index: 1;
 }
 
+<<<<<<< HEAD
 .sphere-1 { width: 120px; height: 120px; top: 12%; left: -40px; }
 .sphere-2 { width: 80px; height: 80px; bottom: 15%; right: -20px; }
 .sphere-3 { width: 60px; height: 60px; top: 40%; right: 5%; }
@@ -103,11 +104,144 @@ body {
     padding: 40px 20px;
     position: relative;
     z-index: 2;
+=======
+.strawberry-doodle {
+    right: 5%;
+    top: 42%;
+    transform: rotate(15deg);
+}
+
+.heart-doodle {
+    right: 8%;
+    top: 15%;
+}
+
+/* Inner layout del hero */
+.hero-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+    gap: 50px;
+}
+
+.hero-inner.login-centered {
+    max-width: 560px;
+}
+
+.login-centered .hero-left {
+    display: none;
+}
+
+.login-centered .hero-right {
+    flex: 0 1 100%;
+}
+
+/* ========== COLUMNA IZQUIERDA: BIENVENIDA ========== */
+.hero-left {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-left: 0;
+}
+
+.welcome-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.sparkle-icon {
+    display: inline-block;
+    animation: floatSpark 3s ease-in-out infinite alternate;
+}
+
+@keyframes floatSpark {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    100% {
+        transform: translateY(-5px) rotate(10deg);
+    }
+}
+
+.welcome-title {
+    font-family: 'Pacifico', cursive;
+    font-size: 4.5rem;
+    color: #4a3b32;
+    line-height: 1;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.welcome-subtitle {
+    font-family: 'Outfit', sans-serif;
+    color: #5c4040;
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 1.4;
+    margin-bottom: 6px;
+}
+
+.small-heart {
+    color: #f05473;
+    font-size: 18px;
+    margin-bottom: 22px;
+    animation: pulseHeart 2s infinite;
+}
+
+@keyframes pulseHeart {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.25);
+    }
+}
+
+.dessert-showcase {
+    max-width: 380px;
+    width: 100%;
+}
+
+.dessert-img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 16px 35px rgba(0, 0, 0, 0.15);
+    object-fit: cover;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.dessert-img:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 22px 45px rgba(0, 0, 0, 0.2);
+}
+
+/* ========== COLUMNA DERECHA: TARJETA DE LOGIN ========== */
+.hero-right {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+>>>>>>> feature/areli
 }
 
 .login-card {
     background: #ffffff;
     border-radius: 28px;
+<<<<<<< HEAD
     padding: 40px 35px;
     width: 100%;
     max-width: 440px;
@@ -132,15 +266,84 @@ body {
 /* Formulario */
 .form-group {
     margin-bottom: 20px;
+=======
+    padding: 32px 36px 38px 36px;
+    width: 100%;
+    max-width: 440px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(240, 84, 115, 0.08);
+    border: 1px solid rgba(255, 200, 213, 0.3);
+}
+
+.card-header-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 10px;
+}
+
+.doodle-spark {
+    opacity: 0.8;
+}
+
+.card-logo-badge {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #ffccd5;
+    box-shadow: 0 5px 14px rgba(240, 84, 115, 0.2);
+    background-color: #ffffff;
+    transition: transform 0.3s ease;
+}
+
+.card-logo-badge:hover {
+    transform: rotate(5deg) scale(1.05);
+}
+
+.card-logo-badge img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-title {
+    font-family: 'Outfit', sans-serif;
+    color: #f05473;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+}
+
+.card-subtitle {
+    color: #776568;
+    font-size: 13.5px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+/* FORMULARIO */
+.form-group {
+    margin-bottom: 16px;
+>>>>>>> feature/areli
     text-align: left;
 }
 
 .form-group label {
     display: block;
+<<<<<<< HEAD
     font-weight: 600;
     font-size: 14px;
     color: #555;
     margin-bottom: 8px;
+=======
+    font-weight: 700;
+    font-size: 13px;
+    color: #554447;
+    margin-bottom: 6px;
+>>>>>>> feature/areli
 }
 
 .input-wrapper {
@@ -151,13 +354,21 @@ body {
 
 .input-wrapper i.input-icon {
     position: absolute;
+<<<<<<< HEAD
     left: 15px;
     color: #ff8fa3;
     font-size: 16px;
+=======
+    left: 16px;
+    color: #f05473;
+    font-size: 14px;
+    pointer-events: none;
+>>>>>>> feature/areli
 }
 
 .input-wrapper input {
     width: 100%;
+<<<<<<< HEAD
     padding: 14px 45px 14px 45px;
     border: 2px solid #ffe0e6;
     border-radius: 14px;
@@ -172,17 +383,42 @@ body {
     border-color: #ff4d6d;
     background-color: #ffffff;
     box-shadow: 0 0 0 4px rgba(255, 77, 109, 0.1);
+=======
+    padding: 12px 42px 12px 44px;
+    border: 1.5px solid #ffccd5;
+    border-radius: 25px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+    background-color: #fdf5f7;
+    color: #333;
+}
+
+.input-wrapper input:focus {
+    border-color: #f05473;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(240, 84, 115, 0.12);
+>>>>>>> feature/areli
 }
 
 .toggle-password {
     position: absolute;
+<<<<<<< HEAD
     right: 15px;
     color: #aaa;
     cursor: pointer;
+=======
+    right: 16px;
+    color: #aa8890;
+    cursor: pointer;
+    font-size: 14px;
+>>>>>>> feature/areli
     transition: color 0.3s ease;
 }
 
 .toggle-password:hover {
+<<<<<<< HEAD
     color: #ff4d6d;
 }
 
@@ -208,6 +444,33 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+=======
+    color: #f05473;
+}
+
+/* Requisitos de contraseña */
+.password-requirements {
+    background: #fdf2f4;
+    border: 1px solid #ffd8e0;
+    border-radius: 14px;
+    padding: 12px 16px;
+    margin-top: 10px;
+}
+
+.req-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #665255;
+    margin-bottom: 7px;
+}
+
+.requirement-item {
+    font-size: 11.5px;
+    color: #887275;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+>>>>>>> feature/areli
     margin-bottom: 4px;
     transition: all 0.3s ease;
 }
@@ -217,16 +480,27 @@ body {
 }
 
 .requirement-item i {
+<<<<<<< HEAD
     font-size: 10px;
+=======
+    font-size: 7px;
+    color: #f05473;
+    transition: all 0.3s ease;
+>>>>>>> feature/areli
 }
 
 .requirement-item.valid {
     color: #2ec4b6;
+<<<<<<< HEAD
     font-weight: 500;
+=======
+    font-weight: 600;
+>>>>>>> feature/areli
 }
 
 .requirement-item.valid i {
     color: #2ec4b6;
+<<<<<<< HEAD
 }
 
 /* Botón de Iniciar Sesión */
@@ -244,10 +518,36 @@ body {
     box-shadow: 0 6px 20px rgba(255, 77, 109, 0.3);
     transition: all 0.3s ease;
     margin-top: 10px;
+=======
+    font-size: 10px;
+}
+
+/* BOTÓN DE LOGIN */
+.btn-login {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #f05473, #ff6b8b);
+    color: #ffffff;
+    border: none;
+    border-radius: 25px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14.5px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 7px 20px rgba(240, 84, 115, 0.35);
+    transition: all 0.3s ease;
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    letter-spacing: 0.5px;
+>>>>>>> feature/areli
 }
 
 .btn-login:hover {
     transform: translateY(-2px);
+<<<<<<< HEAD
     box-shadow: 0 8px 25px rgba(255, 77, 109, 0.4);
 }
 
@@ -260,12 +560,43 @@ body {
     color: #ff4d6d;
     text-decoration: none;
     font-weight: 600;
+=======
+    box-shadow: 0 10px 26px rgba(240, 84, 115, 0.45);
+    background: linear-gradient(135deg, #d63859, #f05473);
+}
+
+.btn-login i {
+    font-size: 13px;
+    transition: transform 0.3s ease;
+}
+
+.btn-login:hover i {
+    transform: translateX(4px);
+}
+
+/* Links footer dentro de tarjeta */
+.login-footer-links {
+    margin-top: 16px;
+    font-size: 13px;
+    color: #665255;
+    display: grid;
+    gap: 8px;
+}
+
+.login-footer-links p { margin: 0; }
+
+.login-footer-links a {
+    color: #f05473;
+    text-decoration: none;
+    font-weight: 700;
+>>>>>>> feature/areli
 }
 
 .login-footer-links a:hover {
     text-decoration: underline;
 }
 
+<<<<<<< HEAD
 /* Footer */
 .footer {
     background-color: #ff8fa3;
@@ -346,3 +677,127 @@ body {
     color: #ff4d6d;
     margin: 0.5rem 0;
 }
+=======
+/* Onda blanca inferior del hero */
+.hero-wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    z-index: 5;
+    pointer-events: none;
+    line-height: 0;
+}
+
+.hero-wave svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ========== FOOTER ========== */
+.footer {
+    background-color: #f05473;
+    color: #ffffff;
+    text-align: center;
+    padding: 16px 20px 22px;
+    font-size: 13.5px;
+    font-weight: 500;
+}
+
+.footer i.fa-heart {
+    color: #ffffff;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+    .logo-container {
+        left: 2rem;
+    }
+
+    .header-icons {
+        right: 2rem;
+    }
+
+    .hero-section {
+        padding: 4rem 2rem 6rem;
+    }
+
+    .hero-inner {
+        gap: 30px;
+    }
+
+    .welcome-title {
+        font-size: 3.5rem;
+    }
+
+    .welcome-subtitle {
+        font-size: 1.05rem;
+    }
+
+    .dessert-showcase {
+        max-width: 300px;
+    }
+
+    .login-card {
+        max-width: 400px;
+        padding: 28px 28px 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 3.5rem 1.5rem 6rem;
+    }
+
+    .hero-inner {
+        flex-direction: column;
+        gap: 28px;
+    }
+
+    .dessert-showcase {
+        max-width: 320px;
+    }
+
+    .login-card {
+        max-width: 420px;
+    }
+}
+
+@media (max-width: 600px) {
+    .logo {
+        width: 100px;
+    }
+
+    .navbar {
+        display: none;
+    }
+
+    .logo-container {
+        left: 1rem;
+    }
+
+    .header-icons {
+        right: 1rem;
+        gap: 0.8rem;
+    }
+
+    .header {
+        padding: 0.8rem 1rem 1.5rem;
+    }
+
+    .hero-section {
+        padding: 3rem 1.2rem 5rem;
+    }
+
+    .welcome-title {
+        font-size: 2.8rem;
+    }
+
+    .login-card {
+        padding: 24px 20px 28px;
+        border-radius: 22px;
+    }
+}
+>>>>>>> feature/areli
