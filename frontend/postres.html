@@ -32,17 +32,24 @@
             <a href="./crepas.html">CREPAS</a>
         </nav>
         <div class="header-icons">
-            <div class="cart-icon" id="cart-icon">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-badge">2</span>
-            </div>
-            <a href="#" class="whatsapp-header-icon" id="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
-            <span class="header-divider"></span>
-            <a href="./Login/login.html" class="login-header-btn" id="login-btn">
-                <i class="far fa-user"></i>
-                <span>Iniciar sesión</span>
-            </a>
-        </div>
+    <div class="cart-icon" id="cart-icon">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge">0</span>
+    </div>
+    <a href="#" class="whatsapp-header-icon" id="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
+    <span class="header-divider"></span>
+    
+    <!-- Botón Admin oculto por defecto -->
+    <a href="./admin/admin.html" class="login-header-btn" id="admin-btn" style="display: none; background: #e95072; color: #fff; border-color: #e95072;">
+        <i class="fas fa-user-shield"></i>
+        <span>Panel KDS</span>
+    </a>
+    
+    <a href="./Login/login.html" class="login-header-btn" id="login-btn">
+        <i class="far fa-user"></i>
+        <span>Iniciar sesión</span>
+    </a>
+</div>
         <!-- Wavy bottom -->
         <div class="header-wave">
             <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
@@ -270,6 +277,10 @@
         </div>
     </footer>
 
+    <!-- 1. Primero la librería -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- 2. Luego tu archivo del carrito -->
     <script src="cart.js"></script>
 </body>
 

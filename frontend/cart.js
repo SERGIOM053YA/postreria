@@ -5,10 +5,70 @@ document.addEventListener('DOMContentLoaded', async () => {
         catch { return fallback; }
     };
 
-    // 1. INICIALIZAR SUPABASE
+    // === SINCRONIZADOR GLOBAL DE SESIONES ===
     const SUPABASE_URL = 'https://abwqlettqauklpufupaa.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFid3FsZXR0cWF1a2xwdWZ1cGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0MDgwOTYsImV4cCI6MjEwNDk4NDA5Nn0.5rpXHPuWskz9jm1GrbyEdXXgTbaQF1mmg7shpMqvZa8';
-    window.cliente = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    
+    if (!window.cliente && window.supabase) {
+        window.cliente = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+
+    async function validarSesionEnNavegacion() {
+        const tokenLocal = localStorage.getItem('sb_access_token');
+        const loginBtn = document.getElementById('login-btn');
+        const adminBtn = document.getElementById('admin-btn');
+
+        if (tokenLocal && loginBtn && window.cliente) {
+            const { data: { user } } = await window.cliente.auth.getUser(tokenLocal);
+            
+            if (user) {
+                const esAdmin = user.email === 'admin@reposteria.com';
+                const nombreUsuario = user.email.split('@')[0];
+
+                // Transformar visualmente el botón de sesión
+                loginBtn.innerHTML = `<i class="fas fa-sign-out-alt"></i><span>Salir (${nombreUsuario})</span>`;
+                loginBtn.href = '#';
+                loginBtn.style.backgroundColor = '#f8e7ec'; 
+                loginBtn.style.color = '#8d3d54';
+                loginBtn.style.borderColor = '#ffccd8';
+                
+                // Función de cierre de sesión
+                loginBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    await window.cliente.auth.signOut();
+                    localStorage.removeItem('sb_access_token');
+                    window.location.reload(); 
+                });
+
+                // Encender el panel del administrador si corresponde
+                if (esAdmin && adminBtn) {
+                    adminBtn.style.display = 'inline-flex';
+                }
+            }
+        }
+    }
+    
+    validarSesionEnNavegacion();
+
+    // Función global para cerrar sesión
+    window.cerrarSesionGlobal = async (e) => {
+        e.preventDefault();
+        if(confirm('¿Deseas cerrar sesión?')) {
+            if (window.cliente) await window.cliente.auth.signOut();
+            localStorage.removeItem('sb_access_token');
+            location.reload(); 
+        }
+    };
+
+    // Función global para cerrar sesión desde cualquier página
+    window.cerrarSesionGlobal = async (e) => {
+        e.preventDefault();
+        if(confirm('¿Deseas cerrar sesión?')) {
+            if (window.cliente) await window.cliente.auth.signOut();
+            localStorage.removeItem('sb_access_token');
+            location.reload(); // Recarga la página para limpiar la vista
+        }
+    };
 
     // 2. INYECTAR HTML DEL CARRITO Y MODALES
     const cartHTML = `

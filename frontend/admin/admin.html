@@ -60,7 +60,6 @@
             <div class="date-filters">
                 <div><label for="sales-from">Desde</label><input type="date" id="sales-from"></div>
                 <div><label for="sales-to">Hasta</label><input type="date" id="sales-to"></div>
-                <div><label for="sales-group">Agrupar por</label><select id="sales-group"><option value="day">Días</option><option value="week">Semanas</option><option value="month">Meses</option></select></div>
                 <button type="button" class="admin-button primary" id="apply-sales-filter">Ver periodo</button>
             </div>
             <div class="stats-grid">
@@ -91,16 +90,16 @@
                     </div>
                 </div>
                 <div class="orders-filters" id="orders-filters">
-                    <button type="button" class="filter-btn active" data-filter="all">Todos</button>
-                    <button type="button" class="filter-btn" data-filter="Pendiente">Pendientes</button>
-                    <button type="button" class="filter-btn" data-filter="En preparación">En preparación</button>
-                    <button type="button" class="filter-btn" data-filter="Enviado">Enviados</button>
-                    <button type="button" class="filter-btn" data-filter="Completado">Completados</button>
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="order-search" placeholder="Buscar por número de pedido...">
-                    </div>
-                </div>
+    <button type="button" class="filter-btn active" data-filter="all">Todos</button>
+    <button type="button" class="filter-btn" data-filter="Pendiente">Pendientes</button>
+    <button type="button" class="filter-btn" data-filter="En preparación">En preparación</button>
+    <button type="button" class="filter-btn" data-filter="Enviado">Enviados / Listos</button>
+    <button type="button" class="filter-btn" data-filter="Entregado">Entregados</button>
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="order-search" placeholder="Buscar por número de pedido...">
+    </div>
+</div>
             </div>
             <div class="admin-table-wrap">
                 <table class="admin-table">
