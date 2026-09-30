@@ -80,7 +80,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             let name = titleEl.textContent.replace('♡', '').replace(/\n/g, ' ').trim();
             
-            // Reconstruir nombre para Frappés y Eskimos
             if (titleEl.classList.contains('flavor-card-name')) {
                 const prefix = card.querySelector('.cat-prefix')?.textContent.trim() || '';
                 const clone = titleEl.cloneNode(true);
@@ -94,8 +93,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (dbProd) {
                 // INYECTAR ID REAL DE LA BASE DE DATOS
                 card.dataset.producto_id = dbProd.id; 
+                card.setAttribute('data-producto_id', dbProd.id);
                 
-                // Actualizar precio visualmente
                 const priceEl = card.querySelector('.product-price');
                 if (priceEl && !name.toLowerCase().includes('crepa') && !name.toLowerCase().includes('hotcake')) {
                     priceEl.textContent = `$${Number(dbProd.precio).toFixed(2)}`;
@@ -138,15 +137,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const persistCart = () => {
-        const items = Array.from(cartItemsContainer.querySelectorAll('.cart-item')).map(item => ({
-            producto_id: item.dataset.producto_id || null,
-            name: item.querySelector('.cart-item-title')?.textContent.trim() || 'Producto',
-            desc: item.querySelector('.cart-item-desc')?.textContent.trim() || '',
-            price: item.querySelector('.cart-item-price')?.textContent.trim() || '$0.00',
-            img: item.querySelector('.cart-item-img')?.getAttribute('src') || '',
-            instructions: item.dataset.instructions || '',
-            quantity: Math.max(1, parseInt(item.querySelector('.cart-item-quantity input')?.value || '1', 10) || 1)
-        }));
+        const items = Array.from(cartItemsContainer.querySelectorAll('.cart-item')).map(item => {
+            // EXTRACCIÓN 100% SEGURA (Tratando el ID como Texto/UUID, eliminando parseInt)
+            let rawId = item.dataset.producto_id || item.getAttribute('data-producto_id');
+            let cleanId = (rawId && rawId !== 'undefined' && rawId !== 'null') ? String(rawId) : null;
+
+            return {
+                producto_id: cleanId,
+                name: item.querySelector('.cart-item-title')?.textContent.trim() || 'Producto',
+                desc: item.querySelector('.cart-item-desc')?.textContent.trim() || '',
+                price: item.querySelector('.cart-item-price')?.textContent.trim() || '$0.00',
+                img: item.querySelector('.cart-item-img')?.getAttribute('src') || '',
+                instructions: item.dataset.instructions || '',
+                quantity: Math.max(1, parseInt(item.querySelector('.cart-item-quantity input')?.value || '1', 10) || 1)
+            };
+        });
+        
+        console.log('📦 Guardando en LocalStorage:', items.map(i => ({nombre: i.name, id: i.producto_id})));
         try { localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items)); } catch (e) { }
     };
 
@@ -174,7 +181,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const itemEl = document.createElement('div');
         itemEl.className = 'cart-item';
         itemEl.dataset.instructions = instructions || '';
-        itemEl.dataset.producto_id = product.producto_id || ''; // Guardar el ID en el elemento
+        
+        if (product.producto_id && product.producto_id !== 'null') {
+            itemEl.dataset.producto_id = product.producto_id;
+            itemEl.setAttribute('data-producto_id', product.producto_id);
+        }
         
         const noteHTML = instructions ? `<div class="cart-item-note"><i class="fas fa-comment-dots"></i> <span>"${escapeHTML(instructions)}"</span></div>` : '';
 
@@ -198,7 +209,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     window.addHotcakeToCart = (product) => { 
-        // Para Crepas y Hotcakes personalizados, forzamos un ID si ya existe en catálogo
         const normalize = str => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
         const dbProd = catalogoDB.find(p => normalize(p.nombre).includes(normalize(product.name || product.title)));
         if(dbProd) product.producto_id = dbProd.id;
@@ -219,7 +229,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const price = card.querySelector('.product-price')?.textContent.trim() || '$50.00';
         const img = card.querySelector('.product-img')?.src || '';
         const desc = card.querySelector('.flavor-card-desc, .product-info p')?.textContent.trim() || '';
-        const producto_id = card.dataset.producto_id || null;
+        
+        // EXTRACCIÓN SEGURA COMO TEXTO AL DAR CLIC
+        let rawId = card.dataset.producto_id || card.getAttribute('data-producto_id');
+        const producto_id = (rawId && rawId !== 'undefined' && rawId !== 'null') ? String(rawId) : null;
+        
+        console.log('🛒 Clic en producto:', name, '| ID capturado:', producto_id);
 
         const requiresSauce = ['product-alitas', 'product-alitas-con-papas', 'product-boneless', 'product-boneless-con-papas'].includes(card.id);
         openCustomModal({ name, price, img, desc, requiresSauce, producto_id });
@@ -258,7 +273,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     document.querySelector('.btn-checkout')?.addEventListener('click', () => {
         if (!cartItemsContainer.querySelector('.cart-item')) return alert('Agrega productos al carrito.');
-        persistCart(); location.href = 'Envio/Envio.html'; // Usar ruta relativa limpia
+        persistCart(); location.href = 'Envio/Envio.html';
     });
 
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeCustomModal(); closeCart(); } });

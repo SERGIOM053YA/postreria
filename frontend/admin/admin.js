@@ -53,6 +53,9 @@
                 id,
                 cliente_nombre,
                 cliente_telefono,
+                tipo_entrega,
+                direccion_entrega,
+                metodo_pago,
                 total,
                 estado,
                 creado_en,
@@ -203,6 +206,116 @@
     });
     document.getElementById('order-search').addEventListener('input', renderOrders);
 
+    // ==========================================
+    // 7. MODAL DINÁMICO PARA DETALLES DE PEDIDO
+    // ==========================================
+    
+    document.getElementById('orders-rows').addEventListener('click', (e) => {
+        const btn = e.target.closest('.row-actions-btn');
+        if (!btn) return;
+        
+        const pedidoId = btn.dataset.id;
+        mostrarModalDetalle(pedidoId);
+    });
+
+    function mostrarModalDetalle(id) {
+        const pedido = dbOrders.find(p => String(p.id) === id);
+        if (!pedido) return;
+
+        const itemsHtml = pedido.pedido_items.map(item => {
+            const nombreProd = item.productos?.nombre || 'Producto Fuera de Catálogo';
+            const precioTotal = (item.precio_unitario || 0) * item.cantidad;
+            return `
+            <div style="display:flex; justify-content:space-between; border-bottom: 1px solid #f4e9ec; padding: 0.5rem 0;">
+                <span style="color:#4a3b32;"><b>${item.cantidad}x</b> ${escapeHTML(nombreProd)}</span>
+                <strong style="color:#8d3d54;">${money(precioTotal)}</strong>
+            </div>`;
+        }).join('');
+
+        // === EXTRAER NOTAS Y DIRECCIÓN ===
+        let direccionTexto = pedido.direccion_entrega || '';
+        let notasCocinaHtml = '';
+        
+        if (direccionTexto.includes(' | NOTAS_COCINA:')) {
+            const partes = direccionTexto.split(' | NOTAS_COCINA:');
+            direccionTexto = partes[0]; // La dirección real y notas de pago se quedan aquí
+            const notas = partes[1].split(' | '); // Separar cada ingrediente extra
+            
+            // Inyectamos un recuadro de advertencia para el cocinero
+            notasCocinaHtml = `
+            <div style="background:#fff3cd; border-left: 4px solid #ffc107; padding:1rem; margin-bottom:1.5rem; border-radius: 8px;">
+                <strong style="color:#856404; display:block; margin-bottom:0.5rem;"><i class="fas fa-exclamation-triangle"></i> Instrucciones Especiales:</strong>
+                <ul style="margin:0; padding-left:1.2rem; color:#856404; font-size:0.9rem;">
+                    ${notas.map(n => `<li>${escapeHTML(n)}</li>`).join('')}
+                </ul>
+            </div>`;
+        }
+
+        const modalHtml = `
+        <div id="modal-detalle-pedido" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; display:flex; justify-content:center; align-items:center; backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.3s ease;">
+            <div style="background:white; padding:2rem; border-radius:22px; max-width:550px; width:90%; max-height:85vh; overflow-y:auto; box-shadow: 0 15px 40px rgba(233,80,114,0.2); transform: translateY(20px); transition: transform 0.3s ease;">
+                
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom: 2px solid #ffccd8; padding-bottom: 1rem;">
+                    <div>
+                        <h2 style="margin:0; color:#e95072; font-size: 1.5rem;"><i class="fas fa-receipt"></i> Pedido #${String(pedido.id)}</h2>
+                        <span class="status-pill" style="margin-top: 0.5rem;">${pedido.estado}</span>
+                    </div>
+                    <button onclick="cerrarModalDetalle()" style="background:#fff5f8; border:none; width:35px; height:35px; border-radius:50%; color:#e95072; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="fas fa-times"></i></button>
+                </div>
+
+                <div style="background:#fffafb; padding:1rem; border-radius:12px; border:1px solid #f0dfe4; margin-bottom:1.5rem; color:#45333a; font-size:0.95rem; line-height: 1.6;">
+                    <p style="margin:0;"><strong><i class="far fa-user"></i> Cliente:</strong> ${escapeHTML(pedido.cliente_nombre)}</p>
+                    <p style="margin:0;"><strong><i class="fas fa-phone-alt"></i> Teléfono:</strong> ${escapeHTML(pedido.cliente_telefono)}</p>
+                    <p style="margin:0;"><strong><i class="fas fa-motorcycle"></i> Modalidad:</strong> ${escapeHTML(pedido.tipo_entrega || 'No especificada')}</p>
+                    ${(pedido.tipo_entrega !== 'Recoger en local' && direccionTexto) ? `<p style="margin:0;"><strong><i class="fas fa-map-marker-alt"></i> Dirección:</strong> ${escapeHTML(direccionTexto)}</p>` : ''}
+                    <p style="margin:0;"><strong><i class="fas fa-wallet"></i> Pago:</strong> ${escapeHTML(pedido.metodo_pago || 'No especificado')}</p>
+                </div>
+
+                ${notasCocinaHtml}
+
+                <h3 style="color:#4a3b32; font-size:1.1rem; margin-bottom:0.8rem;">Desglose del carrito</h3>
+                <div style="margin-bottom:1.5rem;">
+                    ${itemsHtml}
+                </div>
+
+                <div style="text-align:right; font-size:1.4rem; padding-top: 1rem; border-top: 2px solid #ffccd8; color:#e95072;">
+                    <strong>Total a cobrar: ${money(pedido.total)}</strong>
+                </div>
+
+                <div style="margin-top:1.5rem;">
+                    <button onclick="cerrarModalDetalle()" class="admin-button primary" style="width:100%; padding: 1rem; font-size: 1.1rem;"><i class="fas fa-check"></i> Entendido</button>
+                </div>
+            </div>
+        </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        const modalEl = document.getElementById('modal-detalle-pedido');
+        setTimeout(() => {
+            modalEl.style.opacity = '1';
+            modalEl.children[0].style.transform = 'translateY(0)';
+        }, 10);
+    }
+
+    window.cerrarModalDetalle = () => {
+        const modalEl = document.getElementById('modal-detalle-pedido');
+        if (modalEl) {
+            modalEl.style.opacity = '0';
+            modalEl.children[0].style.transform = 'translateY(20px)';
+            setTimeout(() => modalEl.remove(), 300);
+        }
+    };
+
+
+    // Función global para cerrar el modal
+    window.cerrarModalDetalle = () => {
+        const modalEl = document.getElementById('modal-detalle-pedido');
+        if (modalEl) {
+            modalEl.style.opacity = '0';
+            modalEl.children[0].style.transform = 'translateY(20px)';
+            setTimeout(() => modalEl.remove(), 300);
+        }
+    };
     // ==========================================
     // MOCKS DE PRODUCTOS Y VENTAS (Pendiente Fase 2)
     // ==========================================

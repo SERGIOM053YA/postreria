@@ -164,32 +164,87 @@ document.addEventListener('DOMContentLoaded', () => {
                 const notasPago = paymentMethod === 'Efectivo' && data.get('cashMode') === 'Necesito cambio' 
                                   ? `Cambio de: ${data.get('changeFor')}` : '';
 
+                // === 1. ESCUDO ANTI-ERRORES CON SOPORTE PARA EXTRAS ===
+                const { data: dbProductos } = await cliente.from('productos').select('id, nombre, precio');
+                const superClean = str => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\b(de|con|el|la|los|las)\b/g, '').replace(/[^a-z0-9]/g, '');
+                
+                let errorDeCatalogo = false;
+                let nombresFaltantes = [];
+                let itemsListos = [];
+                let detallesPreparacion = []; // Recolector de extras e instrucciones
+
+                for (let item of cart) {
+                    let idFirme = item.producto_id;
+                    let precioFirme = parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0;
+                    
+                    // Capturamos si el usuario eligió salsas o extras
+                    if (item.desc || item.instructions) {
+                        detallesPreparacion.push(`${item.quantity}x ${item.name}: ${item.desc || ''} ${item.instructions || ''}`.trim());
+                    }
+
+                    if (dbProductos) {
+                        const nombreCarrito = superClean(item.name);
+                        const match = dbProductos.find(p => superClean(p.nombre) === nombreCarrito || superClean(p.nombre).includes(nombreCarrito) || nombreCarrito.includes(superClean(p.nombre)));
+                        
+                        if (match) {
+                            idFirme = match.id;
+                            // CANDADO INTELIGENTE: Respeta el precio del frontend si es MAYOR (por los extras). Si es menor, usa el oficial de la BD.
+                            precioFirme = precioFirme > match.precio ? precioFirme : match.precio; 
+                        } else {
+                            errorDeCatalogo = true;
+                            nombresFaltantes.push(item.name);
+                        }
+                    }
+
+                    itemsListos.push({
+                        producto_id: idFirme,
+                        cantidad: item.quantity,
+                        precio_unitario: precioFirme
+                    });
+                }
+
+                if (errorDeCatalogo) {
+                    alert("⚠️ BLOQUEO DE SEGURIDAD:\n\nLos siguientes productos NO existen en tu base de datos:\n\n- " + nombresFaltantes.join("\n- ") + "\n\nEntra a tu Panel KDS > 'Productos' y dálos de alta exactamente con ese nombre.");
+                    const btnSubmit = form.querySelector('button[type="submit"]');
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = 'Confirmar pedido';
+                    return; 
+                }
+
+                // Empaquetamos las instrucciones de cocina al final de la dirección
+                const notasCocina = detallesPreparacion.length > 0 ? ` | NOTAS_COCINA: ${detallesPreparacion.join(' | ')}` : '';
+
+                // === 2. Crear Pedido ===
                 const { data: pedidoData, error: pedidoError } = await cliente.from('pedidos').insert([{
                     cliente_nombre: data.get('recipient'),
-                    // Si recoge en local, enviamos un texto genérico, si no, el teléfono
                     cliente_telefono: isDomicilio ? data.get('phone') : 'No aplica',
                     tipo_entrega: deliveryType,
                     metodo_pago: paymentMethod,
                     estado: estadoPedido,
                     total: total,
-                    direccion_entrega: dirCompleta + (notasPago ? ` | Notas de pago: ${notasPago}` : ''),
+                    // Inyección estratégica: todo viaja en el campo de dirección
+                    direccion_entrega: dirCompleta + (notasPago ? ` | Notas de pago: ${notasPago}` : '') + notasCocina,
                     latitud: lat,
                     longitud: lon
                 }]).select('id').single();
 
                 if (pedidoError) {
+                    let formMessage = document.getElementById('form-message');
                     formMessage.textContent = pedidoError.message;
+                    const btnSubmit = form.querySelector('button[type="submit"]');
                     btnSubmit.disabled = false;
                     btnSubmit.innerHTML = 'Confirmar pedido';
                     return;
                 }
 
                 const nuevoPedidoId = pedidoData.id;
-                const itemsAInsertar = cart.map(item => ({
+
+                // === 3. Insertar Items ===
+                const itemsAInsertar = itemsListos.map(item => ({
                     pedido_id: nuevoPedidoId,
                     producto_id: item.producto_id,
-                    cantidad: item.quantity,
-                    precio_unitario: parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0,
+                    cantidad: item.cantidad,
+                    precio_unitario: item.precio_unitario
                 }));
 
                 await cliente.from('pedido_items').insert(itemsAInsertar);
