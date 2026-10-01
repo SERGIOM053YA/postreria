@@ -16,42 +16,10 @@
 <body>
 
     <!-- ========== HEADER ========== -->
-    <header class="header" id="header">
-        <div class="logo-container">
-            <img src="./logo.png" alt="Hilda's Postres & Snacks" class="logo">
-        </div>
-        <nav class="navbar" id="navbar">
-             <a href="#hero" class="active">INICIO</a>
-             <a href="./postres.html">POSTRES</a>
-             <a href="./bebidas.html">BEBIDAS</a>
-             <a href="./snacks.html">SNACKS</a>
-             <a href="./crepas.html">CREPAS</a>
-        </nav>
-        <div class="header-icons">
-            <div class="cart-icon" id="cart-icon">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-badge">0</span>
-            </div>
-            <a href="#" class="whatsapp-header-icon" id="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
-            <span class="header-divider"></span>
-            
-            <!-- NUEVO: Botón Admin oculto por defecto para proteger el acceso -->
-            <a href="./admin/admin.html" class="login-header-btn" id="admin-btn" style="display: none; background: #e95072; color: #fff; border-color: #e95072;">
-                <i class="fas fa-user-shield"></i>
-                <span>Panel KDS</span>
-            </a>
-            
-            <a href="./Login/login.html" class="login-header-btn" id="login-btn">
-                <i class="far fa-user"></i>
-                <span>Iniciar sesión</span>
-            </a>
-        </div>
-        <div class="header-wave">
-            <svg viewBox="0 0 1440 50" preserveAspectRatio="none">
-                <path fill="#ffffff" d="M0,0 L0,30 Q60,50 120,30 Q180,10 240,30 Q300,50 360,30 Q420,10 480,30 Q540,50 600,30 Q660,10 720,30 Q780,50 840,30 Q900,10 960,30 Q1020,50 1080,30 Q1140,10 1200,30 Q1260,50 1320,30 Q1380,10 1440,30 L1440,0 Z" />
-            </svg>
-        </div>
-    </header>
+<header class="header" id="header-container"></header>
+
+<!-- Al final del body, junto a tus otros scripts, añade el llamado al componente -->
+<script src="header.js"></script>
 
     <main>
         <!-- ========== HERO SECTION ========== -->
@@ -196,10 +164,17 @@
             </div>
         </div>
     </footer>
-
-<!-- Scripts de backend y lógica de UI -->
+<!-- 1. El SDK Oficial de Supabase para poder conectar a la base de datos -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- 2. Tu nuevo componente Header que inyecta la barra y el botón de Login base -->
+    <script src="header.js"></script>
+    
+    <!-- 3. Tu motor maestro (cart.js) que lee el token de Supabase y modifica el Header inyectado -->
     <script src="cart.js"></script>
+    
+    <!-- 4. Scripts específicos de la página (como inicio.js si estás en inicio.html) -->
+    <script src="index.js"></script>
     <!-- Agregamos ?v=5 para romper la caché del navegador -->
     <script src="index.js?v=5"></script>
 </body>

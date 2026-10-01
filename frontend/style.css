@@ -31,6 +31,64 @@ body {
     position: relative;
     z-index: 20;
 }
+/* =========================================
+   PARCHE DEFINITIVO: HEADER GRID PARA MÓVILES
+   ========================================= */
+@media (max-width: 768px) {
+    .header,
+    header#header-container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas: "logo iconos" "menu menu";
+        align-items: center;
+        gap: 14px 10px;
+        padding: 12px 16px 20px;
+        height: auto;
+    }
+
+    .header .logo-container {
+        grid-area: logo;
+        position: static;
+        margin: 0;
+        min-width: 0;
+    }
+
+    .header .logo {
+        display: block;
+        width: clamp(52px, 14vw, 72px);
+        height: auto;
+        min-width: 0;
+        border-width: 2px;
+    }
+
+    .header .header-icons {
+        grid-area: iconos;
+        position: static;
+        justify-self: end;
+        gap: clamp(8px, 3vw, 14px);
+        min-width: 0;
+    }
+
+    .header .header-divider { display: none; }
+    .header .login-header-btn span { display: none; }
+
+    .header .cart-icon,
+    .header .whatsapp-header-icon,
+    .header .login-header-btn i { font-size: 1.25rem; }
+
+    .header .navbar {
+        grid-area: menu;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px 14px;
+        margin: 0;
+        min-width: 0;
+    }
+
+    .header .navbar a { font-size: 0.82rem; padding: 4px 0; }
+    .header .header-wave { display: none; }
+}
 
 .logo-container {
     position: absolute;
@@ -1165,5 +1223,62 @@ body {
     .btn-snack-cart {
         padding: 9px 10px;
         font-size: 0.8rem;
+    }
+}
+
+/* Ajuste m�vil del header con sesi�n activa */
+@media (max-width: 768px) {
+    .header#header-container {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "logo"
+            "iconos"
+            "menu";
+        justify-items: center;
+        row-gap: 12px;
+    }
+
+    .header#header-container .logo-container {
+        justify-self: center;
+        width: auto;
+    }
+
+    .header#header-container .logo {
+        width: clamp(58px, 16vw, 72px);
+        height: auto;
+    }
+
+    .header#header-container .header-icons {
+        justify-self: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 12px;
+    }
+
+    .header#header-container #admin-btn,
+    .header#header-container #login-btn {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border: 1px solid #ffccd8;
+        border-radius: 50%;
+        justify-content: center;
+        flex: 0 0 40px;
+        overflow: hidden;
+    }
+
+    .header#header-container #admin-btn span,
+    .header#header-container #login-btn span {
+        display: none !important;
+    }
+
+    .header#header-container .cart-icon,
+    .header#header-container .whatsapp-header-icon {
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 }
