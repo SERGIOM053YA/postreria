@@ -1,16 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Inicializar Supabase
-    const SUPABASE_URL = 'https://abwqlettqauklpufupaa.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFid3FsZXR0cWF1a2xwdWZ1cGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0MDgwOTYsImV4cCI6MjEwNDk4NDA5Nn0.5rpXHPuWskz9jm1GrbyEdXXgTbaQF1mmg7shpMqvZa8';
-    const cliente = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // 1. Inicializar Supabase LIMPIO (Sin inyectar el token local para evitar Error 403)
 
-    // 2. Traer Nombre del Usuario logueado
-    cliente.auth.getUser().then(({ data: { user } }) => {
-        const inputNombre = document.getElementById('recipient');
-        if (user && inputNombre && !inputNombre.value) {
-            inputNombre.value = user.user_metadata?.nombre || user.user_metadata?.full_name || user.email?.split('@')[0] || '';
-        }
-    });
+    const tokenLocal = localStorage.getItem('sb_access_token');
+    const userEmail = localStorage.getItem('sb_user_email');
+
+    // 2. Traer Nombre del Usuario logueado (Desde caché local, no desde Supabase)
+    const inputNombre = document.getElementById('recipient');
+    if (userEmail && inputNombre && !inputNombre.value) {
+        inputNombre.value = userEmail.split('@')[0];
+    }
 
     // 3. Restringir teléfono (refuerzo JS)
     const inputPhone = document.getElementById('phone');
@@ -73,13 +71,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Escuchar el click del usuario
     document.querySelectorAll('input[name="deliveryType"]').forEach(input => {
         input.addEventListener('change', toggleDeliveryFields);
     });
 
-    // Forzar la validación inicial al cargar la pantalla
     toggleDeliveryFields();
+
     // 6. Lógica Estricta de Pago (Billetes y Montos)
     const radioEfectivo = document.getElementById('radio-efectivo');
     const radioTransferencia = document.getElementById('radio-transferencia');
@@ -89,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const transferDetails = document.getElementById('transfer-details');
     const changeField = document.getElementById('change-field');
 
-    // Regla: Bloqueo de efectivo para compras > $500
     if (total > 500) {
         if(radioEfectivo) radioEfectivo.disabled = true;
         if(radioTransferencia) radioTransferencia.checked = true;
@@ -98,16 +94,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if(cashOptions) cashOptions.style.display = 'none';
     }
 
-    // Regla: Generar billetes válidos según el total
     if (selectChangeFor) {
         selectChangeFor.innerHTML = '<option value="">Selecciona un billete</option>';
         const billetesOficiales = [20, 50, 100, 200, 500];
         
         billetesOficiales.forEach(billete => {
             if (billete > total) {
-                // Compras menores de $100 -> máximo billete de $200
                 if (total <= 100 && billete > 200) return;
-                // Compras entre $100 y $400 -> máximo billete de $500
                 if (total > 100 && total <= 400 && billete > 500) return;
                 
                 const option = document.createElement('option');
@@ -118,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Interacción Efectivo vs Transferencia
     document.querySelectorAll('input[name="payment"]').forEach(input => input.addEventListener('change', (e) => {
         if (e.target.value === 'Efectivo') {
             cashOptions.style.display = 'block';
@@ -131,19 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }));
     
-    // Regla: Pago Justo vs Necesito Cambio
     document.querySelectorAll('input[name="cashMode"]').forEach(input => input.addEventListener('change', (e) => {
         if (e.target.value === 'Necesito cambio') {
             changeField.style.display = 'block';
             if(selectChangeFor) selectChangeFor.required = true;
         } else {
-            // Pago justo oculta el select de billetes
             changeField.style.display = 'none';
             if(selectChangeFor) { selectChangeFor.required = false; selectChangeFor.value = ""; }
         }
     }));
 
-    // 6. Lógica de Envío Centralizada (Con bypass para Recoger en Local)
+    // 7. Lógica de Envío Centralizada Hacia Backend Node.js
     if (form) {
         form.addEventListener('submit', async event => {
             event.preventDefault();
@@ -155,29 +145,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const isDomicilio = document.getElementById('radio-domicilio').checked;
 
-            // Función centralizada para enviar a Supabase
             const procesarOrdenBaseDatos = async (lat, lon, dirCompleta) => {
                 const data = new FormData(form);
                 const paymentMethod = data.get('payment');
                 const deliveryType = isDomicilio ? 'A Domicilio' : 'Recoger en local';
-                const estadoPedido = paymentMethod === 'Efectivo' ? 'Por Preparar' : 'Pendiente de Validación';
                 const notasPago = paymentMethod === 'Efectivo' && data.get('cashMode') === 'Necesito cambio' 
                                   ? `Cambio de: ${data.get('changeFor')}` : '';
 
-                // === 1. ESCUDO ANTI-ERRORES CON SOPORTE PARA EXTRAS ===
-                const { data: dbProductos } = await cliente.from('productos').select('id, nombre, precio');
-                const superClean = str => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\b(de|con|el|la|los|las)\b/g, '').replace(/[^a-z0-9]/g, '');
+                // Validación limpia contra catálogo Supabase
+                const catResponse = await fetch('http://localhost:3000/api/productos');
+                const dbProductos = await catResponse.json();
                 
                 let errorDeCatalogo = false;
                 let nombresFaltantes = [];
                 let itemsListos = [];
-                let detallesPreparacion = []; // Recolector de extras e instrucciones
+                let detallesPreparacion = []; 
 
                 for (let item of cart) {
                     let idFirme = item.producto_id;
                     let precioFirme = parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0;
                     
-                    // Capturamos si el usuario eligió salsas o extras
                     if (item.desc || item.instructions) {
                         detallesPreparacion.push(`${item.quantity}x ${item.name}: ${item.desc || ''} ${item.instructions || ''}`.trim());
                     }
@@ -188,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                         if (match) {
                             idFirme = match.id;
-                            // CANDADO INTELIGENTE: Respeta el precio del frontend si es MAYOR (por los extras). Si es menor, usa el oficial de la BD.
                             precioFirme = precioFirme > match.precio ? precioFirme : match.precio; 
                         } else {
                             errorDeCatalogo = true;
@@ -199,83 +185,85 @@ document.addEventListener('DOMContentLoaded', () => {
                     itemsListos.push({
                         producto_id: idFirme,
                         cantidad: item.quantity,
-                        precio_unitario: precioFirme
+                        precio_unitario: precioFirme,
+                        instrucciones: item.instructions || item.desc || ''
                     });
                 }
 
                 if (errorDeCatalogo) {
-                    alert("⚠️ BLOQUEO DE SEGURIDAD:\n\nLos siguientes productos NO existen en tu base de datos:\n\n- " + nombresFaltantes.join("\n- ") + "\n\nEntra a tu Panel KDS > 'Productos' y dálos de alta exactamente con ese nombre.");
-                    const btnSubmit = form.querySelector('button[type="submit"]');
+                    alert("⚠️ Productos no encontrados en base de datos:\n\n- " + nombresFaltantes.join("\n- "));
                     btnSubmit.disabled = false;
                     btnSubmit.innerHTML = 'Confirmar pedido';
                     return; 
                 }
 
-                // Empaquetamos las instrucciones de cocina al final de la dirección
                 const notasCocina = detallesPreparacion.length > 0 ? ` | NOTAS_COCINA: ${detallesPreparacion.join(' | ')}` : '';
 
-                // === 2. Crear Pedido ===
-                const { data: pedidoData, error: pedidoError } = await cliente.from('pedidos').insert([{
+                // === ENVÍO AL BACKEND LOCAL DE EMERGENCIA ===
+                const payload = {
                     cliente_nombre: data.get('recipient'),
                     cliente_telefono: isDomicilio ? data.get('phone') : 'No aplica',
                     tipo_entrega: deliveryType,
                     metodo_pago: paymentMethod,
-                    estado: estadoPedido,
-                    total: total,
-                    // Inyección estratégica: todo viaja en el campo de dirección
                     direccion_entrega: dirCompleta + (notasPago ? ` | Notas de pago: ${notasPago}` : '') + notasCocina,
                     latitud: lat,
-                    longitud: lon
-                }]).select('id').single();
+                    longitud: lon,
+                    items: itemsListos
+                };
 
-                if (pedidoError) {
+                try {
+                    const response = await fetch('http://localhost:3000/api/pedidos', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${tokenLocal}` // Enviamos la credencial al backend
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const responseData = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(responseData.error || 'Error al enviar pedido');
+                    }
+
+                    const nuevoPedidoId = responseData.id_orden || responseData.id_emergencia || Math.floor(Math.random() * 10000);
+
+                    localStorage.removeItem(CART_KEY);
+                    
+                    if (paymentMethod === 'Transferencia') {
+                        const whatsappLink = document.getElementById('success-whatsapp-link');
+                        if (whatsappLink) {
+                            whatsappLink.href = `https://wa.me/5512345678?text=Hola, acabo de realizar el pedido #${nuevoPedidoId}. Envío mi comprobante:`;
+                            whatsappLink.style.display = 'inline-flex';
+                        }
+                        const successMsg = document.getElementById('success-message');
+                        if (successMsg) successMsg.textContent = `Pedido #${nuevoPedidoId} registrado. Envía tu comprobante por WhatsApp.`;
+                    } else {
+                        const successMsg = document.getElementById('success-message');
+                        if (successMsg) successMsg.textContent = `¡Tu pedido #${nuevoPedidoId} está en cocina! Pronto nos pondremos en contacto.`;
+                    }
+
+                    const checkoutContent = document.getElementById('checkout-content');
+                    const successCard = document.getElementById('success-card');
+                    if (checkoutContent) checkoutContent.style.display = 'none';
+                    if (successCard) successCard.style.display = 'block';
+
+                } catch (error) {
                     let formMessage = document.getElementById('form-message');
-                    formMessage.textContent = pedidoError.message;
-                    const btnSubmit = form.querySelector('button[type="submit"]');
+                    formMessage.textContent = error.message;
                     btnSubmit.disabled = false;
                     btnSubmit.innerHTML = 'Confirmar pedido';
-                    return;
                 }
-
-                const nuevoPedidoId = pedidoData.id;
-
-                // === 3. Insertar Items ===
-                const itemsAInsertar = itemsListos.map(item => ({
-                    pedido_id: nuevoPedidoId,
-                    producto_id: item.producto_id,
-                    cantidad: item.cantidad,
-                    precio_unitario: item.precio_unitario
-                }));
-
-                await cliente.from('pedido_items').insert(itemsAInsertar);
-                localStorage.removeItem(CART_KEY);
-                
-                if (paymentMethod === 'Transferencia') {
-                    const whatsappLink = document.getElementById('success-whatsapp-link');
-                    if (whatsappLink) {
-                        whatsappLink.href = `https://wa.me/5512345678?text=Hola, acabo de realizar el pedido #${nuevoPedidoId}. Envío mi comprobante:`;
-                        whatsappLink.style.display = 'inline-flex';
-                    }
-                    const successMsg = document.getElementById('success-message');
-                    if (successMsg) successMsg.textContent = `Pedido #${nuevoPedidoId} registrado. Envía tu comprobante por WhatsApp.`;
-                } else {
-                    const successMsg = document.getElementById('success-message');
-                    if (successMsg) successMsg.textContent = `¡Tu pedido #${nuevoPedidoId} está en cocina! Pronto nos pondremos en contacto.`;
-                }
-
-                const checkoutContent = document.getElementById('checkout-content');
-                const successCard = document.getElementById('success-card');
-                if (checkoutContent) checkoutContent.style.display = 'none';
-                if (successCard) successCard.style.display = 'block';
             };
 
-            // Bifurcación de lógica
+            // Bifurcación de lógica (GPS / Local)
             if (isDomicilio) {
-                formMessage.textContent = 'Solicitando permisos de ubicación... Acepta en la ventana emergente.';
+                formMessage.textContent = 'Solicitando permisos de ubicación...';
                 btnSubmit.innerHTML = '<i class="fas fa-map-marker-alt fa-bounce"></i> Verificando cobertura...';
 
                 if (!navigator.geolocation) {
-                    formMessage.textContent = 'Tu navegador no soporta geolocalización. Imposible validar la entrega.';
+                    formMessage.textContent = 'Navegador sin GPS.';
                     btnSubmit.disabled = false;
                     btnSubmit.innerHTML = 'Confirmar pedido';
                     return;
@@ -289,11 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         await procesarOrdenBaseDatos(position.coords.latitude, position.coords.longitude, dirCompleta);
                     }, 
                     (error) => {
-                        if (error.code === error.PERMISSION_DENIED) {
-                            formMessage.textContent = 'Debes permitir el acceso a tu ubicación para verificar si estás en nuestra zona de entrega.';
-                        } else {
-                            formMessage.textContent = 'No pudimos obtener tu ubicación. Verifica tu conexión o GPS.';
-                        }
+                        formMessage.textContent = 'Debes permitir el acceso a tu ubicación para envíos a domicilio.';
                         btnSubmit.disabled = false;
                         btnSubmit.innerHTML = 'Confirmar pedido';
                     }, 
@@ -302,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 formMessage.textContent = ''; 
                 btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando pedido...';
-                // Al recoger en local, enviamos las coordenadas fijas del negocio para pasar el candado del backend
                 await procesarOrdenBaseDatos(19.6015500, -99.0521000, 'Recoger en local');
             }
         });

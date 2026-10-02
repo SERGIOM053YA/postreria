@@ -1,114 +1,117 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Credenciales de Supabase
-    const SUPABASE_URL = 'https://abwqlettqauklpufupaa.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFid3FsZXR0cWF1a2xwdWZ1cGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0MDgwOTYsImV4cCI6MjEwNDk4NDA5Nn0.5rpXHPuWskz9jm1GrbyEdXXgTbaQF1mmg7shpMqvZa8';
+    // Apuntamos a tu nuevo servidor intermediario
+    const API_URL = 'http://localhost:3000/api/registro';
+
+    // Capturamos los elementos del formulario
+    const form = document.querySelector('form'); 
+    const nombreInput = form.querySelector('input[type="text"]'); // Asumiendo que el primero es el nombre
+    const emailInput = form.querySelector('input[type="email"]');
+    const passInput = form.querySelector('input[type="password"]');
     
-    window.cliente = window.cliente || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const cliente = window.cliente;
+    // Capturamos el botón del ojito y el de registro
+    const togglePass = form.querySelector('.fa-eye, .fa-eye-slash') || document.querySelector('.toggle-password');
+    const btnRegistro = form.querySelector('button[type="submit"]') || document.querySelector('.btn-login');
 
-    const form = document.getElementById('registerForm');
-    const nombreInput = document.getElementById('nombre');
-    const emailInput = document.getElementById('email');
-    const passInput = document.getElementById('password');
-    const togglePass = document.getElementById('togglePassword');
-    const btnSubmit = document.getElementById('btnSubmit');
-    const statusDiv = document.getElementById('register-status');
+    // ==========================================
+    // 1. LÓGICA DEL OJITO (Mostrar/Ocultar)
+    // ==========================================
+    if (togglePass && passInput) {
+        togglePass.addEventListener('click', () => {
+            const isPass = passInput.type === 'password';
+            passInput.type = isPass ? 'text' : 'password';
+            
+            // Cambiar el icono visualmente si usa FontAwesome
+            if (togglePass.classList.contains('fa-eye') || togglePass.classList.contains('fa-eye-slash')) {
+                togglePass.classList.toggle('fa-eye', !isPass);
+                togglePass.classList.toggle('fa-eye-slash', isPass);
+            }
+        });
+    }
 
+    // ==========================================
+    // 2. LÓGICA DE LA LISTA DE REQUISITOS
+    // ==========================================
     const reqLength = document.getElementById('req-length');
     const reqUppercase = document.getElementById('req-uppercase');
     const reqLowercase = document.getElementById('req-lowercase');
     const reqNumber = document.getElementById('req-number');
     const reqSpecial = document.getElementById('req-special');
 
-    // Ocultar/Mostrar Contraseña
-    if (togglePass) {
-        togglePass.addEventListener('click', () => {
-            const isPass = passInput.type === 'password';
-            passInput.type = isPass ? 'text' : 'password';
-            togglePass.classList.toggle('fa-eye', !isPass);
-            togglePass.classList.toggle('fa-eye-slash', isPass);
+    const validateRequirement = (element, isValid) => {
+        if (!element) return;
+        const icon = element.querySelector('i');
+        if (isValid) {
+            element.style.color = '#25D366'; // Verde WhatsApp (Completado)
+            if (icon) {
+                icon.classList.remove('fa-circle');
+                icon.classList.add('fa-check-circle');
+            }
+        } else {
+            element.style.color = '#666'; // Gris (Incompleto)
+            if (icon) {
+                icon.classList.remove('fa-check-circle');
+                icon.classList.add('fa-circle');
+            }
+        }
+    };
+
+    if (passInput) {
+        passInput.addEventListener('input', (e) => {
+            const p = e.target.value;
+            validateRequirement(reqLength, p.length >= 8 && p.length <= 20);
+            validateRequirement(reqUppercase, /[A-Z]/.test(p));
+            validateRequirement(reqLowercase, /[a-z]/.test(p));
+            validateRequirement(reqNumber, /[0-9]/.test(p));
+            validateRequirement(reqSpecial, /[!@#$%^&*(),.?":{}|<>]/.test(p));
         });
     }
 
-    // Validación visual de contraseña
-    passInput.addEventListener('input', () => {
-        const val = passInput.value;
-        validarCheck(reqLength, val.length >= 8 && val.length <= 20);
-        validarCheck(reqUppercase, /[A-Z]/.test(val));
-        validarCheck(reqLowercase, /[a-z]/.test(val));
-        validarCheck(reqNumber, /[0-9]/.test(val));
-        validarCheck(reqSpecial, /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val));
-    });
+    // ==========================================
+    // 3. ENVÍO AL SERVIDOR NODE.JS
+    // ==========================================
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-    function validarCheck(item, esValido) {
-        if (!item) return;
-        const icon = item.querySelector('i');
-        item.classList.toggle('valid', esValido);
-        if (icon) icon.className = esValido ? 'fas fa-check-circle' : 'fas fa-circle';
-    }
+            // Validar que la contraseña cumpla todo antes de enviar
+            const p = passInput.value;
+            const isValidPass = p.length >= 8 && p.length <= 20 && 
+                                /[A-Z]/.test(p) && /[a-z]/.test(p) && 
+                                /[0-9]/.test(p) && /[!@#$%^&*(),.?":{}|<>]/.test(p);
+            
+            if(!isValidPass) {
+                alert('Por favor, asegúrate de que la contraseña cumpla con todos los requisitos en verde.');
+                return;
+            }
 
-    function mostrarEstado(mensaje, esError = false) {
-        statusDiv.style.display = 'block';
-        statusDiv.textContent = mensaje;
-        if (esError) {
-            statusDiv.style.background = '#ffe5e5';
-            statusDiv.style.color = '#d90429';
-            statusDiv.style.border = '1px solid #ffb3b3';
-        } else {
-            statusDiv.style.background = '#e6fcf5';
-            statusDiv.style.color = '#0ca678';
-            statusDiv.style.border = '1px solid #b2f2bb';
-        }
-    }
+            const textoOriginalBtn = btnRegistro.innerHTML;
+            btnRegistro.disabled = true;
+            btnRegistro.innerHTML = '<i class="fas fa-spinner fa-spin"></i> REGISTRANDO...';
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const val = passInput.value;
-        const isLengthValid = val.length >= 8 && val.length <= 20;
-        const hasUpper = /[A-Z]/.test(val);
-        const hasLower = /[a-z]/.test(val);
-        const hasNumber = /[0-9]/.test(val);
-        const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val);
+            try {
+                // Enviar datos al puente (Node.js)
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nombre: nombreInput ? nombreInput.value.trim() : '',
+                        email: emailInput.value.trim(),
+                        password: passInput.value
+                    })
+                });
 
-        if (!isLengthValid || !hasUpper || !hasLower || !hasNumber || !hasSpecial) {
-            mostrarEstado('La contraseña no cumple los requisitos.', true);
-            return;
-        }
+                const data = await response.json();
 
-        btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> REGISTRANDO...';
-        mostrarEstado('Creando tu cuenta...', false);
+                if (!response.ok) throw new Error(data.error || 'Error al registrar la cuenta');
 
-        // Registro en Supabase guardando el nombre en los metadatos
-        const { data, error } = await cliente.auth.signUp({
-            email: emailInput.value.trim(),
-            password: val,
-            options: {
-                data: {
-                    nombre: nombreInput.value.trim()
-                }
+                alert('Registro exitoso. ¡Bienvenido a Hilda\'s Postres!');
+                window.location.href = '../Login/login.html'; // Te redirige al login
+
+            } catch (error) {
+                alert('Hubo un problema: ' + error.message);
+                btnRegistro.disabled = false;
+                btnRegistro.innerHTML = textoOriginalBtn;
             }
         });
-
-        if (error) {
-            mostrarEstado('Error al registrar: ' + error.message, true);
-            btnSubmit.disabled = false;
-            btnSubmit.textContent = 'REGISTRARSE';
-            return;
-        }
-
-        mostrarEstado('¡Cuenta creada con éxito! Redirigiendo...', false);
-        
-        // Al registrarse, Supabase suele iniciar sesión automáticamente
-        if (data.session) {
-            localStorage.setItem('sb_access_token', data.session.access_token);
-            localStorage.setItem('sb_user_id', data.user.id);
-            localStorage.setItem('sb_user_email', data.user.email);
-            setTimeout(() => { window.location.href = '../index.html'; }, 1000);
-        } else {
-            // Por si tienes confirmación de correos activada
-            setTimeout(() => { window.location.href = 'login.html'; }, 1500);
-        }
-    });
+    }
 });

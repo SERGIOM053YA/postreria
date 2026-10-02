@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Caso especial: Si el usuario entra a la raíz "/" o a "index.html", forzamos que se subraye "INICIO"
         if (!activeFound && (currentPath.endsWith("/") || currentPath.includes("index.html"))) {
-            document.querySelector('.navbar a[href="./inicio.html"]')?.classList.add("active");
+            document.querySelector('.navbar a[href="./index.html"]')?.classList.add("active");
         }
     }
 });

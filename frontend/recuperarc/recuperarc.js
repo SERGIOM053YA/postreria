@@ -1,9 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const SUPABASE_URL = 'https://abwqlettqauklpufupaa.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFid3FsZXR0cWF1a2xwdWZ1cGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0MDgwOTYsImV4cCI6MjEwNDk4NDA5Nn0.5rpXHPuWskz9jm1GrbyEdXXgTbaQF1mmg7shpMqvZa8';
-    
-    window.cliente = window.cliente || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const cliente = window.cliente;
+    const API_REQUEST = 'http://localhost:3000/api/recuperar-password';
+    const API_VERIFY = 'http://localhost:3000/api/verificar-otp';
 
     const codeInputs = document.querySelectorAll('.code-input');
     const emailInput = document.getElementById('email');
@@ -11,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmPassword = document.getElementById('confirm-password');
     const btnSubmit = document.getElementById('btnSubmit');
     const resetForm = document.getElementById('resetForm');
+    const btnSendCode = document.getElementById('btnSendCode');
+    const linkReenviar = document.querySelector('.reset-footer-links a');
     
     const reqLength = document.getElementById('req-length');
     const reqUppercase = document.getElementById('req-uppercase');
@@ -19,36 +18,68 @@ document.addEventListener('DOMContentLoaded', () => {
     const reqSpecial = document.getElementById('req-special');
     const matchMessage = document.getElementById('matchMessage');
 
-    // Navegación de los 6 dígitos
+    async function pedirCodigo(boton, textoOriginal) {
+        const email = emailInput.value.trim();
+        if (!email || !email.includes('@')) return alert("Por favor, ingresa un correo válido.");
+
+        boton.disabled = true;
+        boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando código...';
+
+        try {
+            const response = await fetch(API_REQUEST, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error);
+            
+            alert("✅ ¡Código enviado con éxito! Revisa tu bandeja.");
+            boton.innerHTML = '<i class="fas fa-check"></i> Código Enviado';
+        } catch (error) {
+            alert("Fallo el envío: " + error.message);
+            boton.innerHTML = textoOriginal;
+            boton.disabled = false;
+        }
+    }
+
+    if (btnSendCode) {
+        // 1. ELIMINADOR DE DUPLICADOS: Borra la orden del HTML para que solo actúe el JS
+        btnSendCode.removeAttribute('onclick');
+
+        // 2. Única orden de envío
+        btnSendCode.addEventListener('click', (e) => {
+            e.preventDefault();
+            pedirCodigo(btnSendCode, '<i class="fas fa-paper-plane"></i> Solicitar Código');
+        });
+    }
+
+    if (linkReenviar) {
+        linkReenviar.addEventListener('click', (e) => {
+            e.preventDefault();
+            pedirCodigo(linkReenviar, 'Reenviar código');
+        });
+    }
+
     codeInputs.forEach((input, index) => {
         input.addEventListener('input', (e) => {
-            if (e.target.value.length === 1 && index < codeInputs.length - 1) {
-                codeInputs[index + 1].focus();
-            }
+            if (e.target.value.length === 1 && index < codeInputs.length - 1) codeInputs[index + 1].focus();
             checkCodeComplete();
         });
         input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
-                codeInputs[index - 1].focus();
-            }
+            if (e.key === 'Backspace' && e.target.value === '' && index > 0) codeInputs[index - 1].focus();
             setTimeout(checkCodeComplete, 10);
         });
     });
 
     function checkCodeComplete() {
         let code = Array.from(codeInputs).map(i => i.value).join('');
-        if (code.length === 6) {
-            newPassword.disabled = false;
-            confirmPassword.disabled = false;
-            btnSubmit.disabled = false;
-        } else {
-            newPassword.disabled = true;
-            confirmPassword.disabled = true;
-            btnSubmit.disabled = true;
-        }
+        const isComplete = code.length === 6;
+        newPassword.disabled = !isComplete;
+        confirmPassword.disabled = !isComplete;
+        btnSubmit.disabled = !isComplete;
     }
 
-    // Validación visual de contraseña
     newPassword.addEventListener('input', validatePassword);
     confirmPassword.addEventListener('input', validatePassword);
 
@@ -63,13 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
         validateRequirement(reqSpecial, /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val));
 
         if (confirmVal.length > 0) {
-            if (val === confirmVal) {
-                matchMessage.textContent = "¡Las contraseñas coinciden!";
-                matchMessage.className = "match-message success";
-            } else {
-                matchMessage.textContent = "Las contraseñas no coinciden.";
-                matchMessage.className = "match-message error";
-            }
+            matchMessage.textContent = val === confirmVal ? "¡Las contraseñas coinciden!" : "Las contraseñas no coinciden.";
+            matchMessage.className = val === confirmVal ? "match-message success" : "match-message error";
+            matchMessage.style.display = "block";
         } else {
             matchMessage.style.display = "none";
         }
@@ -78,12 +105,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function validateRequirement(element, isValid) {
         if (!element) return;
         const icon = element.querySelector('i');
-        if (isValid) {
-            element.classList.add('valid');
-            if (icon) icon.className = 'fas fa-check-circle';
-        } else {
-            element.classList.remove('valid');
-            if (icon) icon.className = 'fas fa-circle';
+        element.style.color = isValid ? '#25D366' : '#887275';
+        if (icon) {
+            icon.className = isValid ? 'fas fa-check-circle' : 'fas fa-circle';
         }
     }
 
@@ -102,23 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Reenviar código
-    const linkReenviar = document.querySelector('.reset-footer-links a');
-    if (linkReenviar) {
-        linkReenviar.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const email = emailInput.value.trim();
-            if (!email) return alert("Ingresa tu correo en el campo superior primero.");
-
-            linkReenviar.textContent = "Enviando...";
-            const { error } = await cliente.auth.resetPasswordForEmail(email);
-            if (error) alert("Error: " + error.message);
-            else alert("Código enviado. Revisa tu bandeja.");
-            linkReenviar.textContent = "Reenviar código";
-        });
-    }
-
-    // Flujo Supabase: Verificar OTP y Actualizar Contraseña
     resetForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = emailInput.value.trim();
@@ -128,25 +135,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (password !== confirmPassword.value) return alert('Las contraseñas no coinciden.');
 
         btnSubmit.disabled = true;
-        btnSubmit.textContent = 'PROCESANDO...';
+        btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESANDO...';
 
-        const { error: otpError } = await cliente.auth.verifyOtp({ email, token, type: 'recovery' });
-        if (otpError) {
-            alert('Código inválido o expirado: ' + otpError.message);
+        try {
+            const response = await fetch(API_VERIFY, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, token, password })
+            });
+            const data = await response.json();
+            
+            if (!response.ok) throw new Error(data.error);
+
+            alert('¡Contraseña actualizada con éxito!');
+            window.location.href = '../Login/login.html';
+        } catch (error) {
+            alert('Error: ' + error.message);
             btnSubmit.disabled = false;
-            btnSubmit.textContent = 'RESTABLECER CONTRASEÑA';
-            return;
+            btnSubmit.innerHTML = 'RESTABLECER CONTRASEÑA';
         }
-
-        const { error: updateError } = await cliente.auth.updateUser({ password });
-        if (updateError) {
-            alert('Error al actualizar: ' + updateError.message);
-            btnSubmit.disabled = false;
-            btnSubmit.textContent = 'RESTABLECER CONTRASEÑA';
-            return;
-        }
-
-        alert('¡Contraseña actualizada con éxito!');
-        window.location.href = '../Login/login.html';
     });
 });

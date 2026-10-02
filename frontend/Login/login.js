@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const SUPABASE_URL = 'https://abwqlettqauklpufupaa.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFid3FsZXR0cWF1a2xwdWZ1cGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0MDgwOTYsImV4cCI6MjEwNDk4NDA5Nn0.5rpXHPuWskz9jm1GrbyEdXXgTbaQF1mmg7shpMqvZa8'; 
-    window.cliente = window.cliente || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const cliente = window.cliente;
+    // Ya no usamos window.supabase aquí. Apuntamos a tu nuevo servidor.
+    const API_URL = 'http://localhost:3000/api/login';
 
     const form = document.getElementById('loginForm');
     const emailInput = document.getElementById('email');
@@ -10,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const togglePass = document.getElementById('togglePassword');
     const btnLogin = document.getElementById('btnLogin');
 
+    // Lógica visual del ojito para la contraseña
     if (togglePass) {
         togglePass.addEventListener('click', () => {
             const isPass = passInput.type === 'password';
@@ -25,23 +24,45 @@ document.addEventListener('DOMContentLoaded', () => {
             btnLogin.disabled = true;
             btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AUTENTICANDO...';
 
-            const { data, error } = await cliente.auth.signInWithPassword({
-                email: emailInput.value.trim(),
-                password: passInput.value
-            });
+            try {
+                // Hacemos la petición POST a tu servidor Node.js
+                const response = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: emailInput.value.trim(),
+                        password: passInput.value
+                    })
+                });
 
-            if (error) {
+                const data = await response.json();
+
+                // Si el servidor (Node.js) devuelve un error (ej. credenciales inválidas)
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error al iniciar sesión');
+                }
+
+                // Si fue exitoso, guardamos el token que nos dio tu servidor
+                localStorage.setItem('sb_access_token', data.token);
+                // Agrega esta línea para estampar tu identidad localmente
+                localStorage.setItem('sb_user_email', data.user.email || email);
+                
+                // Extraemos el ID y email del objeto 'user' que devuelve el servidor
+                if(data.user) {
+                    localStorage.setItem('sb_user_id', data.user.id || 'local-id');
+                    localStorage.setItem('sb_user_email', data.user.email);
+                }
+
+                console.log(`Login exitoso. Fuente: ${data.fuente}`);
+                window.location.href = '../index.html';
+
+            } catch (error) {
                 alert('Error de acceso: ' + error.message);
                 btnLogin.disabled = false;
                 btnLogin.innerHTML = 'INICIAR SESIÓN <i class="fas fa-arrow-right"></i>';
-                return;
             }
-
-            localStorage.setItem('sb_access_token', data.session.access_token);
-            localStorage.setItem('sb_user_id', data.user.id);
-            localStorage.setItem('sb_user_email', data.user.email);
-
-            window.location.href = '../index.html';
         });
     }
 });

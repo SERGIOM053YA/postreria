@@ -6,43 +6,110 @@
     <title>Datos de entrega | Hilda's Postres & Snacks</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="../carrito.css">
-    <link rel="stylesheet" href="Envio.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { min-height:100vh; background:linear-gradient(145deg,#fff7f9,#fff 55%,#fff0f3); color:#45333a; }
+        .shipping-page { max-width:1080px; margin:0 auto; padding:2rem 1.2rem 4rem; }
+        .shipping-top { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:2rem; }
+        .shipping-brand { color:var(--primary-pink,#f05473); font:1.5rem Pacifico,cursive; text-decoration:none; }
+        .shipping-top a.back-link { color:#855563; text-decoration:none; font-weight:600; }
+        .shipping-title { text-align:center; margin:1rem 0 2rem; }
+        .shipping-title .eyebrow { color:var(--primary-pink,#f05473); font-size:.85rem; letter-spacing:.14em; font-weight:800; }
+        .shipping-title h1 { margin:.35rem 0; font-size:clamp(1.8rem,4vw,2.5rem); }
+        .shipping-title p { color:#81747a; margin:.35rem 0; }
+        .shipping-layout { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(270px,.85fr); gap:1.3rem; align-items:start; }
+        .shipping-card { background:#fff; border:1px solid #f5dce3; border-radius:22px; padding:clamp(1.1rem,3vw,2rem); box-shadow:0 14px 40px #642d3b0d; }
+        .shipping-card h2 { margin:0 0 1.2rem; font-size:1.25rem; }
+        .shipping-form { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .field { display:flex; flex-direction:column; gap:.42rem; }
+        .field.full { grid-column:1/-1; }
+        .field label,.payment-title { font-size:.95rem; font-weight:700; }
+        .field input,.field textarea { border:1px solid #efd5dd; border-radius:12px; padding:.85rem .95rem; width:100%; box-sizing:border-box; font:inherit; outline:none; background:#fffdfd; }
+        .field input:focus,.field textarea:focus { border-color:#e95072; box-shadow:0 0 0 3px #e950721c; }
+        .field textarea { min-height:84px; resize:vertical; }
+        .payment-section { grid-column:1/-1; }
+        .payment-options { display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-top:.6rem; }
+        .payment-option { display:flex; align-items:center; gap:.6rem; padding:.9rem; border:1px solid #f1dce2; border-radius:13px; cursor:pointer; }
+        .payment-option:has(input:checked) { border-color:#e95072; background:#fff5f7; color:#9c3e56; }
+        .cash-options { display:none; margin-top:1rem; padding:1rem; border-radius:14px; background:#fff7f9; }
+        .cash-options.visible { display:block; }
+        .cash-modes { display:flex; flex-wrap:wrap; gap:1rem; margin:.6rem 0; }
+        .payment-help { color:#84747a; font-size:.9rem; margin:.6rem 0 0; }
+        .transfer-details { display:none; margin-top:1rem; padding:1rem; border:1px solid #d9e9df; border-radius:14px; background:#f6fbf7; }
+        .transfer-details.visible { display:block; }
+        .transfer-details h3 { margin:0 0 .7rem; font-size:1rem; }
+        .transfer-data { display:grid; gap:.45rem; margin:0 0 1rem; }
+        .transfer-data div { display:grid; grid-template-columns: minmax(115px,.7fr) 1fr; gap:.5rem; }
+        .transfer-data dt { color:#74676c; }
+        .transfer-data dd { margin:0; font-weight:700; overflow-wrap:anywhere; }
+        .whatsapp-proof { display:inline-flex; align-items:center; justify-content:center; gap:.55rem; padding:.8rem 1rem; border-radius:999px; background:#20b85a; color:#fff; text-decoration:none; font-weight:700; }
+        .whatsapp-proof:hover { background:#159447; }
+        .whatsapp-note { color:#6e7771; font-size:.88rem; margin:.7rem 0 0; }
+        .order-item { display:grid; grid-template-columns:1fr auto; gap:.5rem; padding:.75rem 0; border-bottom:1px solid #f5e8ec; }
+        .order-item small { display:block; color:#8a7b80; margin-top:.2rem; }
+        .order-total { display:flex; justify-content:space-between; font-size:1.15rem; font-weight:800; padding-top:1rem; }
+        .shipping-submit { grid-column:1/-1; width:100%; border:0; border-radius:999px; padding:1rem; color:white; background:var(--primary-pink,#e95072); font:700 1.05rem Outfit,sans-serif; cursor:pointer; box-shadow:0 7px 20px #e9507238; }
+        .shipping-submit:hover { background:var(--dark-pink,#d93d5c); }
+        .form-message { grid-column:1/-1; color:#a5354e; min-height:1.2rem; font-weight:600; text-align:center; padding-top:10px; }
+        .empty-order { color:#81747a; line-height:1.6; }
+        .success-card { display:none; max-width:650px; margin:2rem auto; text-align:center; }
+        .success-card i { color:#45a66a; font-size:3rem; }
+        .success-card h2 { font-size:1.7rem; }
+        .success-card a { display:inline-block; margin-top:.8rem; padding:.8rem 1.2rem; border-radius:999px; color:#fff; background:var(--primary-pink,#e95072); font-weight:700; text-decoration:none; }
+        .success-card a[hidden] { display:none; }
+        .checkout-header { position:relative; display:flex; align-items:center; justify-content:center; min-height:112px; padding:1rem 2rem 1.5rem; background:#fff; box-shadow:0 4px 18px rgba(74,59,50,.07); z-index:2; }
+        .checkout-logo { position:absolute; left:clamp(1rem,5vw,5rem); top:4px; width:96px; height:96px; object-fit:cover; border:5px solid #fff; border-radius:50%; box-shadow:0 4px 12px #0002; }
+        .checkout-nav { display:flex; flex-wrap:wrap; justify-content:center; gap:clamp(.7rem,2.5vw,2.2rem); padding-left:110px; }
+        .checkout-nav a { color:#4a3b32; font-size:.9rem; font-weight:700; letter-spacing:.04em; text-decoration:none; }
+        .checkout-nav a:hover,.checkout-nav a.current { color:var(--primary-pink); }
+        .checkout-wave { position:absolute; left:0; bottom:-20px; width:100%; height:22px; }
+        .shipping-page { padding-top:2.5rem; }
+        .shipping-title { position:relative; margin:1rem 0 2rem; padding:1.6rem 1rem; border:2px solid #ffccd8; border-radius:26px; background:linear-gradient(120deg,#fff 0%,#fff5f8 70%,#ffe8ef 100%); box-shadow:0 10px 28px rgba(240,84,115,.08); }
+        .shipping-title h1 { color:#443336; font-family:'Pacifico',cursive; font-size:clamp(2rem,4vw,2.8rem); font-weight:400; }
+        .shipping-title .eyebrow { display:inline-block; padding:.4rem .8rem; border-radius:999px; background:#ffe7ed; }
+        .shipping-card { border:2px solid #ffccd8; border-radius:26px; box-shadow:0 12px 32px rgba(240,84,115,.08); }
+        .shipping-card h2 { color:#443336; }
+        .shipping-layout > .shipping-card:last-child { position:sticky; top:1rem; }
+        .payment-option { background:#fffdfd; transition:background .2s,border-color .2s,transform .2s; }
+        .payment-option:hover { transform:translateY(-2px); border-color:#f05473; }
+        .shipping-submit { transition:transform .2s,box-shadow .2s,background .2s; }
+        .shipping-submit:hover { transform:translateY(-2px); box-shadow:0 10px 24px #e9507245; }
+        .checkout-footer { margin-top:2.5rem; padding:1.2rem; background:#fff; border-top:2px solid #ffccd8; color:#8b6a71; text-align:center; font-size:.9rem; }
+        .checkout-footer i { color:#f05473; margin:0 .25rem; }
+        @media(max-width:760px) { .shipping-layout { grid-template-columns:1fr; } .shipping-top { align-items:flex-start; } .shipping-layout > .shipping-card:last-child { position:static; } }
+        @media(max-width:520px) { .shipping-form,.payment-options { grid-template-columns:1fr; } .field.full,.payment-section,.shipping-submit,.form-message { grid-column:1; } .checkout-header { justify-content:flex-end; min-height:88px; padding:1rem; } .checkout-logo { left:1rem; width:68px; height:68px; } .checkout-nav { gap:.5rem .8rem; padding-left:76px; } .checkout-nav a { font-size:.68rem; } .shipping-title { padding:1.2rem .8rem; } }
+    </style>
 </head>
 <body>
     <header class="checkout-header">
         <a href="../index.html" aria-label="Ir al inicio"><img class="checkout-logo" src="../logo.png" alt="Hilda's Postres & Snacks"></a>
         <nav class="checkout-nav" aria-label="Navegación principal"></nav>
-        <div class="checkout-wave" aria-hidden="true">
-            <svg viewBox="0 0 1440 50" preserveAspectRatio="none" width="100%" height="100%">
-                <path fill="#fff" d="M0,0 L0,30 Q60,50 120,30 Q180,10 240,30 Q300,50 360,30 Q420,10 480,30 Q540,50 600,30 Q660,10 720,30 Q780,50 840,30 Q900,10 960,30 Q1020,50 1080,30 Q1140,10 1200,30 Q1260,50 1320,30 Q1380,10 1440,30 L1440,0 Z"/>
-            </svg>
-        </div>
+        <div class="checkout-wave" aria-hidden="true"><svg viewBox="0 0 1440 50" preserveAspectRatio="none" width="100%" height="100%"><path fill="#fff" d="M0,0 L0,30 Q60,50 120,30 Q180,10 240,30 Q300,50 360,30 Q420,10 480,30 Q540,50 600,30 Q660,10 720,30 Q780,50 840,30 Q900,10 960,30 Q1020,50 1080,30 Q1140,10 1200,30 Q1260,50 1320,30 Q1380,10 1440,30 L1440,0 Z"/></svg></div>
     </header>
     
     <main class="shipping-page">
         <header class="shipping-top">
             <a class="shipping-brand" href="../index.html">Hilda's Postres</a>
-            <a class="back-link" href="../carrito.html"><i class="fas fa-arrow-left"></i> Volver al carrito</a>
+            <a class="back-link" href="../index.html"><i class="fas fa-arrow-left"></i> Volver a la tienda</a>
         </header>
         
         <div id="checkout-content">
             <header class="shipping-title">
                 <span class="eyebrow">CASI LISTO</span>
-                <h1>Finaliza tu pedido</h1>
-                <p>Compártenos estos datos para preparar tu orden.</p>
+                <h1>Datos de entrega y pago</h1>
+                <p>Compártenos estos datos para preparar tu pedido.</p>
             </header>
             
             <div class="shipping-layout">
                 <section class="shipping-card">
-                    <h2><i class="fas fa-clipboard-list" style="color:#e95072"></i> Detalles de la orden</h2>
+                    <h2><i class="fas fa-map-marker-alt" style="color:#e95072"></i> Detalles del Envío</h2>
                     
                     <form id="shipping-form" class="shipping-form">
                         
-                        <!-- 1. Tipo de entrega -->
+                        <!-- 1. TIPO DE ENTREGA -->
                         <div class="payment-section" style="margin-bottom: 0.5rem;">
                             <div class="payment-title">¿Cómo deseas recibir tu pedido?</div>
                             <div class="payment-options">
@@ -51,63 +118,39 @@
                             </div>
                         </div>
 
-                        <div class="field full">
-                            <label for="recipient">Nombre del cliente</label>
-                            <input id="recipient" name="recipient" autocomplete="name" placeholder="Nombre completo" required>
-                        </div>
-                        
-                        <!-- 2. Campos de Dirección (Se ocultan si recogen en local) -->
-                        <div id="address-fields" style="display: grid; grid-template-columns: 1fr; gap: 1rem; grid-column: 1 / -1;">
-                            <div class="field full">
-                                <label for="address">Dirección completa</label>
-                                <input id="address" name="address" autocomplete="street-address" placeholder="Calle, número, colonia y código postal" required>
-                            </div>
-                            
-                            <div class="field full">
-                                <label for="reference">Referencia del domicilio</label>
-                                <textarea id="reference" name="reference" placeholder="Color de fachada, entre calles, local o indicaciones para llegar" required></textarea>
-                            </div>
-                        </div>
-                        
-                        <div class="field full" id="phone-field">
-    <label for="phone">Teléfono de contacto</label>
-    <!-- Restricción estricta HTML: Solo números, exactamente 10 -->
-    <input id="phone" name="phone" type="text" inputmode="numeric" placeholder="10 dígitos" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
-</div>
+                        <!-- 2. DATOS DE CONTACTO -->
+                        <div class="field full"><label for="recipient">Nombre del destinatario</label><input id="recipient" name="recipient" autocomplete="name" placeholder="Nombre completo" required></div>
+                        <div class="field full"><label for="phone">Teléfono de contacto</label><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="10 dígitos" pattern="[0-9+() -]{10,16}" required></div>
 
-                        <!-- 3. Métodos de Pago -->
+                        <!-- 3. DIRECCIÓN (Se oculta si es en local) -->
+                        <div id="address-fields" style="display: grid; grid-template-columns: 1fr; gap: 1rem; grid-column: 1 / -1;">
+                            <div class="field full"><label for="address">Dirección completa</label><input id="address" name="address" autocomplete="street-address" placeholder="Calle, número, colonia y código postal"></div>
+                            <div class="field full"><label for="reference">Referencia del domicilio</label><textarea id="reference" name="reference" placeholder="Color de fachada, entre calles, local o indicaciones para llegar"></textarea></div>
+                        </div>
+
+                        <!-- 4. MÉTODO DE PAGO -->
                         <div class="payment-section">
                             <div class="payment-title">Método de pago</div>
                             <div class="payment-options">
-                                <label class="payment-option"><input type="radio" name="payment" value="Efectivo" id="radio-efectivo" required> <i class="fas fa-money-bill-wave"></i> Efectivo</label>
-                                <label class="payment-option"><input type="radio" name="payment" value="Transferencia" id="radio-transferencia" required> <i class="fas fa-university"></i> Transferencia</label>
+                                <label class="payment-option"><input type="radio" name="payment" value="Efectivo" required> <i class="fas fa-money-bill-wave"></i> Efectivo</label>
+                                <label class="payment-option"><input type="radio" name="payment" value="Transferencia" required> <i class="fas fa-university"></i> Transferencia</label>
                             </div>
                             
-                            <p id="high-amount-warning" style="color: #e74c3c; font-size: 0.9em; display: none; margin-top: 10px; font-weight: bold;">
-                                *Para compras mayores a $500, requerimos el pago inicial por transferencia. Selecciona Transferencia para coordinar tu pago.
-                            </p>
-
-                            <div class="cash-options" id="cash-options" style="display: none;">
+                            <div class="cash-options" id="cash-options">
                                 <div class="payment-title">¿Cómo pagarás en efectivo?</div>
                                 <div class="cash-modes">
                                     <label><input type="radio" name="cashMode" value="Pago justo"> Pago justo</label>
                                     <label><input type="radio" name="cashMode" value="Necesito cambio"> Necesito cambio</label>
                                 </div>
-                                <!-- Select de billetes oficial -->
-                                <div class="field" id="change-field" style="display: none; margin-top: 15px;">
-                                    <label for="change-for">¿Con qué billete pagarás?</label>
-                                    <select id="change-for" name="changeFor" class="custom-modal-textarea">
-                                        <option value="">Selecciona un billete</option>
-                                    </select>
-                                </div>
+                                <div class="field" id="change-field" hidden><label for="change-for">¿Con qué billete pagarás?</label><input id="change-for" name="changeFor" inputmode="decimal" placeholder="Ej. $200"></div>
                             </div>
                             
-                            <div class="transfer-details" id="transfer-details" aria-live="polite" style="display: none;">
+                            <div class="transfer-details" id="transfer-details" aria-live="polite">
                                 <h3>Datos para realizar la transferencia</h3>
                                 <dl class="transfer-data">
-                                    <div><dt>Nombre del titular</dt><dd id="transfer-holder">Polar Streaming</dd></div>
-                                    <div><dt>Banco</dt><dd id="transfer-bank">Por definir</dd></div>
-                                    <div><dt>CLABE</dt><dd id="transfer-account">000000000000000000</dd></div>
+                                    <div><dt>Nombre del titular</dt><dd id="transfer-holder">Por agregar</dd></div>
+                                    <div><dt>Banco</dt><dd id="transfer-bank">Por agregar</dd></div>
+                                    <div><dt>Número de cuenta / CLABE</dt><dd id="transfer-account">Por agregar</dd></div>
                                 </dl>
                                 <a class="whatsapp-proof" id="whatsapp-proof-link" href="https://wa.me/" target="_blank" rel="noopener noreferrer">
                                     <i class="fab fa-whatsapp" aria-hidden="true"></i> Enviar comprobante por WhatsApp
@@ -129,18 +172,210 @@
             </div>
         </div>
         
-        <section class="shipping-card success-card" id="success-card" role="status" style="display: none;">
+        <section class="shipping-card success-card" id="success-card" role="status">
             <i class="fas fa-check-circle"></i>
             <h2>¡Recibimos tu pedido!</h2>
             <p id="success-message">Guardamos tus datos de entrega y método de pago. Pronto nos pondremos en contacto contigo.</p>
-            <a class="whatsapp-proof" id="success-whatsapp-link" href="https://wa.me/" target="_blank" rel="noopener noreferrer" style="display: none;"><i class="fab fa-whatsapp" aria-hidden="true"></i> Enviar comprobante por WhatsApp</a>
+            <a class="whatsapp-proof" id="success-whatsapp-link" href="https://wa.me/" target="_blank" rel="noopener noreferrer" hidden><i class="fab fa-whatsapp" aria-hidden="true"></i> Enviar comprobante por WhatsApp</a>
             <a class="admin-button primary" href="../index.html">Volver a la tienda</a>
         </section>
     </main>
     <footer class="checkout-footer"><i class="fas fa-heart"></i> Gracias por elegir Hilda's Postres & Snacks <i class="fas fa-heart"></i></footer>
 
-    <!-- SDK Oficial de Supabase y Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="Envio.js?v=4"></script>
+    <!-- LÓGICA DEL FORMULARIO CONECTADA AL BFF (NODE.JS) -->
+    <script>
+        (() => {
+            const CART_KEY = 'hilda_shopping_cart';
+            // Configura aquí los datos de tu repostería
+            const transferInfo = { holder:'Polar Streaming', bank:'BBVA', account:'000000000000000000', whatsappNumber:'5512345678' };
+            const read = key => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } };
+            const cart = read(CART_KEY);
+            const form = document.getElementById('shipping-form');
+            const formatMoney = value => new Intl.NumberFormat('es-MX', { style:'currency', currency:'MXN' }).format(value);
+            const orderItems = document.getElementById('order-items');
+
+            // Autocompletar el nombre de la sesión
+            const userEmail = localStorage.getItem('sb_user_email');
+            if (userEmail) {
+                document.getElementById('recipient').value = userEmail.split('@')[0];
+            }
+
+            // Calcular y renderizar total
+            const total = cart.reduce((sum, item) => sum + (parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0) * (Number(item.quantity) || 1), 0);
+            document.getElementById('order-total').textContent = formatMoney(total);
+
+            // Renderizar los productos
+            if (cart.length) {
+                cart.forEach(item => {
+                    const row = document.createElement('div'); row.className = 'order-item';
+                    const description = item.desc || '';
+                    const instructions = item.instructions ? ` · ${item.instructions}` : '';
+                    const name = document.createElement('span'); name.textContent = `${item.name} × ${item.quantity || 1}`;
+                    const price = document.createElement('strong');
+                    price.textContent = formatMoney((parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0) * (Number(item.quantity) || 1));
+                    const details = document.createElement('small'); details.textContent = description + instructions;
+                    row.append(name, price); row.appendChild(details); orderItems.appendChild(row);
+                });
+            } else {
+                orderItems.innerHTML = '<p class="empty-order">Tu carrito está vacío. <a href="../index.html">Regresa a la tienda</a> para agregar productos.</p>';
+                form.querySelector('button[type="submit"]').disabled = true;
+                form.querySelector('button[type="submit"]').style.opacity = '.55';
+            }
+
+            // Lógica para mostrar/ocultar Dirección según el "Tipo de Entrega"
+            const addressFields = document.getElementById('address-fields');
+            const inputAddress = document.getElementById('address');
+            const inputReference = document.getElementById('reference');
+
+            const toggleDeliveryFields = () => {
+                const isDomicilio = document.getElementById('radio-domicilio').checked;
+                if (isDomicilio) {
+                    addressFields.style.display = 'grid';
+                    inputAddress.required = true;
+                    inputReference.required = true;
+                } else {
+                    addressFields.style.display = 'none';
+                    inputAddress.required = false;
+                    inputReference.required = false;
+                }
+            };
+            document.querySelectorAll('input[name="deliveryType"]').forEach(input => input.addEventListener('change', toggleDeliveryFields));
+            toggleDeliveryFields(); // Validar al cargar
+
+            // Lógica para Pagos
+            const cashOptions = document.getElementById('cash-options');
+            const transferDetails = document.getElementById('transfer-details');
+            document.getElementById('transfer-holder').textContent = transferInfo.holder;
+            document.getElementById('transfer-bank').textContent = transferInfo.bank;
+            document.getElementById('transfer-account').textContent = transferInfo.account;
+            
+            document.querySelectorAll('input[name="payment"]').forEach(input => input.addEventListener('change', () => {
+                const isCash = input.value === 'Efectivo' && input.checked;
+                const isTransfer = input.value === 'Transferencia' && input.checked;
+                cashOptions.classList.toggle('visible', isCash);
+                cashOptions.querySelectorAll('input[name="cashMode"]').forEach(mode => { mode.required = isCash; if (!isCash) mode.checked = false; });
+                if (!isCash) { document.getElementById('change-field').hidden = true; document.getElementById('change-for').required = false; }
+                transferDetails.classList.toggle('visible', isTransfer);
+            }));
+            document.querySelector('input[name="payment"]:checked')?.dispatchEvent(new Event('change'));
+            
+            document.querySelectorAll('input[name="cashMode"]').forEach(input => input.addEventListener('change', () => {
+                const needsChange = input.value === 'Necesito cambio' && input.checked;
+                document.getElementById('change-field').hidden = !needsChange;
+                document.getElementById('change-for').required = needsChange;
+            }));
+
+            // ==========================================
+            // ENVÍO DE ORDEN A TU SERVIDOR NODE.JS
+            // ==========================================
+            form.addEventListener('submit', async event => {
+                event.preventDefault();
+                if (!cart.length || total <= 0) return;
+
+                const btnSubmit = form.querySelector('button[type="submit"]');
+                const formMessage = document.getElementById('form-message');
+                btnSubmit.disabled = true;
+                formMessage.textContent = '';
+                
+                const isDomicilio = document.getElementById('radio-domicilio').checked;
+                
+                const procesarOrden = async (latitud = null, longitud = null) => {
+                    btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando pedido...';
+
+                    const data = new FormData(form);
+                    const paymentMethod = data.get('payment');
+                    let direccionCompleta = 'Recoger en Local';
+                    
+                    if (isDomicilio) {
+                        direccionCompleta = data.get('address') + ' | Ref: ' + data.get('reference');
+                    }
+
+                    const notasPago = paymentMethod === 'Efectivo' && data.get('cashMode') === 'Necesito cambio'
+                                      ? `Cambio de: ${data.get('changeFor')}` : '';
+
+                    const payload = {
+                        cliente_nombre: data.get('recipient'),
+                        cliente_telefono: data.get('phone'),
+                        tipo_entrega: data.get('deliveryType'),
+                        metodo_pago: paymentMethod,
+                        direccion_entrega: direccionCompleta + (notasPago ? ` | Notas de pago: ${notasPago}` : ''),
+                        latitud: latitud,
+                        longitud: longitud,
+                        items: cart.map(item => ({
+                            producto_id: item.producto_id || item.id || 1, // Previene errores de catálogo
+                            cantidad: item.quantity,
+                            precio_unitario: parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0,
+                            instrucciones: item.instructions || item.desc || ''
+                        }))
+                    };
+
+                    try {
+                        const tokenLocal = localStorage.getItem('sb_access_token');
+                        
+                        // Comunicación directa con el Servidor Node.js
+                        const response = await fetch('http://localhost:3000/api/pedidos', {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${tokenLocal}`
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const responseData = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(responseData.error || 'Error del servidor al procesar tu pedido.');
+                        }
+
+                        // Éxito: Limpiar carrito y mostrar mensaje final
+                        const nuevoPedidoId = responseData.id_orden || responseData.id_emergencia;
+                        localStorage.removeItem(CART_KEY);
+                        document.getElementById('checkout-content').hidden = true;
+                        document.getElementById('success-card').style.display = 'block';
+
+                        if (paymentMethod === 'Transferencia') {
+                            const whatsappLink = document.getElementById('success-whatsapp-link');
+                            whatsappLink.href = `https://wa.me/${transferInfo.whatsappNumber}?text=Hola, acabo de realizar el pedido #${nuevoPedidoId}. Envío mi comprobante:`;
+                            whatsappLink.hidden = false;
+                            document.getElementById('success-message').textContent = `Pedido #${nuevoPedidoId} registrado. Envía tu comprobante por WhatsApp.`;
+                        } else {
+                            document.getElementById('success-message').textContent = `¡Tu pedido #${nuevoPedidoId} está en cocina! Pronto nos pondremos en contacto.`;
+                        }
+
+                    } catch (error) {
+                        formMessage.textContent = error.message;
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<i class="fas fa-check-circle"></i> Confirmar pedido';
+                    }
+                };
+
+                // Si es a domicilio, pedimos el GPS obligatorio
+                if (isDomicilio) {
+                    btnSubmit.innerHTML = '<i class="fas fa-map-marker-alt fa-bounce"></i> Verificando GPS...';
+
+                    if (!navigator.geolocation) {
+                        formMessage.textContent = 'Tu navegador no soporta geolocalización. Imposible validar envíos.';
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<i class="fas fa-check-circle"></i> Confirmar pedido';
+                        return;
+                    }
+
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => procesarOrden(position.coords.latitude, position.coords.longitude), 
+                        (error) => {
+                            formMessage.textContent = 'Acepta los permisos de ubicación para verificar la zona de 1 km.';
+                            btnSubmit.disabled = false;
+                            btnSubmit.innerHTML = '<i class="fas fa-check-circle"></i> Confirmar pedido';
+                        }, 
+                        { enableHighAccuracy: true }
+                    );
+                } else {
+                    // Si es en local, procesamos de inmediato sin GPS
+                    procesarOrden();
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
