@@ -282,15 +282,32 @@ app.get('/api/pedidos', async (req, res) => {
     let pedidosNube = [];
     let pedidosLocales = [];
 
+    // 1. Extraemos el token del administrador que viene del frontend
+    const authHeader = req.headers.authorization;
+    const token = authHeader ? authHeader.split(' ')[1] : '';
+
+    // 2. Creamos un cliente temporal de Supabase CON LA IDENTIDAD DEL ADMINISTRADOR para saltar el RLS
+    const supabaseAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
+        global: { headers: { Authorization: `Bearer ${token}` } }
+    });
+
     // Traer los oficiales de Supabase
     try {
-        const { data, error } = await supabase.from('pedidos').select(`
+        // CORRECCIÓN: Usamos 'created_at' en lugar de 'creado_en'
+        const { data, error } = await supabaseAdmin.from('pedidos').select(`
             id, cliente_nombre, cliente_telefono, tipo_entrega,
-            direccion_entrega, metodo_pago, total, estado, creado_en,
+            direccion_entrega, metodo_pago, total, estado, created_at,
             pedido_items ( cantidad, precio_unitario, instrucciones, productos ( nombre, imagen_url ) )
         `);
-        if (!error && data) pedidosNube = data;
-    } catch (e) { console.log("Error leyendo nube"); }
+        
+        if (error) {
+            console.log("⚠️ Error leyendo nube:", error.message);
+        } else if (data) {
+            pedidosNube = data;
+        }
+    } catch (e) { 
+        console.log("⚠️ Excepción al conectar con la nube:", e.message); 
+    }
 
     // Traer los de emergencia y fusionarlos
     db.all(`SELECT * FROM pedidos_emergencia ORDER BY id DESC`, [], (err, rows) => {
@@ -319,14 +336,14 @@ app.get('/api/pedidos', async (req, res) => {
                         metodo_pago: datos.metodo_pago,
                         estado: datos.estado || (datos.metodo_pago === 'Efectivo' ? 'Por Preparar' : 'Pendiente de Validación'),
                         total: totalCalculado,
-                        creado_en: row.fecha,
+                        created_at: row.fecha, // Unificamos el nombre a created_at para el ordenamiento
                         es_emergencia: true,
-                        pedido_items: itemsAdornados // AQUÍ PASAMOS LAS IMÁGENES Y NOMBRES AL FRONTEND
+                        pedido_items: itemsAdornados
                     };
                 });
                 
                 // Fusionamos y ordenamos del más nuevo al más viejo
-                const todos = [...pedidosNube, ...pedidosLocales].sort((a, b) => new Date(b.creado_en) - new Date(a.creado_en));
+                const todos = [...pedidosNube, ...pedidosLocales].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                 res.json(todos);
             });
         } else {

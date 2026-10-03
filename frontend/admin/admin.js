@@ -1,7 +1,8 @@
 (() => {
-    // 1. INICIALIZAR SUPABASE
+    // 1. INICIALIZAR SUPABASE CON LLAVES CORRECTAS
     const SUPABASE_URL = 'https://abwqlettqauklpufupaa.supabase.co';
-
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFid3FsZXR0cWF1a2xwdWZ1cGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0MDgwOTYsImV4cCI6MjEwNDk4NDA5Nn0.5rpXHPuWskz9jm1GrbyEdXXgTbaQF1mmg7shpMqvZa8';
+    const cliente = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let dbOrders = [];
     window.catalogoGlobal = []; 
@@ -28,11 +29,17 @@
         if (button.dataset.panel === 'orders-panel') cargarPedidosReales();
     }));
 
-
-    // 3. LECTURA DUAL DE PEDIDOS
+    // 3. LECTURA DUAL DE PEDIDOS (BFF)
     async function cargarPedidosReales() {
         try {
-            const res = await fetch('http://localhost:3000/api/pedidos');
+            // Obtenemos el gafete de administrador
+            const tokenLocal = localStorage.getItem('sb_access_token');
+            
+            // Lo enviamos a Node.js en los Headers
+            const res = await fetch('http://localhost:3000/api/pedidos', {
+                headers: { 'Authorization': `Bearer ${tokenLocal}` }
+            });
+            
             if (res.ok) {
                 dbOrders = await res.json();
                 renderOrders();
@@ -75,7 +82,7 @@
             if (search && !orderId.includes(search)) return;
             count++;
             
-            const dateObj = new Date(sale.creado_en);
+            const dateObj = new Date(sale.creado_en || sale.created_at || new Date());
             const dateStr = dateObj.toLocaleDateString('es-MX', {day:'2-digit', month:'short', year:'numeric'});
             const timeStr = dateObj.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
 
@@ -83,7 +90,7 @@
             if (sale.pedido_items && sale.pedido_items.length > 0) {
                  const firstItem = sale.pedido_items[0];
                  const moreCount = sale.pedido_items.length - 1;
-                 const productName = firstItem.productos?.nombre || 'Producto Múltiple';
+                 const productName = firstItem.productos?.nombre || firstItem.nombre || 'Producto Múltiple';
                  let productImg = firstItem.productos?.imagen_url;
 
                 // Diccionario de imágenes blindado
@@ -124,7 +131,6 @@
             };
             const color = statusColors[status] || statusColors['Pendiente de Validación'];
             
-            // Etiqueta visual para diferenciar si es orden de nube o de emergencia
             const dbBadge = sale.es_emergencia ? `<i class="fas fa-server" style="color:#d97706;" title="Respaldo Local"></i>` : `<i class="fas fa-cloud" style="color:#0284c7;" title="Nube Oficial"></i>`;
             const statusBadge = `<span style="background:${color.bg}; color:${color.text}; padding:.35rem .75rem; border-radius:999px; font-size:.78rem; font-weight:700; display:inline-flex; align-items:center; gap:.4rem;"><i class="fas ${color.icon}"></i> ${status}</span>`;
 
@@ -160,7 +166,7 @@
     });
     document.getElementById('order-search').addEventListener('input', renderOrders);
 
-    // 6. MODAL DINÁMICO
+    // 6. MODAL DINÁMICO BLINDADO
     document.getElementById('orders-rows').addEventListener('click', (e) => {
         const btn = e.target.closest('.row-actions-btn');
         if (!btn) return;
@@ -171,8 +177,9 @@
         const pedido = dbOrders.find(p => String(p.id) === id);
         if (!pedido) return;
 
-        const itemsHtml = pedido.pedido_items.map(item => {
-            const nombreProd = item.productos?.nombre || 'Producto Múltiple';
+        const safeItems = pedido.pedido_items || [];
+        const itemsHtml = safeItems.map(item => {
+            const nombreProd = item.productos?.nombre || item.nombre || 'Producto Múltiple';
             const precioTotal = (item.precio_unitario || 0) * item.cantidad;
             return `
             <div style="display:flex; justify-content:space-between; border-bottom: 1px solid #f4e9ec; padding: 0.5rem 0;">
@@ -234,6 +241,7 @@
                     <p><strong><i class="fas fa-phone-alt"></i> Teléfono:</strong> ${escapeHTML(pedido.cliente_telefono)}</p>
                     <p><strong><i class="fas fa-motorcycle"></i> Modalidad:</strong> ${escapeHTML(pedido.tipo_entrega)}</p>
                     <p><strong><i class="fas fa-wallet"></i> Pago:</strong> ${escapeHTML(pedido.metodo_pago)}</p>
+                    <p><strong><i class="fas fa-map-pin"></i> Destino:</strong> ${escapeHTML(direccionTexto)}</p>
                 </div>
                 ${notasCocinaHtml}
                 <h3 style="color:#4a3b32; font-size:1.1rem; margin-bottom:0.8rem;">Desglose</h3>
@@ -263,7 +271,7 @@
             const res = await fetch(`http://localhost:3000/api/pedidos/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ estado: nuevoEstado })
+                body: JSON.stringify({ estado: nuevoEstado, es_emergencia: pedido.es_emergencia })
             });
 
             if (!res.ok) throw new Error("Fallo al actualizar en el servidor");
@@ -281,7 +289,7 @@
         const { data: productos, error } = await cliente.from('productos').select('*').order('id', { ascending: false });
         if (error) return;
 
-        window.catalogoGlobal = productos; // Respaldo global para mapear los pedidos de emergencia
+        window.catalogoGlobal = productos; 
 
         const tbody = document.getElementById('product-rows');
         tbody.replaceChildren();
@@ -374,8 +382,8 @@
         const toDate = document.getElementById('sales-to').value;
         
         let ventasValidas = dbOrders.filter(o => o.estado !== 'Cancelado' && o.estado !== 'Pendiente de Validación');
-        if (fromDate) { const fDate = new Date(fromDate); fDate.setHours(0,0,0,0); ventasValidas = ventasValidas.filter(o => new Date(o.creado_en) >= fDate); }
-        if (toDate) { const tDate = new Date(toDate); tDate.setHours(23,59,59,999); ventasValidas = ventasValidas.filter(o => new Date(o.creado_en) <= tDate); }
+        if (fromDate) { const fDate = new Date(fromDate); fDate.setHours(0,0,0,0); ventasValidas = ventasValidas.filter(o => new Date(o.creado_en || o.created_at) >= fDate); }
+        if (toDate) { const tDate = new Date(toDate); tDate.setHours(23,59,59,999); ventasValidas = ventasValidas.filter(o => new Date(o.creado_en || o.created_at) <= tDate); }
 
         let totalIngresos = 0, totalUnidades = 0; const productosVendidos = {};
         ventasValidas.forEach(pedido => {
@@ -383,7 +391,7 @@
             if (pedido.pedido_items) {
                 pedido.pedido_items.forEach(item => {
                     const cant = item.cantidad || 1; totalUnidades += cant;
-                    const nombre = item.productos?.nombre || 'Borrado';
+                    const nombre = item.productos?.nombre || item.nombre || 'Borrado';
                     if (!productosVendidos[nombre]) productosVendidos[nombre] = { unidades: 0, ingresos: 0 };
                     productosVendidos[nombre].unidades += cant;
                     productosVendidos[nombre].ingresos += (cant * (item.precio_unitario || 0));
@@ -421,7 +429,6 @@
         inputTo.value = hoy.toISOString().split('T')[0];
     }
     
-    // Carga inicial secuencial para asegurar que el catálogo esté listo antes de pintar los pedidos de emergencia
     async function init() {
         await cargarProductosReales();
         await cargarPedidosReales();

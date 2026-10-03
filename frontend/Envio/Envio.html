@@ -79,6 +79,31 @@
         .shipping-submit:hover { transform:translateY(-2px); box-shadow:0 10px 24px #e9507245; }
         .checkout-footer { margin-top:2.5rem; padding:1.2rem; background:#fff; border-top:2px solid #ffccd8; color:#8b6a71; text-align:center; font-size:.9rem; }
         .checkout-footer i { color:#f05473; margin:0 .25rem; }
+        
+        /* ESTILO ROSA PARA LA BARRA DE SELECCIÓN DE BILLETES */
+        .pink-select {
+            border: 2px solid #ffccd8 !important;
+            background-color: #fff0f3 !important;
+            color: #d93d5c !important;
+            border-radius: 12px;
+            padding: 0.85rem 0.95rem;
+            width: 100%;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 500;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .pink-select:focus {
+            border-color: #f05473 !important;
+            box-shadow: 0 0 0 3px rgba(240, 84, 115, 0.2) !important;
+        }
+        .pink-select option {
+            background-color: #ffffff;
+            color: #45333a;
+        }
+        
         @media(max-width:760px) { .shipping-layout { grid-template-columns:1fr; } .shipping-top { align-items:flex-start; } .shipping-layout > .shipping-card:last-child { position:static; } }
         @media(max-width:520px) { .shipping-form,.payment-options { grid-template-columns:1fr; } .field.full,.payment-section,.shipping-submit,.form-message { grid-column:1; } .checkout-header { justify-content:flex-end; min-height:88px; padding:1rem; } .checkout-logo { left:1rem; width:68px; height:68px; } .checkout-nav { gap:.5rem .8rem; padding-left:76px; } .checkout-nav a { font-size:.68rem; } .shipping-title { padding:1.2rem .8rem; } }
     </style>
@@ -105,44 +130,50 @@
             
             <div class="shipping-layout">
                 <section class="shipping-card">
-                    <h2><i class="fas fa-map-marker-alt" style="color:#e95072"></i> Detalles del Envío</h2>
+                    <h2><i class="fas fa-map-marker-alt" style="color:#e95072"></i> ¿Dónde te lo llevamos?</h2>
                     
                     <form id="shipping-form" class="shipping-form">
                         
-                        <!-- 1. TIPO DE ENTREGA -->
                         <div class="payment-section" style="margin-bottom: 0.5rem;">
-                            <div class="payment-title">¿Cómo deseas recibir tu pedido?</div>
+                            <div class="payment-title">Tipo de entrega</div>
                             <div class="payment-options">
                                 <label class="payment-option"><input type="radio" name="deliveryType" value="A Domicilio" id="radio-domicilio" checked required> <i class="fas fa-motorcycle"></i> A Domicilio</label>
                                 <label class="payment-option"><input type="radio" name="deliveryType" value="Recoger en Local" id="radio-local" required> <i class="fas fa-store"></i> Recoger en local</label>
                             </div>
                         </div>
 
-                        <!-- 2. DATOS DE CONTACTO -->
                         <div class="field full"><label for="recipient">Nombre del destinatario</label><input id="recipient" name="recipient" autocomplete="name" placeholder="Nombre completo" required></div>
-                        <div class="field full"><label for="phone">Teléfono de contacto</label><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="10 dígitos" pattern="[0-9+() -]{10,16}" required></div>
+                        
+                        <!-- Contenedor del Teléfono. Oculto por defecto si arranca en local -->
+                        <div class="field full" id="phone-field">
+                            <label for="phone">Teléfono de contacto</label>
+                            <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="10 dígitos" pattern="[0-9]{10}" maxlength="10" title="Debe contener exactamente 10 números" required>
+                        </div>
 
-                        <!-- 3. DIRECCIÓN (Se oculta si es en local) -->
                         <div id="address-fields" style="display: grid; grid-template-columns: 1fr; gap: 1rem; grid-column: 1 / -1;">
                             <div class="field full"><label for="address">Dirección completa</label><input id="address" name="address" autocomplete="street-address" placeholder="Calle, número, colonia y código postal"></div>
                             <div class="field full"><label for="reference">Referencia del domicilio</label><textarea id="reference" name="reference" placeholder="Color de fachada, entre calles, local o indicaciones para llegar"></textarea></div>
                         </div>
 
-                        <!-- 4. MÉTODO DE PAGO -->
                         <div class="payment-section">
                             <div class="payment-title">Método de pago</div>
                             <div class="payment-options">
-                                <label class="payment-option"><input type="radio" name="payment" value="Efectivo" required> <i class="fas fa-money-bill-wave"></i> Efectivo</label>
-                                <label class="payment-option"><input type="radio" name="payment" value="Transferencia" required> <i class="fas fa-university"></i> Transferencia</label>
+                                <label class="payment-option" id="label-efectivo"><input type="radio" name="payment" value="Efectivo" required> <i class="fas fa-money-bill-wave"></i> Efectivo</label>
+                                <label class="payment-option" id="label-transferencia"><input type="radio" name="payment" value="Transferencia" required> <i class="fas fa-university"></i> Transferencia</label>
                             </div>
                             
                             <div class="cash-options" id="cash-options">
                                 <div class="payment-title">¿Cómo pagarás en efectivo?</div>
                                 <div class="cash-modes">
-                                    <label><input type="radio" name="cashMode" value="Pago justo"> Pago justo</label>
+                                    <label><input type="radio" name="cashMode" value="Pago justo"> Llevaré el pago exacto</label>
                                     <label><input type="radio" name="cashMode" value="Necesito cambio"> Necesito cambio</label>
                                 </div>
-                                <div class="field" id="change-field" hidden><label for="change-for">¿Con qué billete pagarás?</label><input id="change-for" name="changeFor" inputmode="decimal" placeholder="Ej. $200"></div>
+                                <div class="field" id="change-field" style="display: none; margin-top: 10px;">
+                                    <label for="change-for">¿Con qué billete pagarás?</label>
+                                    <select id="change-for" class="pink-select">
+                                        <option value="">Selecciona un billete</option>
+                                    </select>
+                                </div>
                             </div>
                             
                             <div class="transfer-details" id="transfer-details" aria-live="polite">
@@ -159,6 +190,16 @@
                             </div>
                         </div>
                         
+                        <div class="payment-section" style="margin-top: 15px;">
+                            <div id="anticipo-warning" style="display:none; background:#fff0f3; border: 1px solid #ffccd5; padding: 12px; border-radius: 12px; margin-bottom: 15px; color: #d93d5c; font-size: 0.9rem;">
+                                <strong><i class="fas fa-exclamation-circle"></i> Anticipo Requerido:</strong> Tu pedido supera los $200.00. Requerimos un pago o anticipo del 50% (<strong><span id="anticipo-monto"></span></strong>) vía transferencia para comenzar a prepararlo.
+                            </div>
+                            
+                            <div id="no-returns-warning" style="background:#f6fbf7; border: 1px solid #d9e9df; padding: 12px; border-radius: 12px; color: #159447; font-size: 0.9rem;">
+                                <strong><i class="fas fa-info-circle"></i> Política de Calidad:</strong> Por favor, revisa bien tu pedido. Por higiene y para prevenir mermas, te informamos amablemente que <strong>no contamos con cambios ni devoluciones</strong>.
+                            </div>
+                        </div>
+
                         <p class="form-message" id="form-message" role="status"></p>
                         <button class="shipping-submit" type="submit"><i class="fas fa-check-circle"></i> Confirmar pedido</button>
                     </form>
@@ -186,7 +227,7 @@
     <script>
         (() => {
             const CART_KEY = 'hilda_shopping_cart';
-            // Configura aquí los datos de tu repostería
+            // Configuración del negocio
             const transferInfo = { holder:'Polar Streaming', bank:'BBVA', account:'000000000000000000', whatsappNumber:'5512345678' };
             const read = key => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } };
             const cart = read(CART_KEY);
@@ -194,8 +235,16 @@
             const formatMoney = value => new Intl.NumberFormat('es-MX', { style:'currency', currency:'MXN' }).format(value);
             const orderItems = document.getElementById('order-items');
 
-            // Autocompletar el nombre de la sesión
+            // Seguridad: Solo registrados
+            const tokenLocal = localStorage.getItem('sb_access_token');
             const userEmail = localStorage.getItem('sb_user_email');
+            
+            if (!tokenLocal) {
+                alert("Por favor, inicia sesión para continuar con tu compra.");
+                window.location.href = '../Login/login.html';
+                return;
+            }
+
             if (userEmail) {
                 document.getElementById('recipient').value = userEmail.split('@')[0];
             }
@@ -204,7 +253,12 @@
             const total = cart.reduce((sum, item) => sum + (parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0) * (Number(item.quantity) || 1), 0);
             document.getElementById('order-total').textContent = formatMoney(total);
 
-            // Renderizar los productos
+            // Restringir entrada del teléfono SOLO a números
+            const inputPhone = document.getElementById('phone');
+            inputPhone.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+            });
+
             if (cart.length) {
                 cart.forEach(item => {
                     const row = document.createElement('div'); row.className = 'order-item';
@@ -217,13 +271,13 @@
                     row.append(name, price); row.appendChild(details); orderItems.appendChild(row);
                 });
             } else {
-                orderItems.innerHTML = '<p class="empty-order">Tu carrito está vacío. <a href="../index.html">Regresa a la tienda</a> para agregar productos.</p>';
+                orderItems.innerHTML = '<p class="empty-order">Tu carrito está vacío. <a href="../index.html">Regresa a la tienda</a>.</p>';
                 form.querySelector('button[type="submit"]').disabled = true;
-                form.querySelector('button[type="submit"]').style.opacity = '.55';
             }
 
-            // Lógica para mostrar/ocultar Dirección según el "Tipo de Entrega"
+            // Lógica de Entrega (Ocultar teléfono y dirección completos si es Local)
             const addressFields = document.getElementById('address-fields');
+            const phoneField = document.getElementById('phone-field');
             const inputAddress = document.getElementById('address');
             const inputReference = document.getElementById('reference');
 
@@ -231,42 +285,104 @@
                 const isDomicilio = document.getElementById('radio-domicilio').checked;
                 if (isDomicilio) {
                     addressFields.style.display = 'grid';
+                    phoneField.style.display = 'flex';
                     inputAddress.required = true;
                     inputReference.required = true;
+                    inputPhone.required = true;
                 } else {
                     addressFields.style.display = 'none';
+                    phoneField.style.display = 'none'; // Desaparece la caja del teléfono
                     inputAddress.required = false;
                     inputReference.required = false;
+                    inputPhone.required = false; 
                 }
             };
             document.querySelectorAll('input[name="deliveryType"]').forEach(input => input.addEventListener('change', toggleDeliveryFields));
-            toggleDeliveryFields(); // Validar al cargar
+            toggleDeliveryFields();
 
-            // Lógica para Pagos
+            // Configurar Billetes Dinámicos según la compra
+            const selectChangeFor = document.getElementById('change-for');
+            if (selectChangeFor) {
+                selectChangeFor.innerHTML = '<option value="">Selecciona un billete</option>';
+                const billetesOficiales = [20, 50, 100, 200, 500];
+                billetesOficiales.forEach(billete => {
+                    if (billete > total) {
+                        // REGLAS: < 100 max 200. > 200 max 500.
+                        if (total < 100 && billete > 200) return; 
+                        const option = document.createElement('option');
+                        option.value = `$${billete}`;
+                        option.textContent = `Billete de $${billete}`;
+                        selectChangeFor.appendChild(option);
+                    }
+                });
+            }
+
+            // REGLAS DE NEGOCIO PARA PAGOS (> 200 y > 500)
+            const radioEfectivo = document.querySelector('input[value="Efectivo"]');
+            const radioTransferencia = document.querySelector('input[value="Transferencia"]');
+            const labelEfectivo = document.getElementById('label-efectivo');
+
+            if (total > 500) {
+                radioEfectivo.disabled = true;
+                labelEfectivo.style.opacity = '0.5';
+                labelEfectivo.title = 'Compras mayores a $500 requieren transferencia';
+                radioTransferencia.checked = true;
+            }
+
+            if (total > 200) {
+                document.getElementById('anticipo-warning').style.display = 'block';
+                document.getElementById('anticipo-monto').textContent = formatMoney(total / 2);
+            }
+
+            // Mostrar/Ocultar secciones de pago
             const cashOptions = document.getElementById('cash-options');
             const transferDetails = document.getElementById('transfer-details');
+            const changeField = document.getElementById('change-field');
+
             document.getElementById('transfer-holder').textContent = transferInfo.holder;
             document.getElementById('transfer-bank').textContent = transferInfo.bank;
             document.getElementById('transfer-account').textContent = transferInfo.account;
             
             document.querySelectorAll('input[name="payment"]').forEach(input => input.addEventListener('change', () => {
-                const isCash = input.value === 'Efectivo' && input.checked;
-                const isTransfer = input.value === 'Transferencia' && input.checked;
+                const isCash = document.querySelector('input[name="payment"]:checked')?.value === 'Efectivo';
+                const isTransfer = !isCash;
+
                 cashOptions.classList.toggle('visible', isCash);
-                cashOptions.querySelectorAll('input[name="cashMode"]').forEach(mode => { mode.required = isCash; if (!isCash) mode.checked = false; });
-                if (!isCash) { document.getElementById('change-field').hidden = true; document.getElementById('change-for').required = false; }
-                transferDetails.classList.toggle('visible', isTransfer);
+                cashOptions.querySelectorAll('input[name="cashMode"]').forEach(mode => mode.required = isCash);
+                
+                if (!isCash) { 
+                    changeField.style.display = 'none'; 
+                    selectChangeFor.required = false; 
+                } else {
+                    const needsChange = document.querySelector('input[name="cashMode"]:checked')?.value === 'Necesito cambio';
+                    changeField.style.display = needsChange ? 'flex' : 'none';
+                    selectChangeFor.required = needsChange;
+                }
+
+                // Mostrar SPEI siempre si es Transferencia o si el total > 200 (para el anticipo)
+                if (isTransfer || total > 200) {
+                    transferDetails.classList.add('visible');
+                } else {
+                    transferDetails.classList.remove('visible');
+                }
             }));
-            document.querySelector('input[name="payment"]:checked')?.dispatchEvent(new Event('change'));
             
-            document.querySelectorAll('input[name="cashMode"]').forEach(input => input.addEventListener('change', () => {
-                const needsChange = input.value === 'Necesito cambio' && input.checked;
-                document.getElementById('change-field').hidden = !needsChange;
-                document.getElementById('change-for').required = needsChange;
+            document.querySelectorAll('input[name="cashMode"]').forEach(input => input.addEventListener('change', (e) => {
+                if (e.target.value === 'Necesito cambio') {
+                    changeField.style.display = 'flex';
+                    selectChangeFor.required = true;
+                } else {
+                    changeField.style.display = 'none';
+                    selectChangeFor.required = false;
+                    selectChangeFor.value = ''; // Resetea la opción
+                }
             }));
 
+            // Forzar actualización inicial de la vista de pagos
+            document.querySelector('input[name="payment"]:checked')?.dispatchEvent(new Event('change'));
+
             // ==========================================
-            // ENVÍO DE ORDEN A TU SERVIDOR NODE.JS
+            // ENVÍO DE ORDEN AL BACKEND BFF NODE.JS
             // ==========================================
             form.addEventListener('submit', async event => {
                 event.preventDefault();
@@ -290,19 +406,24 @@
                         direccionCompleta = data.get('address') + ' | Ref: ' + data.get('reference');
                     }
 
-                    const notasPago = paymentMethod === 'Efectivo' && data.get('cashMode') === 'Necesito cambio'
-                                      ? `Cambio de: ${data.get('changeFor')}` : '';
+                    let notasPago = '';
+                    if (paymentMethod === 'Efectivo') {
+                        notasPago = data.get('cashMode') === 'Necesito cambio' ? `Cambio de: ${document.getElementById('change-for').value}` : 'Pago justo';
+                    }
+                    if (total > 200) {
+                        notasPago += (notasPago ? ' | ' : '') + `Anticipo 50% requerido (${formatMoney(total/2)})`;
+                    }
 
                     const payload = {
                         cliente_nombre: data.get('recipient'),
-                        cliente_telefono: data.get('phone'),
+                        cliente_telefono: data.get('phone') || 'No aplica',
                         tipo_entrega: data.get('deliveryType'),
                         metodo_pago: paymentMethod,
                         direccion_entrega: direccionCompleta + (notasPago ? ` | Notas de pago: ${notasPago}` : ''),
                         latitud: latitud,
                         longitud: longitud,
                         items: cart.map(item => ({
-                            producto_id: item.producto_id || item.id || 1, // Previene errores de catálogo
+                            producto_id: item.producto_id || item.id || 1, 
                             cantidad: item.quantity,
                             precio_unitario: parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0,
                             instrucciones: item.instructions || item.desc || ''
@@ -310,9 +431,6 @@
                     };
 
                     try {
-                        const tokenLocal = localStorage.getItem('sb_access_token');
-                        
-                        // Comunicación directa con el Servidor Node.js
                         const response = await fetch('http://localhost:3000/api/pedidos', {
                             method: 'POST',
                             headers: { 
@@ -328,17 +446,16 @@
                             throw new Error(responseData.error || 'Error del servidor al procesar tu pedido.');
                         }
 
-                        // Éxito: Limpiar carrito y mostrar mensaje final
                         const nuevoPedidoId = responseData.id_orden || responseData.id_emergencia;
                         localStorage.removeItem(CART_KEY);
                         document.getElementById('checkout-content').hidden = true;
                         document.getElementById('success-card').style.display = 'block';
 
-                        if (paymentMethod === 'Transferencia') {
+                        if (paymentMethod === 'Transferencia' || total > 200) {
                             const whatsappLink = document.getElementById('success-whatsapp-link');
                             whatsappLink.href = `https://wa.me/${transferInfo.whatsappNumber}?text=Hola, acabo de realizar el pedido #${nuevoPedidoId}. Envío mi comprobante:`;
                             whatsappLink.hidden = false;
-                            document.getElementById('success-message').textContent = `Pedido #${nuevoPedidoId} registrado. Envía tu comprobante por WhatsApp.`;
+                            document.getElementById('success-message').textContent = `Pedido #${nuevoPedidoId} registrado. Envía tu comprobante por WhatsApp para validarlo.`;
                         } else {
                             document.getElementById('success-message').textContent = `¡Tu pedido #${nuevoPedidoId} está en cocina! Pronto nos pondremos en contacto.`;
                         }
@@ -350,7 +467,6 @@
                     }
                 };
 
-                // Si es a domicilio, pedimos el GPS obligatorio
                 if (isDomicilio) {
                     btnSubmit.innerHTML = '<i class="fas fa-map-marker-alt fa-bounce"></i> Verificando GPS...';
 
@@ -371,7 +487,6 @@
                         { enableHighAccuracy: true }
                     );
                 } else {
-                    // Si es en local, procesamos de inmediato sin GPS
                     procesarOrden();
                 }
             });
