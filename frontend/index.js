@@ -1,5 +1,6 @@
 // 1. Apuntamos al servidor Node.js (Ya no hay llaves de Supabase expuestas)
-const API_PRODUCTOS = 'http://localhost:3000/api/productos';
+// Apuntamos al nuevo servidor intermediario en PHP
+const API_PRODUCTOS = '../api/productos.php';
 
 // Función puente: Busca por palabra clave para evitar errores de coincidencia
 function obtenerImagenLocal(nombreProducto) {

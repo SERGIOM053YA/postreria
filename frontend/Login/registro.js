@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Apuntamos a tu nuevo servidor intermediario
-    const API_URL = 'http://localhost:3000/api/registro';
+    const API_URL = '../../api/registro.php';
 
     // Capturamos los elementos del formulario
     const form = document.querySelector('form'); 

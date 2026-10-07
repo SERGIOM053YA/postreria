@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Ya no usamos window.supabase aquí. Apuntamos a tu nuevo servidor.
-    const API_URL = 'http://localhost:3000/api/login';
+const API_URL = '../../api/login.php';   
 
     const form = document.getElementById('loginForm');
     const emailInput = document.getElementById('email');
@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
             btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AUTENTICANDO...';
 
             try {
-                // Hacemos la petición POST a tu servidor Node.js
-                const response = await fetch('http://localhost:3000/api/login', {
+                // Pasamos la variable relativa en lugar de la ruta absoluta
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

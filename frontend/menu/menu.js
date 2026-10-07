@@ -3,7 +3,6 @@
 // ==========================================
 const SUPABASE_URL = 'https://abwqlettqauklpufupaa.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFid3FsZXR0cWF1a2xwdWZ1cGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0MDgwOTYsImV4cCI6MjEwNDk4NDA5Nn0.5rpXHPuWskz9jm1GrbyEdXXgTbaQF1mmg7shpMqvZa8';
-// Inicialización limpia sin inyectar el token local
 const cliente = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let cart = [];
@@ -41,25 +40,21 @@ async function verificarSesion() {
 
         currentUser = session.user;
 
-        // Consultar la tabla perfiles para extraer el rol oficial
         const { data: perfil } = await cliente
             .from('perfiles')
             .select('rol')
             .eq('id', currentUser.id)
             .single();
 
-        // Validar si el rol en la base de datos es Administrador o es el correo principal
         if ((perfil && perfil.rol === 'Administrador') || currentUser.email.toLowerCase() === 'admin@reposteria.com') {
             esAdmin = true;
         }
 
-        // Si es el administrador, encendemos el panel oculto del catálogo
         if (esAdmin) {
             const adminPanel = document.getElementById('admin-panel-global');
             if (adminPanel) adminPanel.style.display = 'block';
         }
 
-        // Actualizamos el botón del Header con el nombre y su rol
         const userBtn = document.querySelector('.login-header-btn');
         if (userBtn) {
             const rolDisplay = (perfil && perfil.rol) ? perfil.rol : 'Cliente';
@@ -84,20 +79,16 @@ async function verificarSesion() {
 // ==========================================
 function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 
-// 1. Atrapamos el ID en el modal
 function openNoteModal(id, productName, price, details = '') {
-    // Guardamos el ID junto con los demás datos
     pendingProduct = { id: id, name: productName, price: price, details: details };
     document.getElementById('note-modal-title').textContent = `📝 ${productName}`;
     document.getElementById('product-note-input').value = '';
     document.getElementById('note-modal').style.display = 'flex';
 }
 
-// 2. Lo pasamos al carrito al confirmar
 function confirmAddWithNote() {
     if (!pendingProduct) return;
     const note = document.getElementById('product-note-input').value.trim();
-    // Añadimos pendingProduct.id al envío
     addToCart(pendingProduct.id, pendingProduct.name, pendingProduct.price, pendingProduct.details, note);
     closeModal('note-modal');
     pendingProduct = null;
@@ -219,21 +210,19 @@ function addDrinkProduct() {
     const flavor = document.getElementById('drink-flavor-select').value;
     const comment = document.getElementById('drink-comment').value.trim();
     closeModal('drink-flavor-modal');
-    addToCart(`${pendingProduct.name} (${flavor})`, pendingProduct.price, `Sabor: ${flavor}`, comment);
+    addToCart(null, `${pendingProduct.name} (${flavor})`, pendingProduct.price, `Sabor: ${flavor}`, comment);
 }
 
 // ==========================================
 // 3. LÓGICA DEL CARRITO
 // ==========================================
-// 3. El carrito guarda el ID de base de datos (y genera un uniqueId para borrar/sumar en el front)
 function addToCart(productId, name, price, details = '', note = '') {
     const existingIndex = cart.findIndex(item => item.name === name && item.details === details && item.note === note);
     if (existingIndex > -1) {
         cart[existingIndex].qty += 1;
     } else {
-        // Guardamos el productId real de Supabase
         cart.push({ 
-            productId: productId, 
+            productId: productId || 1, 
             uniqueId: Date.now(), 
             name: name, 
             price: price, 
@@ -247,7 +236,7 @@ function addToCart(productId, name, price, details = '', note = '') {
 }
 
 function updateQuantity(id, change) {
-    const index = cart.findIndex(item => item.id === id);
+    const index = cart.findIndex(item => item.uniqueId === id);
     if (index > -1) {
         cart[index].qty += change;
         if (cart[index].qty <= 0) cart.splice(index, 1);
@@ -256,7 +245,7 @@ function updateQuantity(id, change) {
 }
 
 function removeFromCart(id) {
-    cart = cart.filter(item => item.id !== id);
+    cart = cart.filter(item => item.uniqueId !== id);
     renderCart();
 }
 
@@ -285,10 +274,10 @@ function renderCart() {
                     <p><strong>$${item.price.toFixed(2)} c/u</strong></p>
                 </div>
                 <div class="cart-item-controls">
-                    <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                    <button class="qty-btn" onclick="updateQuantity(${item.uniqueId}, -1)">-</button>
                     <span class="cart-item-qty">${item.qty}</span>
-                    <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
-                    <i class="fas fa-trash-alt delete-btn" onclick="removeFromCart(${item.id})"></i>
+                    <button class="qty-btn" onclick="updateQuantity(${item.uniqueId}, 1)">+</button>
+                    <i class="fas fa-trash-alt delete-btn" onclick="removeFromCart(${item.uniqueId})"></i>
                 </div>
             `;
             container.appendChild(itemDiv);
@@ -309,7 +298,7 @@ function closeCart() {
 }
 
 // ==========================================
-// 4. CHECKOUT Y ENVÍO A SUPABASE (KDS)
+// 4. CHECKOUT NORMALIZADO HACIA PHP
 // ==========================================
 async function checkout() {
     if (cart.length === 0) return alert('Tu carrito está vacío.');
@@ -322,10 +311,8 @@ async function checkout() {
     }
     currentUser = session.user;
 
-    const orderTotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     const pagoEfectivo = confirm('¿Pagas en Efectivo al recibir? (Cancelar = Transferencia SPEI)');
     const metodoPago = pagoEfectivo ? 'Efectivo' : 'Transferencia SPEI';
-    const estadoInicial = pagoEfectivo ? 'Por Preparar' : 'Pendiente de Validación';
     const aDomicilio = confirm('¿Es pedido A Domicilio? (Cancelar = Recoger en Local)');
     
     let lat = null, lon = null, direccion = 'Recoger en Mostrador';
@@ -336,59 +323,64 @@ async function checkout() {
         lon = -99.0530000;
     }
 
-    const { data: pedido, error: errorPedido } = await cliente
-        .from('pedidos')
-        .insert([{
-            cliente_nombre: currentUser.email.split('@')[0],
-            cliente_telefono: "5512345678",
-            tipo_entrega: aDomicilio ? 'A Domicilio' : 'Recoger en Local',
-            metodo_pago: metodoPago,
-            estado: estadoInicial,
-            total: orderTotal,
-            latitud: lat,
-            longitud: lon,
-            direccion_entrega: direccion
-        }])
-        .select()
-        .single();
+    // Empaquetar la orden para PHP incluyendo las notas
+    const payload = {
+        cliente_nombre: currentUser.user_metadata?.nombre || currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
+        cliente_telefono: "5512345678",
+        tipo_entrega: aDomicilio ? 'A Domicilio' : 'Recoger en Local',
+        metodo_pago: metodoPago,
+        direccion_entrega: direccion,
+        latitud: lat,
+        longitud: lon,
+        items: cart.map(item => {
+            let textoDetalles = '';
+            if (item.details) textoDetalles += item.details;
+            if (item.note) textoDetalles += (textoDetalles ? ' | Nota: ' : 'Nota: ') + item.note;
 
-    if (errorPedido) {
-        alert('Error al enviar el pedido: ' + errorPedido.message);
-        return;
+            return {
+                producto_id: item.productId || 1,
+                cantidad: item.qty,
+                precio_unitario: item.price,
+                detalles: textoDetalles // <-- Envía la nota amarilla
+            };
+        })
+    };
+
+    try {
+        const tokenLocal = localStorage.getItem('sb_access_token');
+        const response = await fetch('../api/pedidos.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenLocal}`
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            throw new Error(responseData.error || 'Error al enviar pedido');
+        }
+
+        cart = [];
+        renderCart();
+        closeCart();
+        renderOrders();
+
+        alert(`¡Orden #${responseData.id_orden || Math.floor(Math.random() * 1000)} enviada exitosamente a la cocina!`);
+        document.getElementById('pedidos-section')?.scrollIntoView({ behavior: 'smooth' });
+
+    } catch (error) {
+        alert('Error al enviar el pedido: ' + error.message);
     }
-
-// 2. Insertar los ítems del carrito en `pedido_items`
-    const pedidoItemsData = cart.map(item => ({
-        pedido_id: pedido.id, 
-        producto_id: item.productId, // ¡Aquí pasamos el ID real de tu catálogo!
-        cantidad: item.qty,
-        precio_unitario: item.price
-    }));
-
-    await cliente.from('pedido_items').insert(pedidoItemsData);
-
-    const storedOrders = JSON.parse(localStorage.getItem('hildas_orders') || '[]');
-    storedOrders.unshift({
-        id: `PED-${pedido.id}`,
-        date: new Date().toLocaleString(),
-        items: [...cart],
-        total: orderTotal,
-        status: estadoInicial
-    });
-    localStorage.setItem('hildas_orders', JSON.stringify(storedOrders));
-
-    cart = [];
-    renderCart();
-    closeCart();
-    renderOrders();
-
-    alert(`¡Orden #${pedido.id} enviada exitosamente a la cocina!`);
-    document.getElementById('pedidos-section').scrollIntoView({ behavior: 'smooth' });
 }
 
 function renderOrders() {
     const ordersList = document.getElementById('orders-list');
     const storedOrders = JSON.parse(localStorage.getItem('hildas_orders') || '[]');
+
+    if (!ordersList) return;
 
     if (storedOrders.length === 0) {
         ordersList.innerHTML = '<p class="no-orders-msg">No hay pedidos registrados aún.</p>';
@@ -421,159 +413,4 @@ function renderOrders() {
         `;
         ordersList.appendChild(orderCard);
     });
-}
-
-function addToCart(name, price, details = '', note = '') {
-    const existingIndex = cart.findIndex(item => item.name === name && item.details === details && item.note === note);
-    if (existingIndex > -1) {
-        cart[existingIndex].qty += 1;
-    } else {
-        cart.push({ id: Date.now(), name, price, details, note, qty: 1 });
-    }
-    renderCart(); //
-    openCart(); //
-} //[cite: 3]
-
-function updateQuantity(id, change) {
-    const index = cart.findIndex(item => item.id === id);
-    if (index > -1) {
-        cart[index].qty += change;
-        if (cart[index].qty <= 0) cart.splice(index, 1);
-    }
-    renderCart(); //[cite: 3]
-} //[cite: 3]
-
-function removeFromCart(id) {
-    cart = cart.filter(item => item.id !== id);
-    renderCart(); //[cite: 3]
-} //[cite: 3]
-// ==========================================
-// 5. CREAR NUEVO PRODUCTO (PANEL CENTRALIZADO ADMIN)
-// ==========================================
-async function createNewProductAdmin() {
-    if (!esAdmin) return alert('Acción restringida a administradores.');
-
-    const nameInput = document.getElementById('name-admin');
-    const descInput = document.getElementById('desc-admin');
-    const priceInput = document.getElementById('price-admin');
-    const catInput = document.getElementById('cat-admin');
-    const fileInput = document.getElementById('file-admin');
-    
-    const name = nameInput.value.trim();
-    const price = parseFloat(priceInput.value);
-    const categoryId = parseInt(catInput.value);
-
-    if (!name || isNaN(price) || price <= 0) return alert('Nombre y precio requeridos.');
-
-    const btnGuardar = document.querySelector('#admin-panel-global .btn-add-cute');
-    const originalText = btnGuardar.innerHTML;
-    btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
-    btnGuardar.disabled = true;
-
-    try {
-        let imgUrl = null;
-        if (fileInput.files && fileInput.files[0]) {
-            const file = fileInput.files[0];
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-            const filePath = `catalogo/${fileName}`;
-            
-            const { error: uploadError } = await cliente.storage.from('menu-imagenes').upload(filePath, file);
-            if (!uploadError) {
-                const { data } = cliente.storage.from('menu-imagenes').getPublicUrl(filePath);
-                imgUrl = data.publicUrl;
-            } else {
-                console.error("Error subiendo imagen:", uploadError);
-            }
-        }
-
-        const { error: dbError } = await cliente.from('productos').insert([{
-            nombre: name,
-            descripcion: descInput.value.trim(),
-            precio: price,
-            imagen_url: imgUrl,
-            categoria_id: categoryId,
-            es_temporada: false
-        }]);
-
-        if (dbError) throw dbError;
-        
-        alert('¡Producto guardado exitosamente en el catálogo oficial de Supabase!');
-        
-        nameInput.value = '';
-        descInput.value = '';
-        priceInput.value = '';
-        fileInput.value = '';
-        document.getElementById('label-text-admin').textContent = 'Subir Fotografía';
-    } catch (err) {
-        alert('Error al guardar: ' + err.message);
-    } finally {
-        btnGuardar.innerHTML = originalText;
-        btnGuardar.disabled = false;
-    }
-    async function checkout() {
-    if (cart.length === 0) return alert('Tu carrito está vacío.'); //[cite: 3]
-    
-    // Verificación de sesión previa requerida
-    if (!currentUser) {
-        alert('Por favor inicia sesión para realizar un pedido.'); //[cite: 3]
-        return;
-    } //[cite: 3]
-
-    const orderTotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0); //[cite: 3]
-    
-    // Selección de métodos mediante confirmaciones del navegador
-    const pagoEfectivo = confirm('¿Pagas en Efectivo al recibir? (Cancelar = Transferencia SPEI)'); //[cite: 3]
-    const metodoPago = pagoEfectivo ? 'Efectivo' : 'Transferencia SPEI'; //[cite: 3]
-    const estadoInicial = pagoEfectivo ? 'Por Preparar' : 'Pendiente de Validación'; //[cite: 3]
-    
-    const aDomicilio = confirm('¿Es pedido A Domicilio? (Cancelar = Recoger en Local)'); //[cite: 3]
-    let lat = null, lon = null, direccion = 'Recoger en Mostrador'; //[cite: 3]
-    
-    if (aDomicilio) {
-        direccion = prompt('Ingresa tu dirección de entrega:') || 'Calle local'; //[cite: 3]
-        // Coordenadas fijas temporales para pruebas
-        lat = 19.6030000; //[cite: 3]
-        lon = -99.0530000; //[cite: 3]
-    }
-
-    // 1. Insertar orden maestra en la tabla `pedidos`
-    const { data: pedido, error: errorPedido } = await cliente
-        .from('pedidos')
-        .insert([{
-            cliente_nombre: currentUser.email.split('@')[0], //[cite: 3]
-            cliente_telefono: "5512345678", //[cite: 3]
-            tipo_entrega: aDomicilio ? 'A Domicilio' : 'Recoger en Local', //[cite: 3]
-            metodo_pago: metodoPago, //[cite: 3]
-            estado: estadoInicial, //[cite: 3]
-            total: orderTotal, //[cite: 3]
-            latitud: lat, //[cite: 3]
-            longitud: lon, //[cite: 3]
-            direccion_entrega: direccion //[cite: 3]
-        }])
-        .select()
-        .single(); //[cite: 3]
-
-    if (errorPedido) {
-        alert('Error al enviar el pedido: ' + errorPedido.message); //[cite: 3]
-        return;
-    }
-
-    // 2. Insertar los ítems del carrito en `pedido_items`
-    const pedidoItemsData = cart.map(item => ({
-        pedido_id: pedido.id, //[cite: 3]
-        producto_id: 1, // IMPORTANTE: En producción este debe ser el ID real de tu catálogo[cite: 3]
-        cantidad: item.qty, //[cite: 3]
-        precio_unitario: item.price //[cite: 3]
-    })); //[cite: 3]
-
-    await cliente.from('pedido_items').insert(pedidoItemsData); //[cite: 3]
-
-    // Limpiar el carrito y actualizar la vista visualmente
-    cart = []; //[cite: 3]
-    renderCart(); //[cite: 3]
-    closeCart(); //[cite: 3]
-    
-    alert(`¡Orden #${pedido.id} enviada exitosamente a la cocina!`); //[cite: 3]
-} //[cite: 3]
 }

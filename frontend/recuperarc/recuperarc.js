@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_REQUEST = 'http://localhost:3000/api/recuperar-password';
-    const API_VERIFY = 'http://localhost:3000/api/verificar-otp';
+    const API_REQUEST = '../../api/recuperar.php';
+    const API_VERIFY = '../../api/verificar.php';
 
     const codeInputs = document.querySelectorAll('.code-input');
     const emailInput = document.getElementById('email');
@@ -73,11 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function checkCodeComplete() {
-        let code = Array.from(codeInputs).map(i => i.value).join('');
-        const isComplete = code.length === 6;
-        newPassword.disabled = !isComplete;
-        confirmPassword.disabled = !isComplete;
-        btnSubmit.disabled = !isComplete;
+    let code = Array.from(codeInputs).map(i => i.value).join('');
+    // Cambiamos a 8 dígitos
+    const isComplete = code.length === 8;
+    newPassword.disabled = !isComplete;
+    confirmPassword.disabled = !isComplete;
+    btnSubmit.disabled = !isComplete;
     }
 
     newPassword.addEventListener('input', validatePassword);

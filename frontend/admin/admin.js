@@ -1,8 +1,4 @@
 (() => {
-    // 1. INICIALIZAR SUPABASE CON LLAVES CORRECTAS
-    const SUPABASE_URL = 'https://abwqlettqauklpufupaa.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFid3FsZXR0cWF1a2xwdWZ1cGFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0MDgwOTYsImV4cCI6MjEwNDk4NDA5Nn0.5rpXHPuWskz9jm1GrbyEdXXgTbaQF1mmg7shpMqvZa8';
-    const cliente = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let dbOrders = [];
     window.catalogoGlobal = []; 
@@ -11,7 +7,7 @@
     const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
     const form = document.getElementById('product-form');
 
-    // 2. NAVEGACIÓN
+    // 1. NAVEGACIÓN
     const pageHeadings = {
         'products-panel': { title:'Productos', desc:'Gestiona el catálogo y disponibilidad de tu tienda', icon:'fa-box' },
         'sales-panel': { title:'Ganancias', desc:'Resumen de ventas e ingresos del negocio', icon:'fa-chart-line' },
@@ -29,14 +25,11 @@
         if (button.dataset.panel === 'orders-panel') cargarPedidosReales();
     }));
 
-    // 3. LECTURA DUAL DE PEDIDOS (BFF)
+    // 2. LECTURA DE PEDIDOS DESDE PHP
     async function cargarPedidosReales() {
         try {
-            // Obtenemos el gafete de administrador
             const tokenLocal = localStorage.getItem('sb_access_token');
-            
-            // Lo enviamos a Node.js en los Headers
-            const res = await fetch('http://localhost:3000/api/pedidos', {
+            const res = await fetch('../../api/pedidos.php', {
                 headers: { 'Authorization': `Bearer ${tokenLocal}` }
             });
             
@@ -51,16 +44,10 @@
         }
     }
 
-    // Refresco automático
+    // Refresco automático: Como quitamos el WebSocket, consultamos el PHP cada 10 segundos
     setInterval(cargarPedidosReales, 10000);
 
-    // 4. SUSCRIPCIÓN EN TIEMPO REAL
-    cliente.channel('kds-orders-channel')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pedidos' }, (payload) => {
-            cargarPedidosReales();
-        }).subscribe();
-
-    // 5. RENDERIZADO DE PEDIDOS Y PUENTE DE IMÁGENES
+    // 3. RENDERIZADO DE PEDIDOS Y MODAL
     function renderOrders() {
         const search = document.getElementById('order-search').value.toLowerCase();
         const activeFilter = document.querySelector('#orders-filters .filter-btn.active').dataset.filter;
@@ -93,7 +80,6 @@
                  const productName = firstItem.productos?.nombre || firstItem.nombre || 'Producto Múltiple';
                  let productImg = firstItem.productos?.imagen_url;
 
-                // Diccionario de imágenes blindado
                 if (!productImg) {
                     const n = productName.toLowerCase();
                     if (n.includes('crepa')) productImg = '../images/crepa.jpg';
@@ -131,7 +117,7 @@
             };
             const color = statusColors[status] || statusColors['Pendiente de Validación'];
             
-            const dbBadge = sale.es_emergencia ? `<i class="fas fa-server" style="color:#d97706;" title="Respaldo Local"></i>` : `<i class="fas fa-cloud" style="color:#0284c7;" title="Nube Oficial"></i>`;
+            const dbBadge = `<i class="fas fa-server" style="color:#0284c7;" title="PHP Backend"></i>`;
             const statusBadge = `<span style="background:${color.bg}; color:${color.text}; padding:.35rem .75rem; border-radius:999px; font-size:.78rem; font-weight:700; display:inline-flex; align-items:center; gap:.4rem;"><i class="fas ${color.icon}"></i> ${status}</span>`;
 
             const tr = document.createElement('tr');
@@ -166,21 +152,101 @@
     });
     document.getElementById('order-search').addEventListener('input', renderOrders);
 
-    // 6. MODAL DINÁMICO BLINDADO
     document.getElementById('orders-rows').addEventListener('click', (e) => {
         const btn = e.target.closest('.row-actions-btn');
         if (!btn) return;
         mostrarModalDetalle(btn.dataset.id);
     });
 
+    // ==========================================
+    // VISOR DIRECTO DE COMPROBANTES PÚBLICOS
+    // ==========================================
+    window.verComprobante = function(url, btn) {
+        if(url) {
+            window.open(url, '_blank');
+        } else {
+            alert("No hay comprobante adjunto.");
+        }
+    };
+
+    // ==========================================
+    // MODAL DE DETALLES ACTUALIZADO (VERDE + CALCULADORA)
+    // ==========================================
     function mostrarModalDetalle(id) {
         const pedido = dbOrders.find(p => String(p.id) === id);
         if (!pedido) return;
 
         const safeItems = pedido.pedido_items || [];
+        let notasArray = []; 
+        
         const itemsHtml = safeItems.map(item => {
             const nombreProd = item.productos?.nombre || item.nombre || 'Producto Múltiple';
             const precioTotal = (item.precio_unitario || 0) * item.cantidad;
+            
+            const extraInfo = item.detalles || item.instrucciones || item.nota || '';
+            
+            if (extraInfo) {
+                let infoLimpia = escapeHTML(extraInfo);
+                
+                let notaTexto = '';
+                if (infoLimpia.match(/\|\s*Nota:|Nota:|\+\s*Nota:/i)) {
+                    let partesNota = infoLimpia.split(/\|\s*Nota:|Nota:|\+\s*Nota:/i);
+                    infoLimpia = partesNota[0]; 
+                    notaTexto = partesNota[1].trim(); 
+                }
+
+                let extrasTexto = '';
+                if (infoLimpia.match(/\+\s*Extras:|\|\s*Extras:|Extras:/i)) {
+                    let partesExtra = infoLimpia.split(/\+\s*Extras:|\|\s*Extras:|Extras:/i);
+                    infoLimpia = partesExtra[0]; 
+                    extrasTexto = partesExtra[1].trim(); 
+                }
+
+                infoLimpia = infoLimpia.replace(/Base:\s*/gi, '')
+                                       .replace(/Fruta:\s*/gi, '')
+                                       .replace(/Topping:\s*/gi, '')
+                                       .replace(/Salsa:\s*/gi, '');
+
+                let listaBase = infoLimpia.split(/,\s*|\|\s*/)
+                                          .filter(i => i.trim() !== '')
+                                          .map(i => `<li style="margin-bottom: 4px;">${i.trim()}</li>`)
+                                          .join('');
+
+                let htmlFinal = `<ul style="margin-top: 8px; margin-bottom: 12px; padding-left: 24px; color: #1e7e34; list-style-type: disc;">${listaBase}</ul>`;
+
+                if (extrasTexto) {
+                    let listaExtras = extrasTexto.split(/,\s*|\|\s*/)
+                                                 .filter(i => i.trim() !== '')
+                                                 .map(i => `<li style="margin-bottom: 4px;">${i.trim()}</li>`)
+                                                 .join('');
+                    htmlFinal += `
+                        <div style="margin-top: 12px; color: #155d27; font-size: 0.95rem;"><strong>Ingredientes Extra:</strong></div>
+                        <ul style="margin-top: 8px; margin-bottom: 12px; padding-left: 24px; color: #1e7e34; list-style-type: disc;">
+                            ${listaExtras}
+                        </ul>
+                    `;
+                }
+
+                if (notaTexto) {
+                    htmlFinal += `
+                        <div style="margin-top: 12px; color: #155d27; font-size: 0.95rem; background: rgba(255,255,255,0.6); padding: 8px; border-radius: 6px; border-left: 3px solid #20b85a;">
+                            <strong>Nota del cliente:</strong> <span style="font-style: italic;">"${notaTexto}"</span>
+                        </div>
+                    `;
+                }
+
+                notasArray.push(`
+                    <div style="margin-bottom: 1.8rem; background: transparent;">
+                        <strong style="font-size: 1.1rem; display: block; margin-bottom: 0.6rem; color: #155d27; border-bottom: 2px dashed #85d89d; padding-bottom: 6px;">
+                            <i class="fas fa-utensils"></i> ${item.cantidad}x ${escapeHTML(nombreProd)}
+                        </strong>
+                        <div style="line-height: 1.4; font-weight: 500;">
+                            ${htmlFinal}
+                        </div>
+                    </div>
+                `);
+            }
+
             return `
             <div style="display:flex; justify-content:space-between; border-bottom: 1px solid #f4e9ec; padding: 0.5rem 0;">
                 <span style="color:#4a3b32;"><b>${item.cantidad}x</b> ${escapeHTML(nombreProd)}</span>
@@ -190,16 +256,34 @@
 
         let direccionTexto = pedido.direccion_entrega || '';
         let notasCocinaHtml = '';
+        
         if (direccionTexto.includes(' | NOTAS_COCINA:')) {
             const partes = direccionTexto.split(' | NOTAS_COCINA:');
             direccionTexto = partes[0]; 
-            const notas = partes[1].split(' | '); 
+            const notasViejas = partes[1].split(' | '); 
+            
+            if (notasArray.length === 0) {
+                notasViejas.forEach(n => {
+                    notasArray.push(`
+                        <div style="margin-bottom: 1.2rem;">
+                            <div style="padding-left: 12px; border-left: 3px solid #85d89d; line-height: 1.6; color: #1e7e34; font-weight: 500;">
+                                ${escapeHTML(n)}
+                            </div>
+                        </div>
+                    `);
+                }); 
+            }
+        }
+
+        if (notasArray.length > 0) {
             notasCocinaHtml = `
-            <div style="background:#fff3cd; border-left: 4px solid #ffc107; padding:1rem; margin-bottom:1.5rem; border-radius: 8px;">
-                <strong style="color:#856404; display:block; margin-bottom:0.5rem;"><i class="fas fa-exclamation-triangle"></i> Instrucciones:</strong>
-                <ul style="margin:0; padding-left:1.2rem; color:#856404; font-size:0.9rem;">
-                    ${notas.map(n => `<li>${escapeHTML(n)}</li>`).join('')}
-                </ul>
+            <div style="background:#e6f6ec; border-left: 5px solid #20b85a; padding:1.5rem; margin-bottom:1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                <strong style="color:#155d27; display:block; margin-bottom:1.2rem; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                    <i class="fas fa-clipboard-list"></i> Instrucciones de Cocina
+                </strong>
+                <div style="font-size: 1rem;">
+                    ${notasArray.join('')}
+                </div>
             </div>`;
         }
 
@@ -219,34 +303,76 @@
         if (pedido.estado !== 'Entregado' && pedido.estado !== 'Completado' && pedido.estado !== 'Cancelado') {
             botonesAccion = `
                 <div style="display:flex; gap: 1rem; margin-top:1.5rem;">
-                    <button onclick="cerrarModalDetalle()" style="flex:1; padding: 1rem; background:#fff5f8; color:#e95072; border:1px solid #ffccd8; border-radius:12px; cursor:pointer;">Cerrar</button>
-                    <button onclick="avanzarEstadoPedido('${pedido.id}', '${siguienteEstado}')" style="flex:2; padding: 1rem; background:#e95072; color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold;">
+                    <button onclick="cerrarModalDetalle()" style="flex:1; padding: 1rem; background:#fff5f8; color:#e95072; border:1px solid #ffccd8; border-radius:12px; cursor:pointer; font-weight:600;">Cerrar</button>
+                    <button onclick="avanzarEstadoPedido('${pedido.id}', '${siguienteEstado}')" style="flex:2; padding: 1rem; background:#e95072; color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold; font-size:1.05rem;">
                         ${textoBoton} <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
             `;
         } else {
-            botonesAccion = `<div style="margin-top:1.5rem;"><button onclick="cerrarModalDetalle()" style="width:100%; padding: 1rem; background:#2ecc71; color:white; border:none; border-radius:12px; cursor:pointer;"><i class="fas fa-check-double"></i> Pedido Finalizado</button></div>`;
+            botonesAccion = `<div style="margin-top:1.5rem;"><button onclick="cerrarModalDetalle()" style="width:100%; padding: 1rem; background:#2ecc71; color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold; font-size:1.05rem;"><i class="fas fa-check-double"></i> Pedido Finalizado</button></div>`;
+        }
+
+        // ==========================================
+        // CÁLCULO INTELIGENTE DE CAMBIO EN EFECTIVO
+        // ==========================================
+        let textoCambioHtml = '';
+        if (pedido.billete_cambio) {
+            if (pedido.billete_cambio === 'Pago exacto') {
+                textoCambioHtml = `<br><span style="color:#159447; font-size:0.95rem; margin-left: 1.5rem; font-weight: 600;"><i class="fas fa-check-circle"></i> Cliente trae el pago exacto</span>`;
+            } else if (pedido.billete_cambio.includes('Cambio de:')) {
+                
+                const billeteMatch = pedido.billete_cambio.match(/\d+/);
+                const billeteNum = billeteMatch ? parseFloat(billeteMatch[0]) : 0;
+                const totalOrden = parseFloat(pedido.total) || 0;
+                
+                if (billeteNum > totalOrden) {
+                    const cambioADar = billeteNum - totalOrden;
+                    textoCambioHtml = `<br>
+                    <span style="color:#d93d5c; font-size:0.95rem; margin-left: 1.5rem; font-weight: 600;">
+                        👉 Paga con: $${billeteNum.toFixed(2)} 
+                        <span style="color:#ccc; margin: 0 6px;">|</span> 
+                        <span style="color:#159447; background:#e6f6ec; padding:3px 8px; border-radius:6px; border:1px solid #85d89d;">
+                            <i class="fas fa-hand-holding-usd"></i> Dar cambio: $${cambioADar.toFixed(2)}
+                        </span>
+                    </span>`;
+                } else {
+                    textoCambioHtml = `<br><span style="color:#d93d5c; font-size:0.95rem; margin-left: 1.5rem; font-weight: 600;">👉 ${escapeHTML(pedido.billete_cambio)}</span>`;
+                }
+            } else {
+                textoCambioHtml = `<br><span style="color:#d93d5c; font-size:0.95rem; margin-left: 1.5rem; font-weight: 600;">👉 ${escapeHTML(pedido.billete_cambio)}</span>`;
+            }
         }
 
         const modalHtml = `
         <div id="modal-detalle-pedido" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; display:flex; justify-content:center; align-items:center;">
-            <div style="background:white; padding:2rem; border-radius:22px; max-width:550px; width:90%; max-height:85vh; overflow-y:auto;">
+            <div style="background:white; padding:2rem; border-radius:22px; max-width:600px; width:90%; max-height:85vh; overflow-y:auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom: 2px solid #ffccd8; padding-bottom: 1rem;">
-                    <h2 style="margin:0; color:#e95072;"><i class="fas fa-receipt"></i> Pedido #${String(pedido.id)}</h2>
-                    <button onclick="cerrarModalDetalle()" style="background:none; border:none; color:#e95072; font-size:1.2rem; cursor:pointer;"><i class="fas fa-times"></i></button>
+                    <h2 style="margin:0; color:#e95072; font-size:1.5rem;"><i class="fas fa-receipt"></i> Pedido #${String(pedido.id)}</h2>
+                    <button onclick="cerrarModalDetalle()" style="background:none; border:none; color:#e95072; font-size:1.4rem; cursor:pointer; transition:transform 0.2s;"><i class="fas fa-times"></i></button>
                 </div>
-                <div style="background:#fffafb; padding:1rem; border-radius:12px; border:1px solid #f0dfe4; margin-bottom:1.5rem;">
-                    <p><strong><i class="far fa-user"></i> Cliente:</strong> ${escapeHTML(pedido.cliente_nombre)}</p>
-                    <p><strong><i class="fas fa-phone-alt"></i> Teléfono:</strong> ${escapeHTML(pedido.cliente_telefono)}</p>
-                    <p><strong><i class="fas fa-motorcycle"></i> Modalidad:</strong> ${escapeHTML(pedido.tipo_entrega)}</p>
-                    <p><strong><i class="fas fa-wallet"></i> Pago:</strong> ${escapeHTML(pedido.metodo_pago)}</p>
-                    <p><strong><i class="fas fa-map-pin"></i> Destino:</strong> ${escapeHTML(direccionTexto)}</p>
+                <div style="background:#fffafb; padding:1.2rem; border-radius:12px; border:1px solid #f0dfe4; margin-bottom:1.5rem; font-size:0.95rem; line-height:1.6;">
+                    <p style="margin:0 0 8px 0;"><strong><i class="far fa-user"></i> Cliente:</strong> ${escapeHTML(pedido.cliente_nombre)}</p>
+                    <p style="margin:0 0 8px 0;"><strong><i class="fas fa-phone-alt"></i> Teléfono:</strong> ${escapeHTML(pedido.cliente_telefono)}</p>
+                    <p style="margin:0 0 8px 0;"><strong><i class="fas fa-motorcycle"></i> Modalidad:</strong> ${escapeHTML(pedido.tipo_entrega)}</p>
+                    <p style="margin:0 0 8px 0;">
+                        <strong><i class="fas fa-wallet"></i> Pago:</strong> ${escapeHTML(pedido.metodo_pago)}
+                        ${textoCambioHtml}
+                    </p>
+                    ${pedido.comprobante_url ? `
+                    <div style="margin: 8px 0 8px 1.5rem;">
+                        <button onclick="verComprobante('${pedido.comprobante_url}', this)" style="background: #20b85a; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                            <i class="fas fa-file-invoice-dollar"></i> Ver comprobante
+                        </button>
+                    </div>` : ''}
+                    <p style="margin:0;"><strong><i class="fas fa-map-pin"></i> Destino:</strong> ${escapeHTML(direccionTexto)}</p>
                 </div>
+                
                 ${notasCocinaHtml}
-                <h3 style="color:#4a3b32; font-size:1.1rem; margin-bottom:0.8rem;">Desglose</h3>
-                <div style="margin-bottom:1.5rem;">${itemsHtml}</div>
-                <div style="text-align:right; font-size:1.4rem; border-top: 2px solid #ffccd8; padding-top:1rem; color:#e95072;">
+                
+                <h3 style="color:#4a3b32; font-size:1.2rem; margin-bottom:1rem; border-bottom:1px solid #f4e9ec; padding-bottom:0.5rem;">Desglose Final</h3>
+                <div style="margin-bottom:1.5rem; font-size:1rem;">${itemsHtml}</div>
+                <div style="text-align:right; font-size:1.5rem; border-top: 2px solid #ffccd8; padding-top:1.2rem; color:#e95072;">
                     <strong>Total: ${money(pedido.total)}</strong>
                 </div>
                 ${botonesAccion}
@@ -262,16 +388,16 @@
         if (modalEl) modalEl.remove();
     };
 
-    // 7. AVANCE DUAL DE ESTADOS
+    // 4. AVANCE DE ESTADOS HACIA PHP
     window.avanzarEstadoPedido = async (id, nuevoEstado) => {
         try {
             const pedido = dbOrders.find(p => String(p.id) === String(id));
             if (!pedido) return;
 
-            const res = await fetch(`http://localhost:3000/api/pedidos/${id}`, {
+            const res = await fetch('../../api/pedidos.php?id=${id}',{
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ estado: nuevoEstado, es_emergencia: pedido.es_emergencia })
+                body: JSON.stringify({ estado: nuevoEstado })
             });
 
             if (!res.ok) throw new Error("Fallo al actualizar en el servidor");
@@ -284,99 +410,191 @@
         }
     };
 
-    // 8. CARGA DE CATÁLOGO Y VENTAS
+   // 5. GESTIÓN DE PRODUCTOS Y VENTAS (CON PHP)
     async function cargarProductosReales() {
-        const { data: productos, error } = await cliente.from('productos').select('*').order('id', { ascending: false });
-        if (error) return;
+        try {
+            const res = await fetch('../../api/productos.php');
+            if (!res.ok) throw new Error("Error al cargar productos"); 
+            const productos = await res.json();
+            
+            window.catalogoGlobal = productos; 
 
-        window.catalogoGlobal = productos; 
+            const tbody = document.getElementById('product-rows');
+            tbody.replaceChildren();
 
-        const tbody = document.getElementById('product-rows');
-        tbody.replaceChildren();
+            if (productos.length === 0) {
+                document.getElementById('products-empty').hidden = false;
+            } else {
+                document.getElementById('products-empty').hidden = true;
+                productos.forEach(prod => {
+                    const tr = document.createElement('tr');
+                    let imgUrl = prod.imagen_url;
+                    if (!imgUrl) {
+                        const n = (prod.nombre || '').trim().toLowerCase();
+                        if (n.includes('crepa')) imgUrl = '../images/crepa.jpg';
+                        else if (n.includes('hot cake') || n.includes('hotcake')) imgUrl = '../images/mini_hotcakes.jpg';
+                        else if (n.includes('frappé') || n.includes('frappe')) imgUrl = '../images/frappe_oreo.jpg'; 
+                        else if (n.includes('fresa') || n.includes('eskimo')) imgUrl = '../images/fresas_crema.jpg';
+                        else if (n.includes('alita')) imgUrl = '../images/alitas.jpg';
+                        else if (n.includes('boneless')) imgUrl = '../images/boneless.jpg';
+                        else if (n.includes('flan')) imgUrl = '../images/flan_napolitano.jpg';
+                        else if (n.includes('imposible')) imgUrl = '../images/pastel_imposible.jpg';
+                        else if (n.includes('manzana')) imgUrl = '../images/ensalada_manzana.jpg';
+                        else if (n.includes('gelatina')) imgUrl = '../images/gelatina_crema.jpg';
+                        else if (n.includes('uva')) imgUrl = '../images/uvas_crema.jpg';
+                        else if (n.includes('arroz')) imgUrl = '../images/arroz_leche.jpg';
+                        else imgUrl = '../logo.png';
+                    }
+                    
+                    let catNombre = {1:'Postres', 2:'Snacks', 3:'Crepas', 5:'Bebidas'}[prod.categoria_id] || 'Otro';
 
-        if (productos.length === 0) {
-            document.getElementById('products-empty').hidden = false;
-        } else {
-            document.getElementById('products-empty').hidden = true;
-            productos.forEach(prod => {
-                const tr = document.createElement('tr');
-                let imgUrl = prod.imagen_url;
-                if (!imgUrl) {
-                    const n = (prod.nombre || '').trim().toLowerCase();
-                    if (n.includes('crepa')) imgUrl = '../images/crepa.jpg';
-                    else if (n.includes('hot cake') || n.includes('hotcake')) imgUrl = '../images/mini_hotcakes.jpg';
-                    else if (n.includes('frappé') || n.includes('frappe')) imgUrl = '../images/frappe_oreo.jpg'; 
-                    else if (n.includes('fresa') || n.includes('eskimo')) imgUrl = '../images/fresas_crema.jpg';
-                    else if (n.includes('alita')) imgUrl = '../images/alitas.jpg';
-                    else if (n.includes('boneless')) imgUrl = '../images/boneless.jpg';
-                    else if (n.includes('flan')) imgUrl = '../images/flan_napolitano.jpg';
-                    else if (n.includes('imposible')) imgUrl = '../images/pastel_imposible.jpg';
-                    else if (n.includes('manzana')) imgUrl = '../images/ensalada_manzana.jpg';
-                    else if (n.includes('gelatina')) imgUrl = '../images/gelatina_crema.jpg';
-                    else if (n.includes('uva')) imgUrl = '../images/uvas_crema.jpg';
-                    else if (n.includes('arroz')) imgUrl = '../images/arroz_leche.jpg';
-                    else imgUrl = '../logo.png';
-                }
-                
-                let catNombre = {1:'Postres', 2:'Snacks', 3:'Crepas', 5:'Bebidas'}[prod.categoria_id] || 'Otro';
+                    // Lógica del Toggle (Interruptor)
+                    const estaDisponible = prod.disponible !== false; 
+                    const toggleChecked = estaDisponible ? 'checked' : '';
+                    const toggleText = estaDisponible ? 'Disponible' : 'Agotado';
+                    const textColor = estaDisponible ? '#20b85a' : '#81747a'; // Verde vibrante o gris apagado
 
-                tr.innerHTML = `
-                    <td><img src="${imgUrl}" style="width:44px; height:44px; object-fit:cover; border-radius:6px;"></td>
-                    <td style="font-weight:600; color:#4a3b32;">${escapeHTML(prod.nombre)}</td>
-                    <td>${catNombre}</td>
-                    <td>${money(prod.precio)}</td>
-                    <td><span class="status-pill">Disponible</span></td>
-                    <td><button onclick="eliminarProducto(${prod.id})" style="background:none; border:none; color:#e95072; cursor:pointer;"><i class="fas fa-trash"></i></button></td>
-                `;
-                tbody.appendChild(tr);
-            });
+                    tr.innerHTML = `
+                        <td><img class="admin-thumb" src="${imgUrl}" alt="foto" style="width:44px; height:44px; object-fit:cover; border-radius:6px;"></td>
+                        <td style="font-weight:600; color:#4a3b32;">${escapeHTML(prod.nombre)}</td>
+                        <td>${catNombre}</td>
+                        <td>${money(prod.precio)}</td>
+                        <td>
+                            <!-- Nuevo Interruptor Visual -->
+                            <div class="toggle-container">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" onchange="toggleDisponibilidad(${prod.id}, ${estaDisponible})" ${toggleChecked}>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span class="toggle-label" style="color: ${textColor};">${toggleText}</span>
+                            </div>
+                        </td>
+                        <td class="row-actions">
+                            <!-- Solo dejamos el botón de eliminar en las acciones -->
+                            <button type="button" class="delete" onclick="eliminarProducto(${prod.id})" title="Eliminar"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        } catch (err) {
+            console.error(err);
         }
     }
 
-    window.eliminarProducto = async (id) => {
-        if(!confirm('¿Seguro que deseas eliminar este producto?')) return;
-        const { error } = await cliente.from('productos').delete().eq('id', id);
-        if (error) alert("Error: " + error.message);
-        else cargarProductosReales();
+    // Nueva función para cambiar estado de Agotado/Disponible
+    window.toggleDisponibilidad = async (id, estadoActual) => {
+        try {
+            const tokenLocal = localStorage.getItem('sb_access_token');
+            const nuevoEstado = !estadoActual; // Invertimos el estado actual
+
+            const res = await fetch(`../../api/productos.php?id=${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenLocal}`
+                },
+                body: JSON.stringify({ disponible: nuevoEstado })
+            });
+
+            if (!res.ok) throw new Error("No se pudo actualizar la disponibilidad");
+            cargarProductosReales(); 
+        } catch (err) {
+            alert("Error: " + err.message);
+        }
     };
 
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btnSubmit = form.querySelector('button[type="submit"]');
-            const fileInput = document.getElementById('product-image');
-            if (!fileInput.files || fileInput.files.length === 0) return alert("Selecciona una fotografía.");
+    window.eliminarProducto = async (id) => {
+        if(!confirm('¿Seguro que deseas eliminar este producto?')) return;
+        
+        try {
+            const tokenLocal = localStorage.getItem('sb_access_token');
+            const res = await fetch(`../../api/productos.php?id=${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${tokenLocal}` }
+            });
             
-            btnSubmit.disabled = true; btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
+            if (!res.ok) throw new Error("No se pudo eliminar");
+            cargarProductosReales();
+        } catch (err) {
+            alert("Error: " + err.message);
+        }
+    };
+    
+    // ==========================================
+    // NUEVO PRODUCTO CON IMAGEN A PHP
+    // ==========================================
+    document.getElementById('product-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-            try {
-                const file = fileInput.files[0];
-                const fileName = `catalogo/${Date.now()}_${file.name}`;
-                const { error: uploadError } = await cliente.storage.from('menu-imagenes').upload(fileName, file);
-                if (uploadError) throw uploadError;
+        const btnSubmit = e.target.querySelector('button[type="submit"]');
+        const originalText = btnSubmit.innerHTML;
+        btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
+        btnSubmit.disabled = true;
 
-                const { data: urlData } = cliente.storage.from('menu-imagenes').getPublicUrl(fileName);
-                const { error: dbError } = await cliente.from('productos').insert([{
-                    nombre: document.getElementById('product-name').value.trim(),
-                    descripcion: document.getElementById('product-description').value.trim(),
-                    precio: parseFloat(document.getElementById('product-price').value),
-                    categoria_id: { 'postres': 1, 'snacks': 2, 'crepas': 3, 'bebidas': 5 }[document.getElementById('product-category').value] || 1,
-                    imagen_url: urlData.publicUrl,
-                    es_temporada: false
-                }]);
+        const formData = new FormData(e.target);
 
-                if (dbError) throw dbError;
-                alert("¡Producto agregado!");
-                form.reset();
-                cargarProductosReales(); 
-            } catch (err) {
-                alert("Error: " + err.message);
-            } finally {
-                btnSubmit.disabled = false; btnSubmit.innerHTML = '<i class="fas fa-plus"></i> Agregar producto';
+        try {
+            const tokenLocal = localStorage.getItem('sb_access_token');
+            if (!tokenLocal) throw new Error("Sesión expirada. Inicia sesión nuevamente.");
+
+            const response = await fetch('../../api/productos.php', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${tokenLocal}`
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Error al procesar el producto');
+            }
+
+            alert('✅ Producto agregado al catálogo exitosamente.');
+            e.target.reset(); 
+            
+            // Limpiar la caja punteada visualmente
+            const fileLabel = document.getElementById('file-label');
+            if (fileLabel) {
+                fileLabel.classList.remove('has-file');
+                fileLabel.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><span>Haz clic para elegir una imagen</span>';
+            }
+
+            cargarProductosReales();
+
+        } catch (error) {
+            console.error("Error al subir producto:", error);
+            alert('❌ Falló la subida: ' + error.message);
+        } finally {
+            btnSubmit.innerHTML = originalText;
+            btnSubmit.disabled = false;
+        }
+    });
+
+    // Cambiar el texto y color cuando el admin selecciona una foto
+    document.getElementById('product-image')?.addEventListener('change', function() {
+        const label = document.getElementById('file-label');
+        if (this.files && this.files.length > 0) {
+            label.innerHTML = `<i class="fas fa-check-circle"></i><span>${this.files[0].name}</span>`;
+            label.classList.add('has-file');
+        } else {
+            label.innerHTML = `<i class="fas fa-cloud-upload-alt"></i><span>Haz clic para elegir una imagen</span>`;
+            label.classList.remove('has-file');
+        }
+    });
+        // Cambiar el texto y color cuando el admin selecciona una foto
+        document.getElementById('product-image')?.addEventListener('change', function() {
+            const label = document.getElementById('file-label');
+            if (this.files && this.files.length > 0) {
+                label.innerHTML = `<i class="fas fa-check-circle"></i><span>${this.files[0].name}</span>`;
+                label.classList.add('has-file');
+            } else {
+                label.innerHTML = `<i class="fas fa-cloud-upload-alt"></i><span>Haz clic para elegir una imagen</span>`;
+                label.classList.remove('has-file');
             }
         });
-    }
-
     function renderSales() {
         const fromDate = document.getElementById('sales-from').value;
         const toDate = document.getElementById('sales-to').value;

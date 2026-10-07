@@ -21,7 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-badge">0</span>
                 </div>
-                <a href="#" class="whatsapp-header-icon" id="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
+                <a href="http://localhost/Postres/frontend/historial/historial.html" class="whatsapp-header-icon" id="historial-btn" title="Mis Pedidos">
+                     <i class="fas fa-receipt"></i>
+                </a>
                 <span class="header-divider"></span>
                 
                 <!-- Botón Admin oculto por defecto -->

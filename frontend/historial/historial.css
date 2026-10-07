@@ -1,0 +1,215 @@
+body {
+    background-color: #faf6f7;
+    font-family: 'Outfit', sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.orders-container {
+    max-width: 850px;
+    margin: 2.5rem auto 5rem auto;
+    padding: 0 1.5rem;
+}
+
+.page-title {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.page-title h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.3rem;
+}
+
+.page-title p {
+    color: #666;
+    font-size: 1rem;
+}
+
+/* TARJETA DE PEDIDO */
+.order-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    border: 1px solid #ffeef2;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.order-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(255, 107, 129, 0.12);
+}
+
+/* ENCABEZADO DE LA TARJETA */
+.order-header {
+    background: #fff0f3;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ffd8e1;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.order-id-group {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.order-id {
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: #ff6b81;
+}
+
+.order-date {
+    font-size: 0.88rem;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.order-status {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid #ffd8e1;
+    color: #8d3d54;
+}
+
+/* BADGES DE METODO DE PAGO */
+.payment-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.payment-cash {
+    background-color: #e3fcf0;
+    color: #0be881;
+    border: 1px solid #b8f2d5;
+}
+
+.payment-transfer {
+    background-color: #eaf2ff;
+    color: #3867d6;
+    border: 1px solid #c7dcff;
+}
+
+/* CUERPO Y LISTA DE PRODUCTOS */
+.order-body {
+    padding: 1.5rem;
+}
+
+.order-items-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.order-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px dashed #f0f0f0;
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.item-details {
+    flex: 1;
+    padding-right: 1rem;
+}
+
+.item-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.2rem;
+}
+
+.item-comment {
+    background: #faf6f7;
+    border-left: 3px solid #ff6b81;
+    padding: 6px 10px;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.4rem;
+    display: inline-block;
+}
+
+.item-comment i {
+    color: #ff6b81;
+    margin-right: 4px;
+}
+
+.item-price {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #444;
+    white-space: nowrap;
+}
+
+/* PIE DE TARJETA (TOTAL) */
+.order-footer {
+    background: #fafafa;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f0f0f0;
+}
+
+.total-label {
+    font-size: 0.95rem;
+    color: #666;
+    font-weight: 600;
+}
+
+.total-amount {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #ff6b81;
+}
+
+.no-orders {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+.no-orders i {
+    font-size: 3rem;
+    color: #ffd8e1;
+    margin-bottom: 1rem;
+}
+
+.no-orders h3 {
+    color: #444;
+    margin-bottom: 0.5rem;
+}
+
+.no-orders p {
+    color: #888;
+    font-size: 0.9rem;
+}
