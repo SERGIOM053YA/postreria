@@ -1,5 +1,4 @@
 (() => {
-
     let dbOrders = [];
     window.catalogoGlobal = []; 
     
@@ -7,22 +6,28 @@
     const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
     const form = document.getElementById('product-form');
 
-    // 1. NAVEGACIÓN
+    // 1. NAVEGACIÓN Y TÍTULOS (CORREGIDO)
     const pageHeadings = {
         'products-panel': { title:'Productos', desc:'Gestiona el catálogo y disponibilidad de tu tienda', icon:'fa-box' },
         'sales-panel': { title:'Ganancias', desc:'Resumen de ventas e ingresos del negocio', icon:'fa-chart-line' },
-        'orders-panel': { title:'Pedidos', desc:'Gestiona los pedidos de tu tienda', icon:'fa-clipboard-list' }
+        'orders-panel': { title:'Pedidos', desc:'Gestiona los pedidos de tu tienda', icon:'fa-clipboard-list' },
+        'delivery-zone-panel': { title:'Zona de entrega', desc:'Configura las zonas de cobertura para entregas', icon:'fa-map-marked-alt' }
     };
     
     document.querySelectorAll('.admin-nav button').forEach(button => button.addEventListener('click', () => {
         document.querySelectorAll('.admin-nav button').forEach(item => item.classList.toggle('active', item === button));
         document.querySelectorAll('.admin-panel').forEach(panel => panel.classList.toggle('active', panel.id === button.dataset.panel));
+        
         const headerData = pageHeadings[button.dataset.panel];
-        document.getElementById('main-heading-title').textContent = headerData.title;
-        document.getElementById('main-heading-desc').textContent = headerData.desc;
-        document.getElementById('main-heading-icon').className = 'fas ' + headerData.icon;
+        if(headerData) {
+            document.getElementById('main-heading-title').textContent = headerData.title;
+            document.getElementById('main-heading-desc').textContent = headerData.desc;
+            document.getElementById('main-heading-icon').className = 'fas ' + headerData.icon;
+        }
+
         if (button.dataset.panel === 'sales-panel') renderSales();
         if (button.dataset.panel === 'orders-panel') cargarPedidosReales();
+        if (button.dataset.panel === 'delivery-zone-panel' && typeof window.initDeliveryZone === 'function') window.initDeliveryZone();
     }));
 
     // 2. LECTURA DE PEDIDOS DESDE PHP
@@ -44,7 +49,6 @@
         }
     }
 
-    // Refresco automático: Como quitamos el WebSocket, consultamos el PHP cada 10 segundos
     setInterval(cargarPedidosReales, 10000);
 
     // 3. RENDERIZADO DE PEDIDOS Y MODAL
@@ -158,9 +162,6 @@
         mostrarModalDetalle(btn.dataset.id);
     });
 
-    // ==========================================
-    // VISOR DIRECTO DE COMPROBANTES PÚBLICOS
-    // ==========================================
     window.verComprobante = function(url, btn) {
         if(url) {
             window.open(url, '_blank');
@@ -169,9 +170,6 @@
         }
     };
 
-    // ==========================================
-    // MODAL DE DETALLES ACTUALIZADO (VERDE + CALCULADORA)
-    // ==========================================
     function mostrarModalDetalle(id) {
         const pedido = dbOrders.find(p => String(p.id) === id);
         if (!pedido) return;
@@ -313,19 +311,14 @@
             botonesAccion = `<div style="margin-top:1.5rem;"><button onclick="cerrarModalDetalle()" style="width:100%; padding: 1rem; background:#2ecc71; color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold; font-size:1.05rem;"><i class="fas fa-check-double"></i> Pedido Finalizado</button></div>`;
         }
 
-        // ==========================================
-        // CÁLCULO INTELIGENTE DE CAMBIO EN EFECTIVO
-        // ==========================================
         let textoCambioHtml = '';
         if (pedido.billete_cambio) {
             if (pedido.billete_cambio === 'Pago exacto') {
                 textoCambioHtml = `<br><span style="color:#159447; font-size:0.95rem; margin-left: 1.5rem; font-weight: 600;"><i class="fas fa-check-circle"></i> Cliente trae el pago exacto</span>`;
             } else if (pedido.billete_cambio.includes('Cambio de:')) {
-                
                 const billeteMatch = pedido.billete_cambio.match(/\d+/);
                 const billeteNum = billeteMatch ? parseFloat(billeteMatch[0]) : 0;
                 const totalOrden = parseFloat(pedido.total) || 0;
-                
                 if (billeteNum > totalOrden) {
                     const cambioADar = billeteNum - totalOrden;
                     textoCambioHtml = `<br>
@@ -388,19 +381,22 @@
         if (modalEl) modalEl.remove();
     };
 
-    // 4. AVANCE DE ESTADOS HACIA PHP
     window.avanzarEstadoPedido = async (id, nuevoEstado) => {
         try {
             const pedido = dbOrders.find(p => String(p.id) === String(id));
             if (!pedido) return;
 
-            const res = await fetch('../../api/pedidos.php?id=${id}',{
+            const tokenLocal = localStorage.getItem('sb_access_token');
+            const res = await fetch(`../../api/pedidos.php?id=${id}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenLocal}` 
+                },
                 body: JSON.stringify({ estado: nuevoEstado })
             });
-
-            if (!res.ok) throw new Error("Fallo al actualizar en el servidor");
+            
+            if (!res.ok) throw new Error("Fallo al actualizar el estado en el servidor PHP");
             
             pedido.estado = nuevoEstado;
             cerrarModalDetalle();
@@ -410,7 +406,6 @@
         }
     };
 
-   // 5. GESTIÓN DE PRODUCTOS Y VENTAS (CON PHP)
     async function cargarProductosReales() {
         try {
             const res = await fetch('../../api/productos.php');
@@ -448,11 +443,10 @@
                     
                     let catNombre = {1:'Postres', 2:'Snacks', 3:'Crepas', 5:'Bebidas'}[prod.categoria_id] || 'Otro';
 
-                    // Lógica del Toggle (Interruptor)
                     const estaDisponible = prod.disponible !== false; 
                     const toggleChecked = estaDisponible ? 'checked' : '';
                     const toggleText = estaDisponible ? 'Disponible' : 'Agotado';
-                    const textColor = estaDisponible ? '#20b85a' : '#81747a'; // Verde vibrante o gris apagado
+                    const textColor = estaDisponible ? '#20b85a' : '#81747a';
 
                     tr.innerHTML = `
                         <td><img class="admin-thumb" src="${imgUrl}" alt="foto" style="width:44px; height:44px; object-fit:cover; border-radius:6px;"></td>
@@ -460,7 +454,6 @@
                         <td>${catNombre}</td>
                         <td>${money(prod.precio)}</td>
                         <td>
-                            <!-- Nuevo Interruptor Visual -->
                             <div class="toggle-container">
                                 <label class="toggle-switch">
                                     <input type="checkbox" onchange="toggleDisponibilidad(${prod.id}, ${estaDisponible})" ${toggleChecked}>
@@ -470,7 +463,6 @@
                             </div>
                         </td>
                         <td class="row-actions">
-                            <!-- Solo dejamos el botón de eliminar en las acciones -->
                             <button type="button" class="delete" onclick="eliminarProducto(${prod.id})" title="Eliminar"><i class="fas fa-trash"></i></button>
                         </td>
                     `;
@@ -482,11 +474,10 @@
         }
     }
 
-    // Nueva función para cambiar estado de Agotado/Disponible
     window.toggleDisponibilidad = async (id, estadoActual) => {
         try {
             const tokenLocal = localStorage.getItem('sb_access_token');
-            const nuevoEstado = !estadoActual; // Invertimos el estado actual
+            const nuevoEstado = !estadoActual; 
 
             const res = await fetch(`../../api/productos.php?id=${id}`, {
                 method: 'PATCH',
@@ -506,27 +497,21 @@
 
     window.eliminarProducto = async (id) => {
         if(!confirm('¿Seguro que deseas eliminar este producto?')) return;
-        
         try {
             const tokenLocal = localStorage.getItem('sb_access_token');
             const res = await fetch(`../../api/productos.php?id=${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${tokenLocal}` }
             });
-            
             if (!res.ok) throw new Error("No se pudo eliminar");
             cargarProductosReales();
         } catch (err) {
             alert("Error: " + err.message);
         }
     };
-    
-    // ==========================================
-    // NUEVO PRODUCTO CON IMAGEN A PHP
-    // ==========================================
+
     document.getElementById('product-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-
         const btnSubmit = e.target.querySelector('button[type="submit"]');
         const originalText = btnSubmit.innerHTML;
         btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
@@ -540,30 +525,22 @@
 
             const response = await fetch('../../api/productos.php', {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${tokenLocal}`
-                },
+                headers: { 'Authorization': `Bearer ${tokenLocal}` },
                 body: formData
             });
 
             const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Error al procesar el producto');
-            }
+            if (!response.ok) throw new Error(data.error || 'Error al procesar el producto');
 
             alert('✅ Producto agregado al catálogo exitosamente.');
             e.target.reset(); 
             
-            // Limpiar la caja punteada visualmente
             const fileLabel = document.getElementById('file-label');
             if (fileLabel) {
                 fileLabel.classList.remove('has-file');
                 fileLabel.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><span>Haz clic para elegir una imagen</span>';
             }
-
             cargarProductosReales();
-
         } catch (error) {
             console.error("Error al subir producto:", error);
             alert('❌ Falló la subida: ' + error.message);
@@ -573,7 +550,6 @@
         }
     });
 
-    // Cambiar el texto y color cuando el admin selecciona una foto
     document.getElementById('product-image')?.addEventListener('change', function() {
         const label = document.getElementById('file-label');
         if (this.files && this.files.length > 0) {
@@ -584,17 +560,7 @@
             label.classList.remove('has-file');
         }
     });
-        // Cambiar el texto y color cuando el admin selecciona una foto
-        document.getElementById('product-image')?.addEventListener('change', function() {
-            const label = document.getElementById('file-label');
-            if (this.files && this.files.length > 0) {
-                label.innerHTML = `<i class="fas fa-check-circle"></i><span>${this.files[0].name}</span>`;
-                label.classList.add('has-file');
-            } else {
-                label.innerHTML = `<i class="fas fa-cloud-upload-alt"></i><span>Haz clic para elegir una imagen</span>`;
-                label.classList.remove('has-file');
-            }
-        });
+
     function renderSales() {
         const fromDate = document.getElementById('sales-from').value;
         const toDate = document.getElementById('sales-to').value;
@@ -652,4 +618,148 @@
         await cargarPedidosReales();
     }
     init();
+    
+    // ==========================================
+        // MÓDULO AISLADO: ZONA DE ENTREGA, MAPA Y COBERTURA
+        // ==========================================
+        (() => {
+            let map = null;
+            let centerMarker = null;
+            let radiusCircle = null;
+            let zoneInitialized = false;
+            
+            // 1. Memoria de configuración con nacimiento en Francisco Villa 8
+            let config = JSON.parse(localStorage.getItem('hilda_delivery_zones')) || { 
+                center: { lat: 19.616330, lng: -99.027250 }, // Francisco Villa 8, Guadalupe Victoria
+                address: 'Calle Francisco Villa 8, Guadalupe Victoria, Ecatepec',
+                radius: 1,      
+                enabled: true   
+            };
+
+            function updateMap() {
+                if (!map) return;
+                map.setView([config.center.lat, config.center.lng], 15);
+                
+                if (centerMarker) map.removeLayer(centerMarker);
+                if (radiusCircle) map.removeLayer(radiusCircle);
+                
+                const shopIcon = L.divIcon({
+                    html: '<div style="background:#e04868;width:24px;height:24px;border-radius:50%;border:3px solid #fff;box-shadow:0 4px 12px rgba(224,72,104,0.4);"></div>',
+                    iconSize: [24, 24], iconAnchor: [12, 12]
+                });
+                
+                centerMarker = L.marker([config.center.lat, config.center.lng], { icon: shopIcon })
+                    .addTo(map).bindPopup(`<b>📍 Origen de entregas</b><br>${config.address}`).openPopup();
+
+                radiusCircle = L.circle([config.center.lat, config.center.lng], {
+                    color: '#e04868',
+                    fillColor: '#f05473',
+                    fillOpacity: 0.15,
+                    radius: config.radius * 1000 
+                }).addTo(map);
+
+                const addrInput = document.getElementById('zone-center-address');
+                if (addrInput) addrInput.value = config.address;
+            }
+
+            document.querySelector('[data-panel="delivery-zone-panel"]')?.addEventListener('click', () => {
+                if (!zoneInitialized) {
+                    zoneInitialized = true;
+                    setTimeout(() => {
+                        const container = document.getElementById('delivery-map');
+                        if (!container) return;
+                        
+                        map = L.map(container).setView([config.center.lat, config.center.lng], 15);
+                        
+                        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+                            attribution: '&copy; Esri',
+                            maxZoom: 19
+                        }).addTo(map);
+                        
+                        updateMap();
+                        
+                        const toggleInput = document.getElementById('zone-enabled');
+                        const radiusInput = document.getElementById('zone-radius');
+                        const radiusLabel = document.getElementById('zone-radius-label');
+                        const statusBadge = document.getElementById('zone-status-badge');
+                        
+                        if(toggleInput) toggleInput.checked = config.enabled;
+                        if(radiusInput) radiusInput.value = config.radius;
+                        if(radiusLabel) radiusLabel.textContent = config.radius + ' km';
+                        if(statusBadge) {
+                            statusBadge.textContent = config.enabled ? 'Activo' : 'Inactivo';
+                            statusBadge.className = 'zone-status ' + (config.enabled ? 'active' : 'inactive');
+                        }
+                    }, 200);
+                } else {
+                    setTimeout(() => { if (map) map.invalidateSize(); }, 200);
+                }
+            });
+
+            // Control del interruptor general
+            document.getElementById('zone-enabled')?.addEventListener('change', (e) => {
+                config.enabled = e.target.checked;
+                const badge = document.getElementById('zone-status-badge');
+                if (badge) {
+                    badge.textContent = config.enabled ? 'Activo' : 'Inactivo';
+                    badge.className = 'zone-status ' + (config.enabled ? 'active' : 'inactive');
+                }
+                localStorage.setItem('hilda_delivery_zones', JSON.stringify(config));
+            });
+
+            // Control del margen de cobertura
+            document.getElementById('zone-radius')?.addEventListener('input', (e) => {
+                config.radius = parseFloat(e.target.value);
+                const label = document.getElementById('zone-radius-label');
+                if (label) label.textContent = config.radius + ' km';
+                if (radiusCircle) radiusCircle.setRadius(config.radius * 1000);
+                localStorage.setItem('hilda_delivery_zones', JSON.stringify(config));
+            });
+
+            // Ubicación Dinámica (GPS o Buscador Manual)
+            document.getElementById('zone-locate-btn')?.addEventListener('click', async () => {
+                const addrInput = document.getElementById('zone-center-address');
+                const addr = addrInput ? addrInput.value.trim() : '';
+                const btn = document.getElementById('zone-locate-btn');
+                
+                if (!addr) {
+                    if (!navigator.geolocation) return alert('Tu navegador no soporta GPS.');
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            config.center = { lat: position.coords.latitude, lng: position.coords.longitude };
+                            config.address = "Ubicación detectada por GPS";
+                            updateMap();
+                            localStorage.setItem('hilda_delivery_zones', JSON.stringify(config));
+                            btn.innerHTML = '<i class="fas fa-crosshairs"></i> Ubicar';
+                        },
+                        (error) => {
+                            alert('Error de GPS. Verifica tus permisos.');
+                            btn.innerHTML = '<i class="fas fa-crosshairs"></i> Ubicar';
+                        },
+                        { enableHighAccuracy: true }
+                    );
+                    return;
+                }
+
+                try {
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}&limit=1`);
+                    const data = await res.json();
+                    if (data.length) {
+                        config.center = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+                        config.address = addr;
+                        updateMap();
+                        localStorage.setItem('hilda_delivery_zones', JSON.stringify(config));
+                    } else {
+                        alert('Dirección no encontrada.');
+                    }
+                } catch (err) {
+                    alert('Error de red.');
+                } finally {
+                    btn.innerHTML = '<i class="fas fa-crosshairs"></i> Ubicar';
+                }
+            });
+        })();
+
 })();

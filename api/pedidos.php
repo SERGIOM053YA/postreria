@@ -154,4 +154,37 @@ if ($metodo === 'PATCH') {
     echo json_encode(['mensaje' => 'Estado actualizado exitosamente']);
     exit();
 }
+// ==========================================
+// 3. PATCH: AVANZAR ESTADOS
+// ==========================================
+if ($metodo === 'PATCH') {
+    $id = $_GET['id'] ?? null;
+    $input = json_decode(file_get_contents('php://input'), true);
+    $nuevoEstado = $input['estado'] ?? null;
+
+    if (!$id || !$nuevoEstado) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Falta el ID del pedido o el nuevo estado']);
+        exit();
+    }
+
+    // Intentamos extraer el token que envía el frontend
+    $headers = apache_request_headers();
+    $token = $headers['Authorization'] ?? $headers['authorization'] ?? '';
+
+    // Si tu función peticionSupabase en conexion.php está preparada para usar este token, úsalo.
+    // Si no, el servidor usará la llave anónima por defecto.
+    $endpoint = "pedidos?id=eq." . $id;
+    $respuesta = peticionSupabase('PATCH', $endpoint, ['estado' => $nuevoEstado]);
+    
+    // Si Supabase devuelve error de permisos, lo capturamos
+    if (isset($respuesta['error']) || isset($respuesta['code'])) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Error en Supabase: ' . json_encode($respuesta)]);
+        exit();
+    }
+    
+    echo json_encode(['mensaje' => 'Estado actualizado exitosamente']);
+    exit();
+}
 ?>
