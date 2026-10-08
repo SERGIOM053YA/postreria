@@ -9,44 +9,56 @@ document.addEventListener('DOMContentLoaded', async () => {
     let pendingProduct = null;
     let catalogoDB = [];
 
-    // ==========================================
+   // ==========================================
     // 1. SESIÓN Y SEGURIDAD
     // ==========================================
-    async function validarSesionEnNavegacion() {
+    function validarSesionEnNavegacion() {
         const tokenLocal = localStorage.getItem('sb_access_token');
         const userEmail = localStorage.getItem('sb_user_email');
 
         if (tokenLocal && userEmail) {
             const nombreUsuario = userEmail.split('@')[0];
             
-            // Buscamos los botones, pero evitamos tocar el diseño del Panel KDS
-            const botonesLogin = document.querySelectorAll('.login-header-btn, .btn-login-header, #login-btn, a[href*="login.html"]');
+            // Usamos un intervalo para esperar a que header.js inyecte el HTML
+            const intervalo = setInterval(() => {
+                const botonesLogin = document.querySelectorAll('.login-header-btn, .btn-login-header, #login-btn, a[href*="login.html"]');
 
-            botonesLogin.forEach(btn => {
-                // EXCLUSIÓN CRÍTICA: Solo modificamos si NO es el botón del admin
-                if (btn.id !== 'admin-btn') {
-                    btn.innerHTML = `<i class="fas fa-sign-out-alt"></i><span>Salir (${nombreUsuario})</span>`;
-                    btn.href = '#';
-                    btn.style.backgroundColor = '#f8e7ec'; 
-                    btn.style.color = '#8d3d54';
-                    btn.style.borderColor = '#ffccd8';
+                if (botonesLogin.length > 0) {
+                    clearInterval(intervalo); // Botones encontrados, detenemos la búsqueda
                     
-                    btn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        if (confirm('¿Deseas cerrar sesión?')) {
-                            localStorage.removeItem('sb_access_token');
-                            localStorage.removeItem('sb_user_email');
-                            window.location.reload(); 
+                    botonesLogin.forEach(btn => {
+                        // EXCLUSIÓN CRÍTICA: Solo modificamos si NO es el botón del admin
+                        // y verificamos que no lo hayamos modificado ya
+                        if (btn.id !== 'admin-btn' && !btn.dataset.sesionActiva) {
+                            btn.dataset.sesionActiva = 'true';
+                            btn.innerHTML = `<i class="fas fa-sign-out-alt"></i><span>Salir (${nombreUsuario})</span>`;
+                            btn.href = '#';
+                            btn.style.backgroundColor = '#f8e7ec'; 
+                            btn.style.color = '#8d3d54';
+                            btn.style.borderColor = '#ffccd8';
+                            
+                            btn.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                if (confirm('¿Deseas cerrar sesión?')) {
+                                    localStorage.removeItem('sb_access_token');
+                                    localStorage.removeItem('sb_user_email');
+                                    localStorage.removeItem('sb_user_id');
+                                    window.location.reload(); 
+                                }
+                            });
                         }
                     });
-                }
-            });
 
-            // Si eres tú, simplemente encendemos el Panel KDS original sin alterar su diseño
-            if (userEmail.toLowerCase() === 'admin@reposteria.com') {
-                const adminBtns = document.querySelectorAll('#admin-btn');
-                adminBtns.forEach(btn => btn.style.display = 'inline-flex');
-            }
+                    // Si eres tú, simplemente encendemos el Panel KDS original
+                    if (userEmail.toLowerCase() === 'admin@reposteria.com') {
+                        const adminBtns = document.querySelectorAll('#admin-btn');
+                        adminBtns.forEach(btn => btn.style.display = 'inline-flex');
+                    }
+                    // Encendemos el botón de historial para CUALQUIER usuario logueado
+                    const historialBtns = document.querySelectorAll('#historial-btn');
+                    historialBtns.forEach(btn => btn.style.display = 'inline-flex');
+                }
+            }, 100); // Revisa la pantalla cada 100 milisegundos
         }
     }
     validarSesionEnNavegacion();
@@ -113,43 +125,107 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (response.ok) {
             const catalogoDB = await response.json();
             
+            // 1. Sincronización para las TARJETAS NORMALES (Postres, Bebidas, Snacks, Crepas)
             document.querySelectorAll('.product-card').forEach(card => {
-                // 1. Extraer el ID real directamente de la tarjeta HTML (ej. de "product-25" extrae "25")
                 if (!card.id || !card.id.includes('product-')) return;
                 const dbId = card.id.replace('product-', '');
-                
-                // 2. Buscar en la base de datos por el ID numérico exacto (Cero errores de texto)
                 const dbProd = catalogoDB.find(p => String(p.id) === String(dbId));
                 
                 if (dbProd) {
                     const estaAgotado = dbProd.disponible === false || dbProd.disponible === 0 || dbProd.disponible === '0' || dbProd.disponible === 'false' || dbProd.disponible === 'f';
+                    const name = card.querySelector('h3, .flavor-card-name')?.textContent || '';
+                    const priceEl = card.querySelector('.product-price');
                     
                     if (estaAgotado) {
-                        // MODO TAQUERÍA: Mostrar pero bloquear
-                        card.style.opacity = '0.5'; 
-                        card.style.pointerEvents = 'none'; 
-                        card.style.filter = 'grayscale(80%)'; 
+                        card.style.pointerEvents = 'none';
                         
-                        const priceEl = card.querySelector('.product-price');
-                        if (priceEl) {
-                            priceEl.textContent = 'Agotado';
-                            priceEl.style.color = '#e95072';
-                            priceEl.style.fontWeight = 'bold';
+                        // Inyectar etiqueta de Agotado
+                        if (!card.querySelector('.badge-agotado')) {
+                            card.insertAdjacentHTML('afterbegin', '<div class="bestseller-badge badge-agotado" style="background-color: #81747a;">Agotado</div>');
                         }
-                        return; // Termina aquí para no sobreescribir el precio
+                        
+                        // Filtros grises
+                        const img = card.querySelector('.product-img');
+                        if (img) { img.style.filter = 'grayscale(100%)'; img.style.opacity = '0.6'; }
+                        const info = card.querySelector('.product-info');
+                        if (info) info.style.opacity = '0.6';
+                        
+                        // Botón bloqueado
+                        const btn = card.querySelector('.btn-add-cart');
+                        if (btn) {
+                            btn.disabled = true;
+                            btn.style.backgroundColor = '#ccc';
+                            btn.style.border = 'none';
+                            btn.style.cursor = 'not-allowed';
+                            btn.innerHTML = '<i class="fas fa-ban"></i>';
+                        }
+                        
+                        if (priceEl && !name.toLowerCase().includes('crepa') && !name.toLowerCase().includes('hotcake')) {
+                            priceEl.textContent = `$${Number(dbProd.precio).toFixed(2)}`;
+                        }
+                        return; 
                     }
 
-                    // Si está disponible, sincroniza Precio y asegura que no esté bloqueado
+                    // RESTAURAR SI ESTÁ DISPONIBLE
                     card.dataset.producto_id = dbProd.id; 
-                    card.style.opacity = '1';
                     card.style.pointerEvents = 'auto';
-                    card.style.filter = 'none';
+                    
+                    const oldBadge = card.querySelector('.badge-agotado');
+                    if (oldBadge) oldBadge.remove();
+                    
+                    const img = card.querySelector('.product-img');
+                    if (img) { img.style.filter = 'none'; img.style.opacity = '1'; }
+                    const info = card.querySelector('.product-info');
+                    if (info) info.style.opacity = '1';
+                    
+                    const btn = card.querySelector('.btn-add-cart');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.style.backgroundColor = '';
+                        btn.style.border = '';
+                        btn.style.cursor = 'pointer';
+                        btn.innerHTML = '<i class="fas fa-plus"></i>';
+                    }
 
-                    const priceEl = card.querySelector('.product-price');
-                    const name = card.querySelector('h3, .flavor-card-name')?.textContent || '';
                     if (priceEl && !name.toLowerCase().includes('crepa') && !name.toLowerCase().includes('hotcake')) {
                         priceEl.textContent = `$${Number(dbProd.precio).toFixed(2)}`;
-                        priceEl.style.color = ''; // Restaura el color original
+                    }
+                }
+            });
+
+            // 2. Sincronización exclusiva para los botones de MINI HOTCAKES
+            document.querySelectorAll('.hotcakes-size-btn').forEach(btn => {
+                const onclickAttr = btn.getAttribute('onclick') || '';
+                const match = onclickAttr.match(/openHotcakesModal\(\s*(\d+)/);
+                
+                if (match) {
+                    const dbId = match[1];
+                    const dbProd = catalogoDB.find(p => String(p.id) === String(dbId));
+                    
+                    if (dbProd) {
+                        const estaAgotado = dbProd.disponible === false || dbProd.disponible === 0 || dbProd.disponible === '0' || dbProd.disponible === 'false' || dbProd.disponible === 'f';
+                        
+                        if (estaAgotado) {
+                            btn.style.opacity = '0.5';
+                            btn.style.pointerEvents = 'none';
+                            btn.style.filter = 'grayscale(80%)';
+                            
+                            const priceEl = btn.querySelector('.size-price');
+                            if (priceEl) {
+                                priceEl.textContent = 'Agotado';
+                                priceEl.style.color = '#e95072';
+                            }
+                        } else {
+                            btn.style.opacity = '1';
+                            btn.style.pointerEvents = 'auto';
+                            btn.style.filter = 'none';
+                            
+                            const priceEl = btn.querySelector('.size-price');
+                            if (priceEl) {
+                                priceEl.textContent = `$${Number(dbProd.precio).toFixed(2)}`;
+                                priceEl.style.color = '#333';
+                            }
+                        }
                     }
                 }
             });
@@ -253,6 +329,69 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.addProductToCart = addProductToCart;
     window.addHotcakeToCart = addProductToCart;
 
+    // ==========================================
+    // LÓGICA EXCLUSIVA DE MINI HOTCAKES
+    // ==========================================
+    let currentHotcakeConfig = { producto_id: 0, type: '', title: '', price: 0 };
+
+    window.openHotcakesModal = function(id, type, title, price) {
+        currentHotcakeConfig = { producto_id: id, type: type, title: title, price: price };
+        
+        document.getElementById('modal-title').textContent = title;
+        document.getElementById('modal-subtitle').textContent = `$${price}.00 MXN - Personaliza tu pedido`;
+        
+        // Resetear checkboxes y campos al abrir
+        const form = document.getElementById('hotcakes-form');
+        if (form) form.reset();
+        
+        // Asegurar que inicie en el paso 1
+        document.getElementById('step-selection').style.display = 'block';
+        document.getElementById('step-instructions').style.display = 'none';
+        
+        document.getElementById('hotcakes-modal').style.display = 'flex';
+    };
+
+    window.closeHotcakesModal = function() {
+        document.getElementById('hotcakes-modal').style.display = 'none';
+    };
+
+    window.goToInstructionsStep = function() {
+        document.getElementById('step-selection').style.display = 'none';
+        document.getElementById('step-instructions').style.display = 'block';
+    };
+
+    window.handleFormSubmit = function(e) {
+        e.preventDefault();
+        
+        const special = currentHotcakeConfig.type === 'especial';
+        
+        // Captura dinámica según si es normal o especial
+        const frutas = Array.from(document.querySelectorAll(special ? 'input[name="fruta_especial"]:checked' : 'input[name="fruta"]:checked'), input => input.value);
+        const toppings = Array.from(document.querySelectorAll(special ? 'input[name="topping_especial"]:checked' : 'input[name="topping"]:checked'), input => input.value);
+        const extrasTopping = Array.from(document.querySelectorAll('input[name="extra_topping"]:checked'), input => input.value);
+        const extrasFruta = Array.from(document.querySelectorAll('input[name="extra_fruta"]:checked'), input => input.value);
+        const comentario = document.getElementById('personal-instructions').value.trim();
+        
+        // Calcula precio base + $5 extra por cada topping o fruta adicional
+        const precioFinal = currentHotcakeConfig.price + ((extrasTopping.length + extrasFruta.length) * 5);
+        const piezas = currentHotcakeConfig.type.includes('12') ? '12 piezas' : '25 piezas';
+
+        // Construye el resumen de ingredientes (propiedad desc) para la cocina
+        let desc = `${piezas} · Fruta: ${frutas.join(', ') || 'Ninguna'} · Topping: ${toppings.join(', ') || 'Ninguno'}`;
+        if (extrasFruta.length > 0) desc += ` · Extra Fruta: ${extrasFruta.join(', ')}`;
+        if (extrasTopping.length > 0) desc += ` · Extra Topping: ${extrasTopping.join(', ')}`;
+
+        window.closeHotcakesModal();
+
+        // Enviar producto final al motor del carrito
+        window.addProductToCart({
+            id: currentHotcakeConfig.producto_id, // Atrapa el ID real para Supabase
+            name: currentHotcakeConfig.title,
+            price: precioFinal,                   // Precio con los cobros extra
+            desc: desc,                           // Checkboxes seleccionados
+            img: './images/mini_hotcakes.jpg'     // Miniatura para el carrito lateral
+        }, comentario);
+    };
     // Interceptar Clic en "Agregar"
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.btn-add-cart');

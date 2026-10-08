@@ -8,32 +8,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 1. Importamos tu hoja de estilos principal para que el Header ondulado funcione -->
+    <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="login.css">
     
     <style>
-        /* NAVBAR BLANCA */
-        .top-navbar {
-            background-color: #ffffff !important;
-            padding: 12px 40px !important;
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
-            position: relative;
-            z-index: 20;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .nav-brand img { height: 45px !important; width: auto !important; }
-        .nav-menu { display: flex; gap: 25px; }
-        .nav-menu a { text-decoration: none; color: #4a4a4a; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px; }
-        .nav-menu a:hover { color: #ff4d6d; }
-        .nav-icons { display: flex; align-items: center; gap: 20px; }
-        .cart-wrapper { position: relative; color: #4a4a4a; font-size: 20px; text-decoration: none; }
-        .cart-badge-count { position: absolute; top: -8px; right: -10px; background: #ff4d6d; color: white; font-size: 11px; font-weight: bold; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
-        .ws-link { color: #4a4a4a; font-size: 22px; text-decoration: none; }
-        .btn-user-nav { color: #ff4d6d; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px; text-decoration: none; display: flex; align-items: center; gap: 6px; }
-
+        /* Eliminamos el bloque "NAVBAR BLANCA" para no hacer conflicto */
+        
         /* LAYOUT DOS COLUMNAS */
         .page-wrapper {
             display: flex;
@@ -59,42 +41,11 @@
 </head>
 <body style="background-color: #fff0f3; margin: 0; min-height: 100vh; display: flex; flex-direction: column;">
 
-    <!-- NAVBAR -->
-    <header class="top-navbar">
-        <a href="../inicio.html" class="nav-brand">
-            <img src="../logo.png" alt="Hilda's Logo" onerror="this.src='./logo.png'">
-        </a>
-        <nav class="nav-menu">
-            <a href="../inicio.html">INICIO</a>
-            <a href="../postres.html">POSTRES</a>
-            <a href="../bebidas.html">BEBIDAS</a>
-            <a href="../snacks.html">SNACKS</a>
-        </nav>
-        <div class="nav-icons">
-            <a href="../carrito.html" class="cart-wrapper">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-badge-count">0</span>
-            </a>
-            <a href="https://wa.me/5512345678" target="_blank" class="ws-link">
-                <i class="fab fa-whatsapp"></i>
-            </a>
-            <a href="registro.html" class="btn-user-nav">
-                <i class="far fa-user"></i> Crear cuenta
-            </a>
-        </div>
-    </header>
+    <!-- 2. Inyectamos el contenedor modular de nuestra barra -->
+    <header class="header" id="header-container"></header>
 
     <!-- LAYOUT CENTRAL -->
     <div class="page-wrapper">
-        <!-- <div class="hero-left">
-            <h1>¡Bienvenido!</h1>
-            <p class="hero-subtitle">Dulces momentos, siempre contigo.</p>
-            <div class="hero-heart">♥</div>
-            <div class="pill-dessert">
-                <span>🍓 Fresas con crema</span>
-            </div>
-        </div-->
-
         <div class="login-card">
             <div class="card-badge-logo">
                 <img src="../logo.png" alt="Logo" onerror="this.src='./logo.png'">
@@ -130,6 +81,8 @@
         </div>
     </div>
 
+    <!-- 3. Vinculamos el script que dibuja el encabezado automáticamente -->
+    <script src="../header.js"></script>
     <script src="login.js"></script>
 </body>
 </html>

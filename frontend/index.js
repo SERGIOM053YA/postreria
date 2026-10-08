@@ -31,7 +31,7 @@ async function cargarCatalogoInicio() {
 
     try {
         // Hacemos la petición a tu servidor PHP local
-        const respuesta = await fetch('../api/productos.php');
+        const respuesta = await fetch(API_PRODUCTOS);
         if (!respuesta.ok) throw new Error('Error en la conexión con el servidor');
         
         const productosBD = await respuesta.json();

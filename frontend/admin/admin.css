@@ -160,10 +160,7 @@ body { background:var(--bg-cream,#fff0f3); color:var(--text-brown,#4a3b32); }
 }
 
 /* ==========================================
-   BOTÓN DE AGOTADO / DISPONIBLE
-   ========================================== */
-/* ==========================================
-   INTERRUPTOR (TOGGLE SWITCH ESTILO IOS)
+   BOTÓN DE AGOTADO / DISPONIBLE  INTERRUPTOR (TOGGLE SWITCH ESTILO IOS)
    ========================================== */
 .toggle-container {
     display: flex;
