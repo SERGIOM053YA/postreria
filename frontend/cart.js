@@ -333,6 +333,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // LÓGICA EXCLUSIVA DE MINI HOTCAKES
     // ==========================================
     let currentHotcakeConfig = { producto_id: 0, type: '', title: '', price: 0 };
+    const frutasBase = ["Durazno", "Fresa", "Plátano", "Uva"];
+    const toppingsBase = ["Nuez", "Luneta", "Huevo Kinder", "Chispas Chocolate", "Kranky"];
 
     window.openHotcakesModal = function(id, type, title, price) {
         currentHotcakeConfig = { producto_id: id, type: type, title: title, price: price };
@@ -340,11 +342,78 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('modal-title').textContent = title;
         document.getElementById('modal-subtitle').textContent = `$${price}.00 MXN - Personaliza tu pedido`;
         
-        // Resetear checkboxes y campos al abrir
+        // 1. INYECTAR LOS BOTONES (PILLS) DINÁMICAMENTE
+        const frutasContainer = document.getElementById('frutas-container');
+        const toppingsContainer = document.getElementById('toppings-container');
+        const frutaTitle = document.getElementById('fruta-title-step');
+        const toppingTitle = document.getElementById('topping-title-step');
+
+        frutasContainer.innerHTML = '';
+        toppingsContainer.innerHTML = '';
+
+        if (type === 'especial') {
+            frutaTitle.textContent = "🍑 Selecciona tu Fruta (Elige 2):";
+            toppingTitle.textContent = "🧁 Selecciona tu Topping (Elige 2):";
+
+            frutasBase.forEach(fruta => {
+                frutasContainer.innerHTML += `
+                    <label class="crepa-pill-label">
+                        <input type="checkbox" name="fruta_especial" value="${fruta}" class="check-limit-fruta">
+                        <span class="crepa-pill-text">${fruta}</span>
+                    </label>`;
+            });
+
+            toppingsBase.forEach(topping => {
+                toppingsContainer.innerHTML += `
+                    <label class="crepa-pill-label">
+                        <input type="checkbox" name="topping_especial" value="${topping}" class="check-limit-topping">
+                        <span class="crepa-pill-text">${topping}</span>
+                    </label>`;
+            });
+
+            // Límite estricto de 2 opciones para pedidos especiales
+            setTimeout(() => {
+                document.querySelectorAll('.check-limit-fruta').forEach(input => {
+                    input.addEventListener('change', () => {
+                        if (document.querySelectorAll('.check-limit-fruta:checked').length > 2) {
+                            input.checked = false; alert('Máximo 2 frutas permitidas.');
+                        }
+                    });
+                });
+                document.querySelectorAll('.check-limit-topping').forEach(input => {
+                    input.addEventListener('change', () => {
+                        if (document.querySelectorAll('.check-limit-topping:checked').length > 2) {
+                            input.checked = false; alert('Máximo 2 toppings permitidos.');
+                        }
+                    });
+                });
+            }, 50);
+
+        } else {
+            frutaTitle.textContent = "🍑 Selecciona tu Fruta:";
+            toppingTitle.textContent = "🧁 Selecciona tu Topping:";
+
+            frutasBase.forEach(fruta => {
+                frutasContainer.innerHTML += `
+                    <label class="crepa-pill-label">
+                        <input type="radio" name="fruta" value="${fruta}">
+                        <span class="crepa-pill-text">${fruta}</span>
+                    </label>`;
+            });
+
+            toppingsBase.forEach(topping => {
+                toppingsContainer.innerHTML += `
+                    <label class="crepa-pill-label">
+                        <input type="radio" name="topping" value="${topping}">
+                        <span class="crepa-pill-text">${topping}</span>
+                    </label>`;
+            });
+        }
+
+        // 2. MOSTRAR EL MODAL LIMPIO
         const form = document.getElementById('hotcakes-form');
         if (form) form.reset();
         
-        // Asegurar que inicie en el paso 1
         document.getElementById('step-selection').style.display = 'block';
         document.getElementById('step-instructions').style.display = 'none';
         
@@ -356,11 +425,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     window.goToInstructionsStep = function() {
+        // Validación de seguridad para que no avancen con el modal vacío
+        const special = currentHotcakeConfig.type === 'especial';
+        const frutasSel = document.querySelectorAll(special ? 'input[name="fruta_especial"]:checked' : 'input[name="fruta"]:checked');
+        const toppingsSel = document.querySelectorAll(special ? 'input[name="topping_especial"]:checked' : 'input[name="topping"]:checked');
+        
+        if (frutasSel.length === 0) return alert('Por favor, selecciona al menos una fruta.');
+        if (toppingsSel.length === 0) return alert('Por favor, selecciona al menos un topping.');
+
         document.getElementById('step-selection').style.display = 'none';
         document.getElementById('step-instructions').style.display = 'block';
     };
 
-    window.handleFormSubmit = function(e) {
+    // (Aquí debajo de esto debe quedarse intacta tu función window.handleFormSubmit)
+        window.handleFormSubmit = function(e) {
         e.preventDefault();
         
         const special = currentHotcakeConfig.type === 'especial';
@@ -376,20 +454,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         const precioFinal = currentHotcakeConfig.price + ((extrasTopping.length + extrasFruta.length) * 5);
         const piezas = currentHotcakeConfig.type.includes('12') ? '12 piezas' : '25 piezas';
 
-        // Construye el resumen de ingredientes (propiedad desc) para la cocina
-        let desc = `${piezas} · Fruta: ${frutas.join(', ') || 'Ninguna'} · Topping: ${toppings.join(', ') || 'Ninguno'}`;
-        if (extrasFruta.length > 0) desc += ` · Extra Fruta: ${extrasFruta.join(', ')}`;
-        if (extrasTopping.length > 0) desc += ` · Extra Topping: ${extrasTopping.join(', ')}`;
+        // === CAMBIO CLAVE: FORMATO COMPATIBLE CON EL PANEL KDS ===
+        // Usamos comas y la etiqueta "| Extras:" para activar la lista automática
+        let desc = `${piezas}, Fruta: ${frutas.join(', ') || 'Ninguna'}, Topping: ${toppings.join(', ') || 'Ninguno'}`;
+        
+        const todosLosExtras = [...extrasFruta, ...extrasTopping];
+        if (todosLosExtras.length > 0) {
+            desc += ` | Extras: ${todosLosExtras.join(', ')}`;
+        }
 
         window.closeHotcakesModal();
 
         // Enviar producto final al motor del carrito
         window.addProductToCart({
-            id: currentHotcakeConfig.producto_id, // Atrapa el ID real para Supabase
+            id: currentHotcakeConfig.producto_id,
             name: currentHotcakeConfig.title,
-            price: precioFinal,                   // Precio con los cobros extra
-            desc: desc,                           // Checkboxes seleccionados
-            img: './images/mini_hotcakes.jpg'     // Miniatura para el carrito lateral
+            price: precioFinal,
+            desc: desc,
+            img: './images/mini_hotcakes.jpg'
         }, comentario);
     };
     // Interceptar Clic en "Agregar"
