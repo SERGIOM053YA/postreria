@@ -22,7 +22,7 @@ function obtenerImagenLocal(nombreProducto) {
     return './logo.png';
 }
 
-// 2. Función para descargar el menú desde Node.js
+// 2. Función principal para descargar y pintar el menú desde PHP
 async function cargarCatalogoInicio() {
     const grid = document.getElementById('catalogo-grid');
     if (!grid) return;
@@ -30,31 +30,54 @@ async function cargarCatalogoInicio() {
     grid.innerHTML = '<p style="text-align:center; width:100%; color: var(--primary-pink); font-weight: bold;">Cargando catálogo oficial...</p>';
 
     try {
-        const respuesta = await fetch(API_PRODUCTOS);
-        if (!respuesta.ok) throw new Error('Error al conectar con el servidor local');
-        const productos = await respuesta.json();
-
+        // Hacemos la petición a tu servidor PHP local
+        const respuesta = await fetch('../api/productos.php');
+        if (!respuesta.ok) throw new Error('Error en la conexión con el servidor');
+        
+        const productosBD = await respuesta.json();
+        
+        // Filtramos los que no son de temporada y limitamos a 6
+        const productos = productosBD.filter(p => !p.es_temporada).slice(0, 6);
+        
         grid.innerHTML = ''; 
-        const productosInicio = productos.filter(p => !p.es_temporada).slice(0, 4);
 
-        productosInicio.forEach(prod => {
+        productos.forEach((prod, index) => {
             const card = document.createElement('div');
             card.className = 'product-card';
-            card.id = `product-${prod.id}`;
             card.dataset.producto_id = prod.id;
             
             const imagenSource = obtenerImagenLocal(prod.nombre);
 
+            // 1. Evaluamos la disponibilidad real de la base de datos
+            const estaDisponible = prod.disponible !== false;
+
+            // 2. Control de etiquetas (Priorizamos "Agotado" sobre "Más vendido")
+            let badgeHtml = '';
+            if (!estaDisponible) {
+                badgeHtml = '<div class="bestseller-badge" style="background-color: #81747a;">Agotado</div>';
+            } else if (prod.nombre.toLowerCase().includes('fresa') || index === 0) {
+                badgeHtml = '<div class="bestseller-badge">Más vendido</div>';
+            }
+
+            // 3. Control del botón y la opacidad visual
+            const btnHtml = estaDisponible 
+                ? `<button class="btn-add-cart"><i class="fas fa-plus"></i></button>`
+                : `<button class="btn-add-cart" disabled style="background-color: #ccc; cursor: not-allowed; border: none;"><i class="fas fa-ban"></i></button>`;
+
+            const imgFiltro = estaDisponible ? '' : 'style="filter: grayscale(100%); opacity: 0.6;"';
+            const infoEstilo = estaDisponible ? '' : 'style="opacity: 0.6;"';
+
             card.innerHTML = `
+                ${badgeHtml}
                 <div class="product-img-wrapper">
-                    <img src="${imagenSource}" alt="${prod.nombre}" class="product-img">
+                    <img src="${imagenSource}" alt="${prod.nombre}" class="product-img" ${imgFiltro}>
                 </div>
-                <div class="product-info">
+                <div class="product-info" ${infoEstilo}>
                     <h3>${prod.nombre}</h3>
                     <p>${prod.descripcion || 'Delicioso postre preparado con los mejores ingredientes.'}</p>
                     <div class="product-footer">
-                        <span class="product-price">$${prod.precio.toFixed(2)}</span>
-                        <button class="btn-add-cart"><i class="fas fa-plus"></i></button>
+                        <span class="product-price">$${Number(prod.precio).toFixed(2)}</span>
+                        ${btnHtml}
                     </div>
                 </div>
             `;
@@ -62,7 +85,7 @@ async function cargarCatalogoInicio() {
         });
     } catch (error) {
         console.error('Error al cargar productos:', error.message);
-        grid.innerHTML = '<p style="text-align:center; width:100%; color: red;">Error al conectar con el servidor.</p>';
+        grid.innerHTML = '<p style="text-align:center; width:100%; color: #e95072;">Error al conectar con el servidor PHP.</p>';
     }
 }
 
