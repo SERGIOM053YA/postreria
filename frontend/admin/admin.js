@@ -628,10 +628,10 @@
             let radiusCircle = null;
             let zoneInitialized = false;
             
-            // 1. Memoria de configuración con nacimiento en Francisco Villa 8
+           // 1. Memoria de configuración con nacimiento en Francisco Villa 8 (Coordenadas exactas)
             let config = JSON.parse(localStorage.getItem('hilda_delivery_zones')) || { 
-                center: { lat: 19.616330, lng: -99.027250 }, // Francisco Villa 8, Guadalupe Victoria
-                address: 'Calle Francisco Villa 8, Guadalupe Victoria, Ecatepec',
+                center: { lat: 19.623194, lng: -99.059361 }, 
+                address: 'Calle Francisco Villa 8, entre Chapultepec y cerrada de Benito Juárez, Guadalupe Victoria, 55010 Ecatepec de Morelos, Méx.',
                 radius: 1,      
                 enabled: true   
             };

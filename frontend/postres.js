@@ -171,6 +171,7 @@ async function cargarPostres() {
             card.dataset.producto_id = prod.id;
             
             const estaDisponible = prod.disponible !== false;
+            const imagenSource = prod.imagen_url || obtenerImagenLocal(prod.nombre); // Agrega esta línea
             let badgeHtml = !estaDisponible ? '<div class="bestseller-badge agotado">Agotado</div>' : '';
             const btnHtml = estaDisponible 
                 ? `<button class="btn-add-cart" onclick="addToCart(${prod.id}, '${prod.nombre}', ${prod.precio}, '', '')"><i class="fas fa-plus"></i></button>`
@@ -182,7 +183,7 @@ async function cargarPostres() {
             card.innerHTML = `
                 ${badgeHtml}
                 <div class="product-img-wrapper">
-                    <img src="${obtenerImagenLocal(prod.nombre)}" alt="${prod.nombre}" class="${imgClass}">
+                    <img src="${imagenSource}" alt="${prod.nombre}" class="${imgClass}">
                 </div>
                 <div class="${infoClass}">
                     <h3>${prod.nombre}</h3>
