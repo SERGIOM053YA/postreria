@@ -18,6 +18,9 @@ function obtenerImagenLocal(nombreProducto) {
     if (n.includes('gelatina')) return './images/gelatina_crema.jpg';
     if (n.includes('uva')) return './images/uvas_crema.jpg';
     if (n.includes('arroz')) return './images/arroz_leche.jpg';
+    if (n.includes('elote')) return './images/elotes.jpg';
+    if (n.includes('esquite')) return './images/esquites.jpg';
+    if (n.includes('papas')) return './images/papas.jpg';
     
     return './logo.png';
 }
@@ -46,7 +49,7 @@ async function cargarCatalogoInicio() {
             card.className = 'product-card';
             card.dataset.producto_id = prod.id;
             
-            const imagenSource = obtenerImagenLocal(prod.nombre);
+            const imagenSource = prod.imagen_url || obtenerImagenLocal(prod.nombre);
 
             // 1. Evaluamos la disponibilidad real de la base de datos
             const estaDisponible = prod.disponible !== false;

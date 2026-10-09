@@ -438,6 +438,12 @@
                         else if (n.includes('gelatina')) imgUrl = '../images/gelatina_crema.jpg';
                         else if (n.includes('uva')) imgUrl = '../images/uvas_crema.jpg';
                         else if (n.includes('arroz')) imgUrl = '../images/arroz_leche.jpg';
+                        else if (n.includes('eskimo')) imgUrl = '../images/fresas_crema.jpg'; // O la imagen que uses para eskimos
+                        else if (n.includes('alita')) imgUrl = '../images/alitas.jpg';
+                        else if (n.includes('boneless')) imgUrl = '../images/boneless.jpg';
+                        else if (n.includes('elote')) imgUrl = '../images/elotes.jpg';
+                        else if (n.includes('esquite')) imgUrl = '../images/esquites.jpg';
+                        else if (n.includes('papas')) imgUrl = '../images/papas.jpg';
                         else imgUrl = '../logo.png';
                     }
                     
