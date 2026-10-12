@@ -5,6 +5,27 @@
     const money = value => new Intl.NumberFormat('es-MX', { style:'currency', currency:'MXN' }).format(value || 0);
     const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
     const form = document.getElementById('product-form');
+// ==========================================
+// 1. ESCUDO DE SEGURIDAD ESTRICTO
+// ==========================================
+const token = localStorage.getItem('sb_access_token');
+const email = localStorage.getItem('sb_user_email');
+
+if (!token || !email || email.toLowerCase() !== 'admin@reposteria.com') {
+    alert('⛔ Acceso denegado. Esta es un área exclusiva para personal autorizado.');
+    window.location.replace('../index.html'); 
+    
+    // ESTA LÍNEA ES LA CLAVE: Detiene en seco la ejecución de JavaScript
+    throw new Error("Ejecución detenida por seguridad: Usuario anónimo."); 
+}
+
+// 2. SI EL USUARIO APRUEBA, SE ENCIENDE LA PÁGINA
+document.body.style.display = 'block';
+
+// ==========================================
+// 3. INICIALIZACIÓN DEL MAPA Y PEDIDOS
+// ==========================================
+// (Todo tu código de Leaflet, carga de postres y KDS va de aquí hacia abajo)
 
     // 1. NAVEGACIÓN Y TÍTULOS (CORREGIDO)
     const pageHeadings = {

@@ -1,0 +1,145 @@
+/* =========================================
+   PIE DE PÁGINA GLOBAL MEJORADO (FOOTER)
+   ========================================= */
+.global-footer {
+    position: relative;
+    background: linear-gradient(135deg, #fff0f3 0%, #ffd6e0 100%);
+    margin-top: 6rem;
+    color: #45333a;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Ola superior */
+.footer-wave {
+    position: absolute;
+    top: -48px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    overflow: hidden;
+    line-height: 0;
+}
+.footer-wave svg {
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 50px;
+}
+
+/* Contenido del Footer */
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem 2rem;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 260px;
+    max-width: 350px;
+}
+
+/* Estilo de la Marca */
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 1rem;
+}
+.footer-logo {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 8px 20px rgba(233, 80, 114, 0.2);
+    object-fit: cover;
+}
+.footer-brand h3 {
+    font-family: 'Pacifico', cursive;
+    color: #e95072;
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 400;
+}
+.footer-tagline {
+    color: #81747a;
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Títulos y Listas */
+.footer-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #e95072;
+    margin-bottom: 1.4rem;
+    letter-spacing: 1px;
+}
+
+.footer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* Íconos circulares estéticos */
+.footer-list li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 0.95rem;
+    color: #5a4b51;
+    font-weight: 500;
+}
+.footer-list i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: #fff;
+    color: #e95072;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(233, 80, 114, 0.15);
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+.footer-list li:hover i {
+    transform: scale(1.1);
+}
+
+/* Barra inferior */
+.footer-bottom {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.4);
+    color: #81747a;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-top: 1px solid rgba(233, 80, 114, 0.1);
+}
+
+/* Responsividad para Móviles */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 2rem 1.5rem 1.5rem;
+    }
+    .footer-brand {
+        justify-content: center;
+    }
+    .footer-list li {
+        justify-content: center;
+        text-align: left;
+    }
+}

@@ -16,3 +16,8 @@ env/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Ignorar la bóveda de contraseñas del backend
+api/config.php
+
+git rm --cached api/config.php
