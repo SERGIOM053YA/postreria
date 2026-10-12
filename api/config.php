@@ -1,5 +1,4 @@
 <?php
-// config.php - Bóveda de variables de entorno
 
 return [
     'SUPABASE_URL'      => 'https://abwqlettqauklpufupaa.supabase.co',

@@ -1,5 +1,4 @@
 <?php
-// config.example.php - Plantilla segura para el equipo
 return [
     'SUPABASE_URL'      => 'TU_URL_DE_SUPABASE_AQUI',
     'SUPABASE_ANON_KEY' => 'TU_LLAVE_PUBLICA_AQUI',
