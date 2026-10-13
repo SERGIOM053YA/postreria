@@ -22,6 +22,56 @@ if (!token || !email || email.toLowerCase() !== 'admin@reposteria.com') {
 // 2. SI EL USUARIO APRUEBA, SE ENCIENDE LA PÁGINA
 document.body.style.display = 'block';
 
+// CONTROL MAESTRO DE LA TIENDA (Botón en Navegación)
+const masterSwitchBtn = document.getElementById('master-store-switch-btn');
+const masterStatusText = document.getElementById('master-status-text');
+const masterStoreIcon = document.getElementById('master-store-icon');
+let tiendaAbierta = true; // Estado inicial
+
+if (masterSwitchBtn) {
+    // 1. Leer estado actual al cargar el admin
+    fetch('../../api/configuracion.php') // <-- CAMBIO CLAVE: Agregamos un ../ extra
+        .then(res => res.json())
+        .then(data => {
+            tiendaAbierta = data.abierta;
+            actualizarBotonTienda(tiendaAbierta);
+        })
+        .catch(err => console.error("Error al leer configuración:", err));
+
+    // 2. Enviar cambio al hacer clic en el botón
+    masterSwitchBtn.addEventListener('click', async () => {
+        tiendaAbierta = !tiendaAbierta; // Invertir estado
+        actualizarBotonTienda(tiendaAbierta);
+        
+        try {
+            await fetch('../../api/configuracion.php', { // <-- CAMBIO CLAVE: Agregamos un ../ extra
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ abierta: tiendaAbierta })
+            });
+        } catch(e) {
+            console.error("Error guardando el estado:", e);
+        }
+    });
+}
+
+// 3. Cambiar estilos del botón dinámicamente
+function actualizarBotonTienda(abierta) {
+    if (abierta) {
+        masterStatusText.textContent = 'Abierto';
+        masterStoreIcon.className = 'fas fa-store';
+        masterSwitchBtn.style.background = '#dcfce7'; // Fondo verde pastel
+        masterSwitchBtn.style.color = '#16a34a';      // Texto verde oscuro
+        masterSwitchBtn.style.borderColor = '#bbf7d0';
+    } else {
+        masterStatusText.textContent = 'Cerrado';
+        masterStoreIcon.className = 'fas fa-store-slash';
+        masterSwitchBtn.style.background = '#fee2e2'; // Fondo rojo pastel
+        masterSwitchBtn.style.color = '#dc2626';      // Texto rojo oscuro
+        masterSwitchBtn.style.borderColor = '#fecaca';
+    }
+}
+
 // ==========================================
 // 3. INICIALIZACIÓN DEL MAPA Y PEDIDOS
 // ==========================================

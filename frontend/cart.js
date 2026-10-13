@@ -556,4 +556,40 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('cart-close')?.addEventListener('click', closeCart);
     document.getElementById('btn-continue-shopping')?.addEventListener('click', closeCart);
+    // ==========================================
+    // 7. ESCUDO GLOBAL DE TIENDA CERRADA
+    // ==========================================
+    async function verificarEstadoTienda() {
+        // 1. Evitamos que el escudo bloquee la zona de administración o cause un ciclo en la pantalla de cierre
+        if (window.location.pathname.includes('admin.html') || window.location.pathname.includes('pantalla.html')) {
+            return;
+        }
+
+        // 2. EXCEPCIÓN VIP PARA EL DUEÑO: Si detectamos tu sesión, ignoramos el escudo
+        const emailLocal = localStorage.getItem('sb_user_email');
+        if (emailLocal && emailLocal.toLowerCase() === 'admin@reposteria.com') {
+            console.log("Modo Administrador: Escudo de tienda cerrada desactivado. Tienes acceso total.");
+            return; // Detiene la función aquí, tú NUNCA serás expulsado
+        }
+
+        try {
+            // 3. RUTA CORREGIDA: Agregamos ../ para asegurar que encuentre el PHP desde cualquier página
+            const res = await fetch('../api/configuracion.php'); 
+            
+            if (res.ok) {
+                const config = await res.json();
+                
+                // 4. Si la tienda está cerrada, expulsamos a los clientes a la pantalla
+                if (!config.abierta) {
+                    // Al estar index.html y pantalla.html en la misma carpeta raíz, la redirección es directa
+                    window.location.replace('pantalla.html'); 
+                }
+            }
+        } catch(e) {
+            console.error("Error leyendo el estado de la tienda:", e);
+        }
+    }
+
+    // Ejecutar el escudo en cuanto cargue cualquier página de la tienda
+    verificarEstadoTienda();
 });
