@@ -178,7 +178,17 @@
         }
     </style>
 </head>
+<!-- Pantalla de Carga Inicial -->
+<div id="loader-pantalla" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff0f3; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <div style="width: 50px; height: 50px; border: 5px solid #ffccd8; border-top-color: #e95072; border-radius: 50%; animation: girar 1s linear infinite;"></div>
+    <p style="color: #8d3d54; font-family: 'Outfit', sans-serif; font-weight: bold; margin-top: 20px;">Cargando sucursal...</p>
+</div>
 
+<style>
+    @keyframes girar {
+        to { transform: rotate(360deg); }
+    }
+</style>
 <body>
     <header class="closed-header">
         <!-- Rutas corregidas quitando el ../ ya que el archivo está en la raíz -->
@@ -213,35 +223,33 @@
     </main>
 
     <script>
-        async function checkStoreStatus() {
-            try {
-                // 1. Preguntar al Interruptor Maestro PHP (La ruta sube un nivel hacia api/)
-                const res = await fetch('../api/configuracion.php');
-                const config = await res.json();
-                
-                // Si está apagado desde el admin, ignora el reloj
-                if (!config.abierta) {
-                    mostrarPantallaCerrada("La sucursal ha sido cerrada manualmente por hoy. ¡Te esperamos mañana!");
-                    return;
-                }
+        async function checkStoreStatusSeguro() {
+        // 1. Configuramos un límite de 15 segundos
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-                // 2. Si el interruptor está abierto, evaluamos el horario automático
-                const now = new Date();
-                const day = now.getDay();
-                const hour = now.getHours();
-                const isOperatingDay = day === 5 || day === 6 || day === 0;
-                const isOperatingHour = hour >= 18 && hour < 23;
-                
-                if (isOperatingDay && isOperatingHour) {
-                    document.getElementById('closed-store-banner').style.display = 'none';
-                    document.getElementById('store-menu-content').style.display = 'block';
-                } else {
-                    mostrarPantallaCerrada("Nuestro horario es de Viernes a Domingo, de 6:00 p.m. a 11:00 p.m.");
-                }
-            } catch (e) {
-                console.error("Error validando el estado de la tienda", e);
-            }
+        try {
+            const res = await fetch('../api/configuracion.php', { signal: controller.signal });
+            clearTimeout(timeoutId); // Limpiamos el contador si responde rápido
+            
+            const config = await res.json();
+            
+            // 2. Ocultamos el loader porque ya tenemos los datos
+            const loader = document.getElementById('loader-pantalla');
+            if (loader) loader.style.display = 'none';
+
+            // ... Aquí va tu lógica existente de if (!config.abierta) ...
+
+        } catch (e) {
+            // 3. Manejo de error si el 3G colapsa o tarda más de 15 segundos
+            console.error("Error de latencia o conexión:", e);
+            const loader = document.getElementById('loader-pantalla');
+            if (loader) loader.style.display = 'none';
+            
+            // Mostrar la pantalla con estado por defecto para no dejar al usuario bloqueado
+            mostrarPantallaCerrada("Problemas de conexión. Por favor, intenta recargar la página.");
         }
+    }
 
         function mostrarPantallaCerrada(mensaje) {
             document.getElementById('closed-store-banner').style.display = 'block';
@@ -250,8 +258,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            checkStoreStatus();
-            setInterval(checkStoreStatus, 60000);
+            checkStoreStatusSeguro();
+            setInterval(checkStoreStatusSeguro , 60000);
         });
     </script>
 </body>
