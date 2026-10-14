@@ -1,0 +1,23 @@
+# 🛡️ Arquitectura de Seguridad Definitiva (Backend PHP + Supabase)
+
+Este documento define la estructura final de seguridad del sistema de repostería, habiendo migrado a un esquema Backend For Frontend (BFF) con PHP plano y PostgreSQL.
+
+## 1. Autenticación y Gestión de Sesiones
+* El sistema utiliza el módulo nativo de Autenticación de Supabase, el cual funciona mediante la validación de Tokens JWT (JSON Web Tokens)[cite: 3].
+* PHP actúa como intermediario seguro: el frontend envía las credenciales a los endpoints de PHP, los cuales interactúan con Supabase mediante peticiones seguras de cURL inyectando las llaves[cite: 3].
+
+## 2. Control de Acceso Basado en Roles (RBAC)
+* La jerarquía del sistema se gestiona a través de la tabla `perfiles` vinculada a la autenticación nativa[cite: 6].
+* Los roles operativos permitidos en la base de datos son: `'Administrador'`, `'Cajero'`, `'Cocinero'` y `'Cliente'`[cite: 6].
+* Por defecto, cualquier registro nuevo ingresa al sistema con el rol básico de `'Cliente'`[cite: 6].
+
+## 3. Políticas de Seguridad a Nivel de Fila (RLS)
+Las reglas RLS definitivas protegen la base de datos bloqueando accesos no autorizados:
+* **Lectura de Clientes**: Los clientes tienen aislamiento estricto y únicamente pueden ver sus propios pedidos, validando que `auth.uid() = user_id`[cite: 6].
+* **Creación de Pedidos**: Está prohibida la compra a usuarios anónimos; solo los clientes autenticados pueden registrar órdenes (`auth.uid() = user_id`)[cite: 6].
+* **Control Administrativo (KDS)**: El personal (Administradores y Cocineros) tiene acceso total de lectura a las comandas en tiempo real verificando su rol en la tabla `perfiles` o mediante el correo administrativo[cite: 6].
+
+## 4. Triggers Financieros (Motor Anti-Fraude)
+Para evitar que clientes malintencionados alteren los montos en el frontend, el cálculo matemático se delega estrictamente a PostgreSQL:
+* **Trigger `asignar_precio_real`**: Se dispara al insertar un ítem y sobreescribe cualquier precio unitario enviado por el navegador web con el precio oficial de la tabla `productos`[cite: 6].
+* **Trigger `actualizar_total_pedido`**: Se dispara al guardar los ítems, calcula la suma exacta (`cantidad * precio_unitario`) y actualiza automáticamente la columna `total` de la orden maestra[cite: 6].
