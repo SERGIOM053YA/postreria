@@ -53,15 +53,20 @@ $respuesta_decodificada = json_decode($respuesta_curl, true);
 
 // 5. Validar respuesta y enviar token al frontend
 if ($httpcode >= 200 && $httpcode < 300) {
+    // Extraemos el nombre de los metadatos de Supabase
+    $nombre = $respuesta_decodificada['user']['user_metadata']['nombre'] ?? '';
+
     echo json_encode([
         "token" => $respuesta_decodificada['access_token'],
         "user" => [
             "id" => $respuesta_decodificada['user']['id'],
-            "email" => $respuesta_decodificada['user']['email']
+            "email" => $respuesta_decodificada['user']['email'],
+            "nombre" => $nombre  // <--- ¡NUEVA LÍNEA PARA PASAR EL NOMBRE!
         ],
         "fuente" => "Supabase (vía PHP)"
     ]);
 } else {
+// ... resto del código
     http_response_code($httpcode);
     echo json_encode([
         "error" => $respuesta_decodificada['error_description'] ?? "Credenciales inválidas."

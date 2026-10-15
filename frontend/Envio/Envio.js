@@ -1,10 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     const tokenLocal = localStorage.getItem('sb_access_token');
+   
+    // 2. Traer el nombre desde la memoria local segura
+    const userNombre = localStorage.getItem('sb_user_nombre');
     const userEmail = localStorage.getItem('sb_user_email');
-
     const inputNombre = document.getElementById('recipient');
-    if (userEmail && inputNombre && !inputNombre.value) {
-        inputNombre.value = userEmail.split('@')[0];
+
+    if (inputNombre && !inputNombre.value) {
+        // Si hay nombre real, lo pone. Si no, recorta el correo.
+        inputNombre.value = userNombre || (userEmail ? userEmail.split('@')[0] : '');
     }
 
     const inputPhone = document.getElementById('phone');

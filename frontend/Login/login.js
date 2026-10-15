@@ -1,14 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Ya no usamos window.supabase aquí. Apuntamos a tu nuevo servidor.
-const API_URL = '../../api/login.php';   
+    const API_URL = '../../api/login.php';
 
     const form = document.getElementById('loginForm');
     const emailInput = document.getElementById('email');
     const passInput = document.getElementById('password');
     const togglePass = document.getElementById('togglePassword');
-    const btnLogin = document.getElementById('btnLogin');
+    const btnLogin = document.getElementById('btnLogin') || document.querySelector('.btn-login');
 
-    // Lógica visual del ojito para la contraseña
+    // 1. Mostrar/Ocultar contraseña
     if (togglePass) {
         togglePass.addEventListener('click', () => {
             const isPass = passInput.type === 'password';
@@ -18,50 +17,52 @@ const API_URL = '../../api/login.php';
         });
     }
 
+    // 2. Evento de inicio de sesión
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            btnLogin.disabled = true;
-            btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AUTENTICANDO...';
+            if (btnLogin) {
+                btnLogin.disabled = true;
+                btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AUTENTICANDO...';
+            }
 
             try {
-                // Pasamos la variable relativa en lugar de la ruta absoluta
+                // Petición al backend PHP
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         email: emailInput.value.trim(),
                         password: passInput.value
                     })
                 });
 
-                const data = await response.json();
+                const data = await response.json(); // Aquí nace la variable "data"
 
-                // Si el servidor (Node.js) devuelve un error (ej. credenciales inválidas)
                 if (!response.ok) {
                     throw new Error(data.error || 'Error al iniciar sesión');
                 }
 
-                // Si fue exitoso, guardamos el token que nos dio tu servidor
+                // 3. Guardar credenciales y nombre en memoria
                 localStorage.setItem('sb_access_token', data.token);
-                // Agrega esta línea para estampar tu identidad localmente
-                localStorage.setItem('sb_user_email', data.user.email || email);
-                
-                // Extraemos el ID y email del objeto 'user' que devuelve el servidor
-                if(data.user) {
-                    localStorage.setItem('sb_user_id', data.user.id || 'local-id');
+                if (data.user) {
+                    localStorage.setItem('sb_user_id', data.user.id);
                     localStorage.setItem('sb_user_email', data.user.email);
+                    
+                    // Ahora sí leemos el nombre real que nos mandó PHP
+                    const nombreReal = data.user.nombre || data.user.email.split('@')[0];
+                    localStorage.setItem('sb_user_nombre', nombreReal);
                 }
 
-                console.log(`Login exitoso. Fuente: ${data.fuente}`);
-                window.location.href = '../index.html';
+                // 4. Redirección
+                window.location.href = '../index.html'; 
 
             } catch (error) {
                 alert('Error de acceso: ' + error.message);
-                btnLogin.disabled = false;
-                btnLogin.innerHTML = 'INICIAR SESIÓN <i class="fas fa-arrow-right"></i>';
+                if (btnLogin) {
+                    btnLogin.disabled = false;
+                    btnLogin.innerHTML = 'INICIAR SESIÓN <i class="fas fa-arrow-right"></i>';
+                }
             }
         });
     }
