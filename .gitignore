@@ -24,7 +24,6 @@ git rm --cached api/config.php
 
 # Configuración docker
 .git
-.github
 .env
 .env.*
 !.env.example

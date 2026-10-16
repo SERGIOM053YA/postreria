@@ -1,0 +1,20 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: deploy-postres
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: vm2
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Construir y levantar
+        run: docker compose up -d --build --remove-orphans
+      - name: Limpiar imágenes viejas
+        run: docker image prune -f
