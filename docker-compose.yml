@@ -1,0 +1,31 @@
+name: postres
+
+services:
+  web:
+    build: .
+    container_name: postres-web
+    restart: always
+    ports:
+      - "192.168.0.22:8103:80"
+    env_file:
+      - /opt/apps/postres/.env
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost/health.txt"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+          pids: 100
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  postres_data:

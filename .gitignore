@@ -22,3 +22,11 @@ Postres/api/config.php
 
 git rm --cached api/config.php
 
+# Configuración docker
+.git
+.github
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
