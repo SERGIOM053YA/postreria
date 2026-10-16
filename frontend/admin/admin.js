@@ -5,6 +5,7 @@
     const money = value => new Intl.NumberFormat('es-MX', { style:'currency', currency:'MXN' }).format(value || 0);
     const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
     const form = document.getElementById('product-form');
+
 // ==========================================
 // 1. ESCUDO DE SEGURIDAD ESTRICTO
 // ==========================================
@@ -14,8 +15,6 @@ const email = localStorage.getItem('sb_user_email');
 if (!token || !email || email.toLowerCase() !== 'admin@reposteria.com') {
     alert('⛔ Acceso denegado. Esta es un área exclusiva para personal autorizado.');
     window.location.replace('../index.html'); 
-    
-    // ESTA LÍNEA ES LA CLAVE: Detiene en seco la ejecución de JavaScript
     throw new Error("Ejecución detenida por seguridad: Usuario anónimo."); 
 }
 
@@ -29,8 +28,7 @@ const masterStoreIcon = document.getElementById('master-store-icon');
 let tiendaAbierta = true; // Estado inicial
 
 if (masterSwitchBtn) {
-    // 1. Leer estado actual al cargar el admin
-    fetch('../../api/configuracion.php') // <-- CAMBIO CLAVE: Agregamos un ../ extra
+    fetch('../../api/configuracion.php')
         .then(res => res.json())
         .then(data => {
             tiendaAbierta = data.abierta;
@@ -38,13 +36,12 @@ if (masterSwitchBtn) {
         })
         .catch(err => console.error("Error al leer configuración:", err));
 
-    // 2. Enviar cambio al hacer clic en el botón
     masterSwitchBtn.addEventListener('click', async () => {
-        tiendaAbierta = !tiendaAbierta; // Invertir estado
+        tiendaAbierta = !tiendaAbierta;
         actualizarBotonTienda(tiendaAbierta);
         
         try {
-            await fetch('../../api/configuracion.php', { // <-- CAMBIO CLAVE: Agregamos un ../ extra
+            await fetch('../../api/configuracion.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ abierta: tiendaAbierta })
@@ -55,19 +52,18 @@ if (masterSwitchBtn) {
     });
 }
 
-// 3. Cambiar estilos del botón dinámicamente
 function actualizarBotonTienda(abierta) {
     if (abierta) {
         masterStatusText.textContent = 'Abierto';
         masterStoreIcon.className = 'fas fa-store';
-        masterSwitchBtn.style.background = '#dcfce7'; // Fondo verde pastel
-        masterSwitchBtn.style.color = '#16a34a';      // Texto verde oscuro
+        masterSwitchBtn.style.background = '#dcfce7';
+        masterSwitchBtn.style.color = '#16a34a';
         masterSwitchBtn.style.borderColor = '#bbf7d0';
     } else {
         masterStatusText.textContent = 'Cerrado';
         masterStoreIcon.className = 'fas fa-store-slash';
-        masterSwitchBtn.style.background = '#fee2e2'; // Fondo rojo pastel
-        masterSwitchBtn.style.color = '#dc2626';      // Texto rojo oscuro
+        masterSwitchBtn.style.background = '#fee2e2';
+        masterSwitchBtn.style.color = '#dc2626';
         masterSwitchBtn.style.borderColor = '#fecaca';
     }
 }
@@ -75,9 +71,6 @@ function actualizarBotonTienda(abierta) {
 // ==========================================
 // 3. INICIALIZACIÓN DEL MAPA Y PEDIDOS
 // ==========================================
-// (Todo tu código de Leaflet, carga de postres y KDS va de aquí hacia abajo)
-
-    // 1. NAVEGACIÓN Y TÍTULOS (CORREGIDO)
     const pageHeadings = {
         'products-panel': { title:'Productos', desc:'Gestiona el catálogo y disponibilidad de tu tienda', icon:'fa-box' },
         'sales-panel': { title:'Ganancias', desc:'Resumen de ventas e ingresos del negocio', icon:'fa-chart-line' },
@@ -112,6 +105,7 @@ function actualizarBotonTienda(abierta) {
             if (res.ok) {
                 dbOrders = await res.json();
                 renderOrders();
+                renderSales(); // Sincroniza ganancias en tiempo real con cada lectura
             } else {
                 console.error("Error al cargar pedidos:", res.statusText);
             }
@@ -323,12 +317,14 @@ function actualizarBotonTienda(abierta) {
             </div>`;
         }).join('');
 
-        let direccionTexto = pedido.direccion_entrega || '';
-        let notasCocinaHtml = '';
+        // ========================================================
+        // 🧼 PURGA DE DIRECCIÓN Y REFERENCIA PARA GOOGLE MAPS
+        // ========================================================
+        let direccionRaw = pedido.direccion_entrega || '';
         
-        if (direccionTexto.includes(' | NOTAS_COCINA:')) {
-            const partes = direccionTexto.split(' | NOTAS_COCINA:');
-            direccionTexto = partes[0]; 
+        if (direccionRaw.includes(' | NOTAS_COCINA:')) {
+            const partes = direccionRaw.split(' | NOTAS_COCINA:');
+            direccionRaw = partes[0].trim(); 
             const notasViejas = partes[1].split(' | '); 
             
             if (notasArray.length === 0) {
@@ -344,6 +340,22 @@ function actualizarBotonTienda(abierta) {
             }
         }
 
+        let direccionLimpia = direccionRaw;
+        let referenciaTexto = '';
+
+        // Separar si contiene la pleca "|"
+        if (direccionLimpia.includes('|')) {
+            const partes = direccionLimpia.split('|');
+            direccionLimpia = partes[0].trim();
+            const resto = partes.slice(1).join(' ').trim();
+            referenciaTexto = resto.replace(/^(?:Ref|Referencia|Indicaciones)\s*:\s*/i, '').trim();
+        } else if (/(?:Ref|Referencia|Indicaciones):/i.test(direccionLimpia)) {
+            const partesRef = direccionLimpia.split(/(?:Ref|Referencia|Indicaciones):/i);
+            direccionLimpia = partesRef[0].replace(/[,\-\(\)]+$/, '').trim();
+            referenciaTexto = partesRef[1].replace(/[\)]+$/, '').trim();
+        }
+
+        let notasCocinaHtml = '';
         if (notasArray.length > 0) {
             notasCocinaHtml = `
             <div style="background:#e6f6ec; border-left: 5px solid #20b85a; padding:1.5rem; margin-bottom:1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
@@ -408,6 +420,26 @@ function actualizarBotonTienda(abierta) {
             }
         }
 
+        // ========================================================
+        // 🚀 URL LIMPIA DE GOOGLE MAPS (SIN REFERENCIA)
+        // ========================================================
+        let botonMapsHtml = '';
+        if (pedido.tipo_entrega === 'A Domicilio') {
+            const destinoFinal = (pedido.latitud && pedido.longitud) 
+                ? `${pedido.latitud},${pedido.longitud}` 
+                : encodeURIComponent(direccionLimpia);
+
+            const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destinoFinal}`;
+
+            botonMapsHtml = `
+            <div style="margin-top: 0.9rem;">
+                <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" 
+                   style="display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.65rem 1.15rem; background: #2563eb; color: #ffffff; text-decoration: none; border-radius: 9px; font-weight: 700; font-size: 0.88rem; box-shadow: 0 3px 8px rgba(37,99,235,0.3); transition: background 0.2s;">
+                    <i class="fas fa-map-marked-alt"></i> Trazar ruta en Google Maps
+                </a>
+            </div>`;
+        }
+
         const modalHtml = `
         <div id="modal-detalle-pedido" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; display:flex; justify-content:center; align-items:center;">
             <div style="background:white; padding:2rem; border-radius:22px; max-width:600px; width:90%; max-height:85vh; overflow-y:auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
@@ -429,7 +461,12 @@ function actualizarBotonTienda(abierta) {
                             <i class="fas fa-file-invoice-dollar"></i> Ver comprobante
                         </button>
                     </div>` : ''}
-                    <p style="margin:0;"><strong><i class="fas fa-map-pin"></i> Destino:</strong> ${escapeHTML(direccionTexto)}</p>
+                    <p style="margin:0 0 8px 0;"><strong><i class="fas fa-map-pin"></i> Destino:</strong> ${escapeHTML(direccionLimpia)}</p>
+                    ${referenciaTexto ? `
+                    <p style="margin:0 0 8px 0; color:#475569; font-size:0.9rem; background:#f1f5f9; padding:8px 12px; border-radius:8px; border-left:3px solid #0284c7;">
+                        <strong><i class="fas fa-info-circle"></i> Referencia:</strong> ${escapeHTML(referenciaTexto)}
+                    </p>` : ''}
+                    ${botonMapsHtml}
                 </div>
                 
                 ${notasCocinaHtml}
@@ -472,6 +509,7 @@ function actualizarBotonTienda(abierta) {
             pedido.estado = nuevoEstado;
             cerrarModalDetalle();
             renderOrders(); 
+            renderSales();
         } catch (err) {
             alert("Error: " + err.message);
         }
@@ -509,7 +547,7 @@ function actualizarBotonTienda(abierta) {
                         else if (n.includes('gelatina')) imgUrl = '../images/gelatina_crema.jpg';
                         else if (n.includes('uva')) imgUrl = '../images/uvas_crema.jpg';
                         else if (n.includes('arroz')) imgUrl = '../images/arroz_leche.jpg';
-                        else if (n.includes('eskimo')) imgUrl = '../images/fresas_crema.jpg'; // O la imagen que uses para eskimos
+                        else if (n.includes('eskimo')) imgUrl = '../images/fresas_crema.jpg';
                         else if (n.includes('alita')) imgUrl = '../images/alitas.jpg';
                         else if (n.includes('boneless')) imgUrl = '../images/boneless.jpg';
                         else if (n.includes('elote')) imgUrl = '../images/elotes.jpg';
@@ -697,146 +735,142 @@ function actualizarBotonTienda(abierta) {
     init();
     
     // ==========================================
-        // MÓDULO AISLADO: ZONA DE ENTREGA, MAPA Y COBERTURA
-        // ==========================================
-        (() => {
-            let map = null;
-            let centerMarker = null;
-            let radiusCircle = null;
-            let zoneInitialized = false;
+    // MÓDULO AISLADO: ZONA DE ENTREGA, MAPA Y COBERTURA
+    // ==========================================
+    (() => {
+        let map = null;
+        let centerMarker = null;
+        let radiusCircle = null;
+        let zoneInitialized = false;
+        
+        let config = JSON.parse(localStorage.getItem('hilda_delivery_zones')) || { 
+            center: { lat: 19.623194, lng: -99.059361 }, 
+            address: 'Calle Francisco Villa 8, entre Chapultepec y cerrada de Benito Juárez, Guadalupe Victoria, 55010 Ecatepec de Morelos, Méx.',
+            radius: 1,      
+            enabled: true   
+        };
+
+        function updateMap() {
+            if (!map) return;
+            map.setView([config.center.lat, config.center.lng], 15);
             
-           // 1. Memoria de configuración con nacimiento en Francisco Villa 8 (Coordenadas exactas)
-            let config = JSON.parse(localStorage.getItem('hilda_delivery_zones')) || { 
-                center: { lat: 19.623194, lng: -99.059361 }, 
-                address: 'Calle Francisco Villa 8, entre Chapultepec y cerrada de Benito Juárez, Guadalupe Victoria, 55010 Ecatepec de Morelos, Méx.',
-                radius: 1,      
-                enabled: true   
-            };
+            if (centerMarker) map.removeLayer(centerMarker);
+            if (radiusCircle) map.removeLayer(radiusCircle);
+            
+            const shopIcon = L.divIcon({
+                html: '<div style="background:#e04868;width:24px;height:24px;border-radius:50%;border:3px solid #fff;box-shadow:0 4px 12px rgba(224,72,104,0.4);"></div>',
+                iconSize: [24, 24], iconAnchor: [12, 12]
+            });
+            
+            centerMarker = L.marker([config.center.lat, config.center.lng], { icon: shopIcon })
+                .addTo(map).bindPopup(`<b>📍 Origen de entregas</b><br>${config.address}`).openPopup();
 
-            function updateMap() {
-                if (!map) return;
-                map.setView([config.center.lat, config.center.lng], 15);
-                
-                if (centerMarker) map.removeLayer(centerMarker);
-                if (radiusCircle) map.removeLayer(radiusCircle);
-                
-                const shopIcon = L.divIcon({
-                    html: '<div style="background:#e04868;width:24px;height:24px;border-radius:50%;border:3px solid #fff;box-shadow:0 4px 12px rgba(224,72,104,0.4);"></div>',
-                    iconSize: [24, 24], iconAnchor: [12, 12]
-                });
-                
-                centerMarker = L.marker([config.center.lat, config.center.lng], { icon: shopIcon })
-                    .addTo(map).bindPopup(`<b>📍 Origen de entregas</b><br>${config.address}`).openPopup();
+            radiusCircle = L.circle([config.center.lat, config.center.lng], {
+                color: '#e04868',
+                fillColor: '#f05473',
+                fillOpacity: 0.15,
+                radius: config.radius * 1000 
+            }).addTo(map);
 
-                radiusCircle = L.circle([config.center.lat, config.center.lng], {
-                    color: '#e04868',
-                    fillColor: '#f05473',
-                    fillOpacity: 0.15,
-                    radius: config.radius * 1000 
-                }).addTo(map);
+            const addrInput = document.getElementById('zone-center-address');
+            if (addrInput) addrInput.value = config.address;
+        }
 
-                const addrInput = document.getElementById('zone-center-address');
-                if (addrInput) addrInput.value = config.address;
+        document.querySelector('[data-panel="delivery-zone-panel"]')?.addEventListener('click', () => {
+            if (!zoneInitialized) {
+                zoneInitialized = true;
+                setTimeout(() => {
+                    const container = document.getElementById('delivery-map');
+                    if (!container) return;
+                    
+                    map = L.map(container).setView([config.center.lat, config.center.lng], 15);
+                    
+                    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+                        attribution: '&copy; Esri',
+                        maxZoom: 19
+                    }).addTo(map);
+                    
+                    updateMap();
+                    
+                    const toggleInput = document.getElementById('zone-enabled');
+                    const radiusInput = document.getElementById('zone-radius');
+                    const radiusLabel = document.getElementById('zone-radius-label');
+                    const statusBadge = document.getElementById('zone-status-badge');
+                    
+                    if(toggleInput) toggleInput.checked = config.enabled;
+                    if(radiusInput) radiusInput.value = config.radius;
+                    if(radiusLabel) radiusLabel.textContent = config.radius + ' km';
+                    if(statusBadge) {
+                        statusBadge.textContent = config.enabled ? 'Activo' : 'Inactivo';
+                        statusBadge.className = 'zone-status ' + (config.enabled ? 'active' : 'inactive');
+                    }
+                }, 200);
+            } else {
+                setTimeout(() => { if (map) map.invalidateSize(); }, 200);
             }
+        });
 
-            document.querySelector('[data-panel="delivery-zone-panel"]')?.addEventListener('click', () => {
-                if (!zoneInitialized) {
-                    zoneInitialized = true;
-                    setTimeout(() => {
-                        const container = document.getElementById('delivery-map');
-                        if (!container) return;
-                        
-                        map = L.map(container).setView([config.center.lat, config.center.lng], 15);
-                        
-                        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-                            attribution: '&copy; Esri',
-                            maxZoom: 19
-                        }).addTo(map);
-                        
-                        updateMap();
-                        
-                        const toggleInput = document.getElementById('zone-enabled');
-                        const radiusInput = document.getElementById('zone-radius');
-                        const radiusLabel = document.getElementById('zone-radius-label');
-                        const statusBadge = document.getElementById('zone-status-badge');
-                        
-                        if(toggleInput) toggleInput.checked = config.enabled;
-                        if(radiusInput) radiusInput.value = config.radius;
-                        if(radiusLabel) radiusLabel.textContent = config.radius + ' km';
-                        if(statusBadge) {
-                            statusBadge.textContent = config.enabled ? 'Activo' : 'Inactivo';
-                            statusBadge.className = 'zone-status ' + (config.enabled ? 'active' : 'inactive');
-                        }
-                    }, 200);
-                } else {
-                    setTimeout(() => { if (map) map.invalidateSize(); }, 200);
-                }
-            });
+        document.getElementById('zone-enabled')?.addEventListener('change', (e) => {
+            config.enabled = e.target.checked;
+            const badge = document.getElementById('zone-status-badge');
+            if (badge) {
+                badge.textContent = config.enabled ? 'Activo' : 'Inactivo';
+                badge.className = 'zone-status ' + (config.enabled ? 'active' : 'inactive');
+            }
+            localStorage.setItem('hilda_delivery_zones', JSON.stringify(config));
+        });
 
-            // Control del interruptor general
-            document.getElementById('zone-enabled')?.addEventListener('change', (e) => {
-                config.enabled = e.target.checked;
-                const badge = document.getElementById('zone-status-badge');
-                if (badge) {
-                    badge.textContent = config.enabled ? 'Activo' : 'Inactivo';
-                    badge.className = 'zone-status ' + (config.enabled ? 'active' : 'inactive');
-                }
-                localStorage.setItem('hilda_delivery_zones', JSON.stringify(config));
-            });
+        document.getElementById('zone-radius')?.addEventListener('input', (e) => {
+            config.radius = parseFloat(e.target.value);
+            const label = document.getElementById('zone-radius-label');
+            if (label) label.textContent = config.radius + ' km';
+            if (radiusCircle) radiusCircle.setRadius(config.radius * 1000);
+            localStorage.setItem('hilda_delivery_zones', JSON.stringify(config));
+        });
 
-            // Control del margen de cobertura
-            document.getElementById('zone-radius')?.addEventListener('input', (e) => {
-                config.radius = parseFloat(e.target.value);
-                const label = document.getElementById('zone-radius-label');
-                if (label) label.textContent = config.radius + ' km';
-                if (radiusCircle) radiusCircle.setRadius(config.radius * 1000);
-                localStorage.setItem('hilda_delivery_zones', JSON.stringify(config));
-            });
-
-            // Ubicación Dinámica (GPS o Buscador Manual)
-            document.getElementById('zone-locate-btn')?.addEventListener('click', async () => {
-                const addrInput = document.getElementById('zone-center-address');
-                const addr = addrInput ? addrInput.value.trim() : '';
-                const btn = document.getElementById('zone-locate-btn');
-                
-                if (!addr) {
-                    if (!navigator.geolocation) return alert('Tu navegador no soporta GPS.');
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            config.center = { lat: position.coords.latitude, lng: position.coords.longitude };
-                            config.address = "Ubicación detectada por GPS";
-                            updateMap();
-                            localStorage.setItem('hilda_delivery_zones', JSON.stringify(config));
-                            btn.innerHTML = '<i class="fas fa-crosshairs"></i> Ubicar';
-                        },
-                        (error) => {
-                            alert('Error de GPS. Verifica tus permisos.');
-                            btn.innerHTML = '<i class="fas fa-crosshairs"></i> Ubicar';
-                        },
-                        { enableHighAccuracy: true }
-                    );
-                    return;
-                }
-
-                try {
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}&limit=1`);
-                    const data = await res.json();
-                    if (data.length) {
-                        config.center = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
-                        config.address = addr;
+        document.getElementById('zone-locate-btn')?.addEventListener('click', async () => {
+            const addrInput = document.getElementById('zone-center-address');
+            const addr = addrInput ? addrInput.value.trim() : '';
+            const btn = document.getElementById('zone-locate-btn');
+            
+            if (!addr) {
+                if (!navigator.geolocation) return alert('Tu navegador no soporta GPS.');
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        config.center = { lat: position.coords.latitude, lng: position.coords.longitude };
+                        config.address = "Ubicación detectada por GPS";
                         updateMap();
                         localStorage.setItem('hilda_delivery_zones', JSON.stringify(config));
-                    } else {
-                        alert('Dirección no encontrada.');
-                    }
-                } catch (err) {
-                    alert('Error de red.');
-                } finally {
-                    btn.innerHTML = '<i class="fas fa-crosshairs"></i> Ubicar';
+                        btn.innerHTML = '<i class="fas fa-crosshairs"></i> Ubicar';
+                    },
+                    (error) => {
+                        alert('Error de GPS. Verifica tus permisos.');
+                        btn.innerHTML = '<i class="fas fa-crosshairs"></i> Ubicar';
+                    },
+                    { enableHighAccuracy: true }
+                );
+                return;
+            }
+
+            try {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}&limit=1`);
+                const data = await res.json();
+                if (data.length) {
+                    config.center = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+                    config.address = addr;
+                    updateMap();
+                    localStorage.setItem('hilda_delivery_zones', JSON.stringify(config));
+                } else {
+                    alert('Dirección no encontrada.');
                 }
-            });
-        })();
+            } catch (err) {
+                alert('Error de red.');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-crosshairs"></i> Ubicar';
+            }
+        });
+    })();
 
 })();
