@@ -2,7 +2,7 @@ name: postres
 
 services:
   backend:
-    build: ./app
+    build: ./api
     container_name: postres-backend
     restart: always
     expose:
