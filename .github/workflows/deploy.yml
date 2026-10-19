@@ -5,8 +5,8 @@ on:
       - main
 
 concurrency:
-  group: deploy-postres
-  cancel-in-progress: false
+  group: deploy-postres-v2
+  cancel-in-progress: true
 
 jobs:
   deploy:
