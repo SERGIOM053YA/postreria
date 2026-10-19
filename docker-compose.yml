@@ -1,14 +1,16 @@
 name: postres
 
 services:
-  backend:
-    build: ./api
-    container_name: postres-backend
+  web:
+    build: .
+    container_name: postres-web
     restart: always
-    expose:
-      - "80"                                
+    ports:
+      - "192.168.0.22:8103:80"
+    env_file: /opt/apps/postres/.env
     volumes:
-      - postres_data:/var/www/data           
+      - postres_data:/var/www/data
+    healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost/health.txt"]
       interval: 30s
       timeout: 5s
@@ -20,31 +22,6 @@ services:
           cpus: "0.5"
           memory: 256M
           pids: 100
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  frontend:
-    build: ./frontend
-    container_name: postres-frontend
-    restart: always
-    ports:
-      - "192.168.0.22:8103:80"              # IP de la VM2 : puerto libre : puerto interno
-    depends_on:
-      - backend
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
-    deploy:
-      resources:
-        limits:
-          cpus: "0.25"
-          memory: 64M
     logging:
       driver: json-file
       options:
