@@ -1,0 +1,21 @@
+{
+  "short_name": "Postres",
+  "name": "Postres Deliciosos - Tienda Online",
+  "icons": [
+    {
+      "src": "/icono-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icono-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "theme_color": "#F97316",
+  "orientation": "portrait"
+}
